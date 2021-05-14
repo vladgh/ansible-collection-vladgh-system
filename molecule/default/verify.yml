@@ -3,9 +3,6 @@
   hosts: all
   become: yes
 
-  vars:
-    ansible_python_interpreter: '{{ ansible_playbook_python }}'
-
   tasks:
     - name: Don't do much here.
       debug:
