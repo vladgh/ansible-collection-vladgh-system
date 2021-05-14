@@ -2,10 +2,6 @@ name: Test roles
 
 on: [push, pull_request]
 
-env:
-  NAMESPACE: vgh
-  COLLECTION_NAME: system
-
 jobs:
   test:
     name: "Test role ${{ matrix.role }} on ${{ matrix.os }}"
@@ -24,11 +20,12 @@ jobs:
           - logs
           - qemu_guest_agent
           - shellcheck
+    defaults:
+      run:
+        working-directory: ansible_collections/vgh/system
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
