@@ -1,0 +1,9 @@
+---
+- name: QEMU Guest Agent
+  package:
+    name: qemu-guest-agent
+    state: present
+  when: ansible_system_vendor == 'QEMU'
+  notify:
+    - Restart QEMU Guest Agent
+    - Enable QEMU Guest Agent

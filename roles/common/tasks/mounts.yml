@@ -1,0 +1,69 @@
+---
+# Make sure the NFS package is installed if any mount point is of 'nfs' type
+- name: Ensure NFS package is installed
+  ansible.builtin.package:
+    name: "{{ nfs_client_package_name }}"
+  with_items:
+    - "{{ mounts }}"
+    - "{{ systemd_mounts }}"
+  when: >
+   ( item.fstype is defined and item.fstype is match('nfs') ) or
+   ( item.type is defined and item.type is match('nfs') )
+
+# Make sure the RPCBind service is enabled and running if any mount point is of 'nfs' type
+- name: Ensure RPCBind service is enabled and running
+  ansible.builtin.service:
+    name: rpcbind
+    state: started
+    enabled: yes
+  with_items:
+    - "{{ mounts }}"
+    - "{{ systemd_mounts }}"
+  when: >
+   ( item.fstype is defined and item.fstype is match('nfs') ) or
+   ( item.type is defined and item.type is match('nfs') )
+
+# FSTAB Mounts
+- name: Create the local directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: 0755
+  with_items: "{{ mounts }}"
+  when: item is defined and item
+
+- name: Create mount points
+  ansible.posix.mount:
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    opts: "{{ item.opts | default(omit) }}"
+    fstype: "{{ item.fstype | default(omit) }}"
+    dump: "{{ item.dump | default(omit) }}"
+    passno: "{{ item.passno | default(omit) }}"
+    state: "{{ item.state | default('mounted') }}"
+  with_items: "{{ mounts }}"
+  when: item is defined and item
+
+# SystemD Mounts
+- name: Setup SystemD service for mount points
+  template:
+    src: etc/systemd/system/systemd_mount.j2
+    dest: /etc/systemd/system/{{ item.where[1:] | replace('/', "-") }}.mount
+    owner: root
+    group: root
+    mode: 0644
+  notify: Enable and start SystemD mount
+  with_items: "{{ systemd_mounts }}"
+
+- name: Setup SystemD service for auto mount
+  template:
+    src: etc/systemd/system/systemd_automount.j2
+    dest: /etc/systemd/system/{{ item.where[1:] | replace('/', "-") }}.automount
+    owner: root
+    group: root
+    mode: 0644
+  notify: Enable and start SystemD auto mount
+  with_items: "{{ systemd_mounts }}"
+  when: item.automount|default(no)

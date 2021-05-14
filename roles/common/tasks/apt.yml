@@ -1,0 +1,20 @@
+---
+- name: Ensure GnuPG package is installed
+  apt:
+    name: gnupg2
+    update_cache: yes
+
+- name: Add extra APT repositories
+  apt_repository:
+    repo: "{{ item.repo }}"
+    update_cache: no
+  with_items: "{{ apt_repositories }}"
+
+- name: Update Apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: "86400"  # One day
+  register: _update_apt_cache
+  until: _update_apt_cache is success
+  retries: 3
+  delay: 2

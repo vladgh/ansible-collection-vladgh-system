@@ -1,0 +1,23 @@
+---
+namespace: vgh
+name: system
+version: 1.0.0
+readme: README.md
+authors:
+  - Vlad Ghinea <vlad@ghn.me> (https://ghn.me)
+description: Ansible collection that holds roles, that can be used to configure common system services.
+license_file: LICENSE
+tags:
+  - linux
+  - ubuntu
+  - system
+  - common
+  - hashicorp
+  - logs
+  - qemu
+  - shellcheck
+dependencies: {}
+repository: https://github.com/vladgh/ansible-collection-vgh-system
+documentation: https://github.com/vladgh/ansible-collection-vgh-system
+homepage: https://github.com/vladgh/ansible-collection-vgh-system
+issues: https://github.com/vladgh/ansible-collection-vgh-system/issues

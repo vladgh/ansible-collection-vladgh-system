@@ -1,0 +1,8 @@
+---
+- name: Update trusted CA certificates
+  command: /usr/sbin/update-ca-certificates --fresh
+
+- name: Restart RSysLog
+  service:
+    name: rsyslog
+    state: restarted

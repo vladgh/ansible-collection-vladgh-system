@@ -1,0 +1,29 @@
+---
+- name: Ensure Pip is installed
+  package:
+    name: "{{ pip_package | default('python3-pip') }}"
+    state: present
+
+- name: Upgrade Pip
+  pip:
+    name: [pip, setuptools]
+    state: latest  # noqa package-latest
+    executable: "{{ pip_executable | default('pip3') }}"
+
+- name: Ensure Pip system wide packages are installed
+  pip:
+    name: "{{ pip_install_packages }}"
+    state: present
+    executable: "{{ pip_executable | default('pip3') }}"
+  when: pip_install_packages is defined and pip_install_packages
+
+- name: Ensure Pip user packages are installed
+  become: yes
+  become_user: "{{ item.user }}"
+  pip:
+    name: "{{ item.packages }}"
+    state: "{{ item.state | default(omit) }}"
+    extra_args: --user
+    executable: "{{ pip_executable | default('pip3') }}"
+  with_items: "{{ pip_user_install_packages }}"
+  when: pip_user_install_packages is defined and pip_user_install_packages

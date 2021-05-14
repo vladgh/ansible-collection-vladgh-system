@@ -1,0 +1,49 @@
+---
+- name: Configure groups
+  block:
+    - name: Create groups
+      group:
+        name: "{{ item.name }}"
+        gid: "{{ item.gid | default(omit) }}"
+        system: "{{ item.system | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+      with_items: "{{ local_groups }}"
+
+    - name: Add Groups to Sudoers
+      lineinfile:
+        path: "/etc/sudoers.d/10_{{ item.name }}"
+        line: "%{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
+        state: "{{ item.state | default(omit) }}"
+        mode: 0440
+        create: yes
+        validate: 'visudo -cf %s'
+      when: item.sudo is defined and item.sudo
+      with_items: "{{ local_groups }}"
+  when: local_groups is defined and local_groups
+
+- name: Configure users
+  block:
+    - name: Create users
+      user:
+        name: "{{ item.name }}"
+        comment: "{{ item.comment | default(omit) }}"
+        uid: "{{ item.uid | default(omit) }}"
+        group: "{{ item.group | default(omit) }}"
+        groups: "{{ item.groups | default(omit) }}"
+        append: "{{ item.append | default(omit) }}"
+        shell: "{{ item.shell | default(omit) }}"
+        home: "{{ item.home | default(omit) }}"
+        create_home: "{{ item.create_home | default(omit) }}"
+        system: "{{ item.system | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+      with_items: "{{ local_users }}"
+
+    - name: Add authorized keys
+      authorized_key:
+        user: "{{ item.0.name }}"
+        key: "{{ item.1 }}"
+      with_subelements:
+        - "{{ local_users }}"
+        - authorized_keys
+        - skip_missing: yes
+  when: local_users is defined and local_users

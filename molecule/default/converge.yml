@@ -1,0 +1,97 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+
+  pre_tasks:
+    - name: Update apt cache.
+      package:
+        update_cache: true
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+    - name: Ensure auth.log file is present.
+      copy:
+        dest: /var/log/auth.log
+        content: ""
+        force: false
+        mode: 0644
+      when: ansible_distribution == 'Debian'
+
+  tasks:
+    - name: Include common role
+      include_role:
+        name: vgh.system.common
+      vars:
+        local_groups:
+          - name: admins
+            system: yes
+            sudo: yes
+        local_users:
+          - name: test
+            comment: Testing User
+            groups: admins
+            append: yes
+            authorized_keys:
+              - ssh-ed25519 AAAA testing
+        additional_packages:
+          - rolldice
+        apt_repositories:
+          - name: GIT
+            repo: ppa:git-core/ppa
+        pip_install_packages: [pip-install-test]
+        pip_user_install_packages:
+          - user: test
+            packages: [colorama]
+            state: latest
+        cron_jobs:
+          - name: Testing
+            minute: '0'
+            job: ls -lah > /dev/null
+        mounts:
+          - name: Test
+            path: /mnt/boot
+            src: /boot
+            opts: bind
+            fstype: none
+        systemd_mounts:
+          - name: SystemD Mount Test
+            automount: no
+            what: /srv
+            where: /mnt/srv
+            options: bind
+            type: none
+          - name: SystemD Auto Mount Test
+            automount: yes
+            what: localhost:/media
+            where: /mnt/media
+            options: _netdev,auto
+            type: nfs
+        install_ca_certificates: yes
+        disable_lid_switch: yes
+        fail2ban_enabled: yes
+        unattended_upgrades_autoupdate_enabled: yes
+        unattended_upgrades_autoupdate_reboot: "true"
+        unattended_upgrades_autoupdate_mail_to: "root"
+        unattended_upgrades_autoupdate_mail_on_error: yes
+
+    - name: Include hashicorp role
+      include_role:
+        name: vgh.system.hashicorp
+      vars:
+        install_packer: yes
+        install_terraform: yes
+        install_vault: yes
+
+    - name: Include logs role
+      include_role:
+        name: vgh.system.logs
+      vars:
+        remote_logs_server: example.com
+
+    - name: Include qemu_guest_agent role
+      include_role:
+        name: vgh.system.qemu_guest_agent
+
+    - name: Include shellcheck role
+      include_role:
+        name: vgh.system.shellcheck

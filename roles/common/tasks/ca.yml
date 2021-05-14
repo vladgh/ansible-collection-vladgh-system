@@ -1,0 +1,24 @@
+---
+# Adds  extra CA Certificates
+- name: Install ca-certificates package
+  package:
+    name: ca-certificates
+    state: present
+
+- name: Ensure certificates directory exists
+  file:
+    path: "{{ ca_path }}/"
+    state: directory
+    mode: 0755
+
+- name: Install CA Certificates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ca_path }}/"
+    owner: root
+    group: root
+    mode: 0644
+  with_fileglob:
+    - ca/*
+  notify:
+    - Update trusted CA certificates

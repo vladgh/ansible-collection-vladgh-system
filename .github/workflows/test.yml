@@ -1,0 +1,39 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu2004
+          - ubuntu1804
+          - debian10
+          - debian9
+        role:
+          - common
+          - hashicorp
+          - logs
+          - qemu_guest_agent
+          - shellcheck
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install docker ansible ansible-lint yamllint molecule molecule-docker
+      - name: Test role
+        run: molecule test --scenario-name ${{ matrix.role }}
+        env:
+          PY_COLORS: 1
+          ANSIBLE_FORCE_COLOR: 1
+          MOLECULE_DISTRO: ${{ matrix.os }}

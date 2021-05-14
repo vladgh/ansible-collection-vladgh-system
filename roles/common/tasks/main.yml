@@ -1,0 +1,37 @@
+---
+- import_tasks: accounts.yml
+  when: >
+    ( local_groups is defined and local_groups ) or
+    ( local_users is defined and local_users )
+
+- import_tasks: apt.yml
+  when: >
+    ansible_distribution == 'Ubuntu' and
+    apt_repositories is defined and apt_repositories
+
+- import_tasks: packages.yml
+  when: additional_packages is defined and additional_packages
+
+- import_tasks: pip.yml
+  when: >
+    ( pip_install_packages is defined and pip_install_packages ) or
+    ( pip_user_install_packages is defined and pip_user_install_packages )
+
+- import_tasks: ca.yml
+  when: install_ca_certificates is defined and install_ca_certificates|bool
+
+- import_tasks: cron.yml
+  when: cron_jobs is defined and cron_jobs
+
+- import_tasks: mounts.yml
+  when: >
+    ( mounts is defined and mounts ) or
+    ( systemd_mounts is defined and systemd_mounts )
+
+- import_tasks: fail2ban.yml
+  when: fail2ban_enabled is defined and fail2ban_enabled|bool
+
+- import_tasks: unattended-upgrades.yml
+  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
+
+- import_tasks: misc.yml
