@@ -1,6 +1,6 @@
 [Unit]
 Description=Mount {{ item.name }}
-After=network.target multi-user.target
+After=network-online.target
 
 [Mount]
 What={{ item.what }}
@@ -9,4 +9,4 @@ Type={{ item.type | default (omit) }}
 Options={{ item.options | default (omit) }}
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target

@@ -21,7 +21,7 @@
     enabled: yes
     daemon_reload: yes
   with_items: "{{ systemd_mounts }}"
-  when: not item.automount|default(no)
+  when: ( item.automount is not defined ) or ( not item.automount )
 
 - name: Enable and start SystemD auto mount
   ansible.builtin.systemd:
@@ -30,4 +30,4 @@
     enabled: yes
     daemon_reload: yes
   with_items: "{{ systemd_mounts }}"
-  when: item.automount|default(no)
+  when: item.automount is defined and item.automount

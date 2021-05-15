@@ -66,4 +66,4 @@
     mode: 0644
   notify: Enable and start SystemD auto mount
   with_items: "{{ systemd_mounts }}"
-  when: item.automount|default(no)
+  when: item.automount is defined and item.automount
