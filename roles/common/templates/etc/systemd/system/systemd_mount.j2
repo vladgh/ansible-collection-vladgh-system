@@ -5,8 +5,8 @@ After=network-online.target
 [Mount]
 What={{ item.what }}
 Where={{ item.where }}
-Type={{ item.type | default (omit) }}
-Options={{ item.options | default (omit) }}
+Type={{ item.type | default(omit) }}
+Options={{ item.options | default(omit) }}
 
 [Install]
 WantedBy=multi-user.target
