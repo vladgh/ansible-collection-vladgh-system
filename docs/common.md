@@ -81,7 +81,6 @@ systemd_mounts:
     automount: yes
     what: 192.168.1.10:/media
     where: /mnt/media
-    options: _netdev,auto
     type: nfs
 ```
 
