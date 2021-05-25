@@ -1,4 +1,10 @@
 ---
+- name: Ensure ACL is installed for file permission controls
+  package:
+    name: acl
+    state: present
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '<=')
+
 - name: Check if logind.conf exists
   stat:
     path: /etc/systemd/logind.conf
