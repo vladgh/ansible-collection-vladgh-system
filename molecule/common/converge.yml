@@ -67,7 +67,6 @@
             options: _netdev,auto
             type: nfs
         install_ca_certificates: yes
-        disable_lid_switch: yes
         fail2ban_enabled: yes
         unattended_upgrades_autoupdate_enabled: yes
         unattended_upgrades_autoupdate_reboot: "true"
