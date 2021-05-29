@@ -1,0 +1,31 @@
+---
+# MSMTP Relay Server
+- name: Install CA Certificates
+  package:
+    name: ca-certificates
+    state: present
+
+- name: Install MSMTP and MailX
+  apt:
+    name:
+      - msmtp
+      - msmtp-mta
+      - mailutils
+    state: present
+    update_cache: yes
+
+- name: Configure MSMTP
+  template:
+    src: etc/msmtprc.j2
+    dest: /etc/msmtprc
+
+- name: Configure aliases
+  template:
+    src: etc/aliases.j2
+    dest: /etc/aliases
+
+- name: Setup alternatives for MTA
+  alternatives:
+    name: mta
+    link: /usr/sbin/sendmail
+    path: /usr/bin/msmtp

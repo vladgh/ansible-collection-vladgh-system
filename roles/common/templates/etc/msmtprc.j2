@@ -1,0 +1,37 @@
+# {{ ansible_managed }}
+
+# Default settings
+defaults
+tls on
+{% if msmtp_tls_trust_file is defined %}
+tls_trust_file {{msmtp_tls_trust_file}}
+{% else %}
+tls_trust_file {{ msmtp_ca_certificates_bundle }}
+{% endif %}
+
+# Logging
+{% if msmtp_log is defined %}
+{% if msmtp_log == "syslog" %}
+syslog on
+{% elif msmtp_log == "file" and msmtp_logfile is defined %}
+logfile {{msmtp_logfile}}
+{% endif %}
+{% endif %}
+
+{% if msmtp_accounts is defined %}
+# Account settings
+{% for msmtp_account in msmtp_accounts %}
+account {{msmtp_account.account}}
+host {{msmtp_account.host}}
+port {{msmtp_account.port}}
+auth {{msmtp_account.auth}}
+from {{msmtp_account.from}}
+user {{msmtp_account.user}}
+password {{msmtp_account.password}}
+{% endfor %}
+
+{% if msmtp_default_account is defined %}
+# Default account to use
+account default: {{msmtp_default_account}}
+{% endif %}
+{% endif %}
