@@ -1,5 +1,4 @@
 ---
-# MSMTP Relay Server
 - name: Install CA Certificates
   package:
     name: ca-certificates
@@ -18,11 +17,17 @@
   template:
     src: etc/msmtprc.j2
     dest: /etc/msmtprc
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Configure aliases
   template:
     src: etc/aliases.j2
     dest: /etc/aliases
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Setup alternatives for MTA
   alternatives:

@@ -18,6 +18,7 @@ jobs:
           - common
           - hashicorp
           - logs
+          - msmtp
           - qemu_guest_agent
           - shellcheck
     steps:

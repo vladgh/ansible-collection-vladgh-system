@@ -20,9 +20,6 @@
 - import_tasks: ca.yml
   when: install_ca_certificates is defined and install_ca_certificates|bool
 
-- import_tasks: msmtp.yml
-  when: msmtp_enabled is defined and msmtp_enabled|bool
-
 - import_tasks: cron.yml
   when: cron_jobs is defined and cron_jobs
 

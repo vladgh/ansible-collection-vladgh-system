@@ -1,0 +1,14 @@
+---
+## Logging (Select A) "syslog" or B) "file" logging or C) "no" log
+msmtp_log: syslog
+msmtp_logfile: /var/log/msmtp.log
+## Aliases mail account ( only msmtp_alias_default is required the rest is optional )
+msmtp_alias_default: root
+msmtp_alias_root: "{{ msmtp_alias_default }}"
+msmtp_alias_cron: "{{ msmtp_alias_default }}"
+## Other
+msmtp_ca_certificates_bundle: "{{ ca_bundle_cert_path }}"
+
+# Miscellaneous
+## Set to `yes` to disable lid switch on laptops.
+disable_lid_switch: no

@@ -72,4 +72,3 @@
         unattended_upgrades_autoupdate_reboot: "true"
         unattended_upgrades_autoupdate_mail_to: "root"
         unattended_upgrades_autoupdate_mail_on_error: yes
-        msmtp_enabled: yes

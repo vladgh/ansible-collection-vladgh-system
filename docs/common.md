@@ -93,29 +93,6 @@ fail2ban_enabled: yes
 unattended_upgrades_autoupdate_enabled: yes
 ```
 
-### MSMTP relay
-
-- `msmtp_enabled`: Set to `yes` to enable MSMTP relay (defaults to `no`)
-- `msmtp_log`: Log type; one of `syslog`, `file` or `no` (defaults to `syslog`)
-- `msmtp_logfile`: If above type is file, the path to it (defaults to `/var/log/msmtp.log`)
-- `msmtp_accounts`: A list of smtp accounts, for example
-
-    ```yaml
-    - account: mysmtp
-      host: smtp.example
-      port: 587
-      auth: on
-      from: me
-      user: myuser
-      password: 123456
-    ```
-
-- `msmtp_default_account`: Default MSMTP account from the list above
-- `msmtp_alias_default`: The default user alias (defaults to `root`)
-- `msmtp_alias_root`: The root alias (defaults to `msmtp_alias_default`)
-- `msmtp_alias_cron`: The cron alias (defaults to `msmtp_alias_default`)
-- `msmtp_ca_certificates_bundle`: The path for the certificates bundle (default to system's CA Certificates Paths; see `vars/OS_FAMILY.yml`)
-
 ### Miscellaneous
 
 - `disable_lid_switch`: Set to yes to disable lid switch on laptops (defaults to `no`)
