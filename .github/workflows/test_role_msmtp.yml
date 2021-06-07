@@ -1,10 +1,17 @@
-name: Test roles
+name: Test role - msmtp
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'molecule/msmtp/**'
+      - 'roles/msmtp/**'
+
+env:
+  ROLE_NAME: msmtp
 
 jobs:
   test:
-    name: "Test role ${{ matrix.role }} on ${{ matrix.os }}"
+    name: "Test role ${{ env.ROLE_NAME }} on ${{ matrix.os }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -14,13 +21,6 @@ jobs:
           - ubuntu1804
           - debian10
           - debian9
-        role:
-          - common
-          - hashicorp
-          - logs
-          - msmtp
-          - qemu_guest_agent
-          - shellcheck
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install docker ansible ansible-lint yamllint molecule molecule-docker
       - name: Test role
-        run: molecule test --scenario-name ${{ matrix.role }}
+        run: molecule test --scenario-name ${{ env.ROLE_NAME }}
         working-directory: ansible_collections/vgh/system
         env:
           PY_COLORS: 1
