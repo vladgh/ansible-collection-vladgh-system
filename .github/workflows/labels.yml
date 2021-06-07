@@ -1,11 +1,6 @@
 name: Labels
 
-on:
-  push:
-    branches:
-      - master
-    paths:
-      - .github/labels.yml
+on: [push, pull_request, issues]
 
 jobs:
   labels:
