@@ -39,7 +39,7 @@ jobs:
             "${{ matrix.role }}":
               - "**/roles/${{ matrix.role }}/**"
               - "**/molecule/${{ matrix.role }}/**"
-      - run: echo ${{ steps.changes.outputs }}
+      - run: echo ${{ steps.changes.outputs[matrix.role] }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -51,7 +51,7 @@ jobs:
           python3 -m pip install docker ansible ansible-lint yamllint molecule molecule-docker
         if: ${{ steps.changes.outputs.common == 'true' }}
       - name: Test role
-        run: molecule test --scenario-name ${{  matrix.role }}
+        run: molecule test --scenario-name ${{ matrix.role }}
         working-directory: ansible_collections/vgh/system
         env:
           PY_COLORS: 1
