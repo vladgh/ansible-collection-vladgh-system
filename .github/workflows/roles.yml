@@ -30,10 +30,10 @@ jobs:
       # We cannot use GH workflow path filters because entire workflow would be skipped vs skipping
       # individual jobs which would still allow this status check to pass.
       - name: Check for python file changes
-        uses: getsentry/paths-filter@v2
-        working-directory: ansible_collections/vgh/system
+        uses: dorny/paths-filter@v2
         id: changes
         with:
+          working-directory: ansible_collections/vgh/system
           token: ${{ secrets.GITHUB_TOKEN }}
           filters:  |
             "${{ matrix.role }}":
