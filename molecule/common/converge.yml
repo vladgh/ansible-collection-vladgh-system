@@ -20,7 +20,7 @@
   tasks:
     - name: Include common role
       include_role:
-        name: vgh.system.common
+        name: vladgh.system.common
       vars:
         local_groups:
           - name: admins

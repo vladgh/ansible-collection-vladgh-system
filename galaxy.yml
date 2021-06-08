@@ -1,7 +1,7 @@
 ---
-namespace: vgh
+namespace: vladgh
 name: system
-version: 1.0.0
+version: 0.0.0
 readme: README.md
 authors:
   - Vlad Ghinea <vlad@ghn.me> (https://ghn.me)
@@ -17,7 +17,7 @@ tags:
   - qemu
   - shellcheck
 dependencies: {}
-repository: https://github.com/vladgh/ansible-collection-vgh-system
-documentation: https://github.com/vladgh/ansible-collection-vgh-system
-homepage: https://github.com/vladgh/ansible-collection-vgh-system
-issues: https://github.com/vladgh/ansible-collection-vgh-system/issues
+repository: https://github.com/vladgh/ansible-collection-vladgh-system
+documentation: https://github.com/vladgh/ansible-collection-vladgh-system
+homepage: https://github.com/vladgh/ansible-collection-vladgh-system
+issues: https://github.com/vladgh/ansible-collection-vladgh-system/issues

@@ -20,7 +20,7 @@
   tasks:
     - name: Include common role
       include_role:
-        name: vgh.system.common
+        name: vladgh.system.common
       vars:
         local_groups:
           - name: admins
@@ -76,7 +76,7 @@
 
     - name: Include hashicorp role
       include_role:
-        name: vgh.system.hashicorp
+        name: vladgh.system.hashicorp
       vars:
         install_packer: yes
         install_terraform: yes
@@ -84,14 +84,14 @@
 
     - name: Include logs role
       include_role:
-        name: vgh.system.logs
+        name: vladgh.system.logs
       vars:
         remote_logs_server: example.com
 
     - name: Include qemu_guest_agent role
       include_role:
-        name: vgh.system.qemu_guest_agent
+        name: vladgh.system.qemu_guest_agent
 
     - name: Include shellcheck role
       include_role:
-        name: vgh.system.shellcheck
+        name: vladgh.system.shellcheck

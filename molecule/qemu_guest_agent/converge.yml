@@ -20,4 +20,4 @@
   tasks:
     - name: Include qemu_guest_agent role
       include_role:
-        name: vgh.system.qemu_guest_agent
+        name: vladgh.system.qemu_guest_agent

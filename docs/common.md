@@ -125,7 +125,7 @@ pip_user_install_packages:
 - hosts: all
   become: yes
   roles:
-    - vladgh.common
+    - vladgh.system.common
 ```
 
 ## Contribute
