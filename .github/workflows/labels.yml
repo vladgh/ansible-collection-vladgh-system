@@ -1,6 +1,6 @@
 name: Labels
 
-on: [push, pull_request, issues]
+on: [issues]
 
 jobs:
   labels:
