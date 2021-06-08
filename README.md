@@ -1,4 +1,4 @@
-# Ansible Collection - vgh.system
+# Ansible Collection - vladgh.system
 
 Ansible collection that holds roles, that can be used to configure common system services.
 
@@ -26,7 +26,7 @@ You can also include it in a `requirements.yml` file and install it via `ansible
 ```yaml
 ---
 collections:
-  - name: vgh.system
+  - name: vladgh.system
 ```
 
 See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
