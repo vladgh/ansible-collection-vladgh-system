@@ -5,12 +5,12 @@ Ansible collection that holds roles, that can be used to configure common system
 ## Included content
 
 - **Modules**:
-  - [common](docs/common.md)
-  - [hashicorp](docs/hashicorp.md)
-  - [logs](docs/logs.md)
-  - [msmtp](docs/msmtp.md)
-  - [qemu_guest_agent](docs/qemu_guest_agent.md)
-  - [shellcheck](docs/shellcheck.md)
+  - [common](roles/common/README.md)
+  - [hashicorp](roles/hashicorp/README.md)
+  - [logs](roles/logs/README.md)
+  - [msmtp](roles/msmtp/README.md)
+  - [qemu_guest_agent](roles/qemu_guest_agent/README.md)
+  - [shellcheck](roles/shellcheck/README.md)
 
 ## Using this collection
 
