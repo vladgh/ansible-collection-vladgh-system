@@ -15,7 +15,7 @@ jobs:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
       - name: Publish collection
-        uses: artis3n/ansible_galaxy_collection@v2
+        uses: docker://ghcr.io/artis3n/ansible_galaxy_collection@latest
         with:
           api_key: '${{ secrets.ANSIBLE_GALAXY_API_KEY }}'
           galaxy_version: '${{ env.RELEASE_VERSION }}'
