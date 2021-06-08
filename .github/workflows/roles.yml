@@ -1,0 +1,58 @@
+name: Test roles
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: "Test role ${{ matrix.role }} on ${{ matrix.os }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu2004
+          - ubuntu1804
+          - debian10
+          - debian9
+        role:
+          - common
+          - hashicorp
+          - logs
+          - msmtp
+          - qemu_guest_agent
+          - shellcheck
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ansible_collections/vgh/system
+      # In order to optimize CI usage, we want the tests to only run when specific files change.
+      # We cannot use GH workflow path filters because entire workflow would be skipped vs skipping
+      # individual jobs which would still allow this status check to pass.
+      - name: Check for python file changes
+        uses: getsentry/paths-filter@v2
+        id: changes
+        with:
+          token: ${{ github.token }}
+          filters:  |
+            "${{ matrix.role }}":
+              - "**/roles/${{ matrix.role }}/**"
+              - "**/molecule/${{ matrix.role }}/**"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+        if: ${{ steps.changes.outputs.${{ matrix.role }} == 'true' }}
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install docker ansible ansible-lint yamllint molecule molecule-docker
+        if: ${{ steps.changes.outputs.${{ matrix.role }} == 'true' }}
+      - name: Test role
+        run: molecule test --scenario-name ${{  matrix.role }}
+        working-directory: ansible_collections/vgh/system
+        env:
+          PY_COLORS: 1
+          ANSIBLE_FORCE_COLOR: 1
+          MOLECULE_DISTRO: ${{ matrix.os }}
+        if: ${{ steps.changes.outputs.${{ matrix.role }} == 'true' }}
