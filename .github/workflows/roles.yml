@@ -31,6 +31,7 @@ jobs:
       # individual jobs which would still allow this status check to pass.
       - name: Check for python file changes
         uses: getsentry/paths-filter@v2
+        working-directory: ansible_collections/vgh/system
         id: changes
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
