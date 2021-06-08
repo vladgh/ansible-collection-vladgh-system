@@ -33,7 +33,7 @@ jobs:
         uses: getsentry/paths-filter@v2
         id: changes
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           filters:  |
             "${{ matrix.role }}":
               - "**/roles/${{ matrix.role }}/**"
