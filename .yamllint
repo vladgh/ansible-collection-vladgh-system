@@ -2,6 +2,7 @@
 extends: default
 ignore: |
   .github/
+  .cache
 rules:
   line-length: disable
   truthy: disable
