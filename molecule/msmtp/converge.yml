@@ -23,4 +23,3 @@
         name: vgh.system.msmtp
       vars:
         msmtp_enabled: yes
-        debug: yes
