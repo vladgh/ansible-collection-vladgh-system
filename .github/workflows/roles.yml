@@ -42,12 +42,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.x
-        if: ${{ steps.changes.outputs.${{ matrix.role }} == 'true' }}
+        if: ${{ steps.changes.outputs.common == 'true' }}
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install docker ansible ansible-lint yamllint molecule molecule-docker
-        if: ${{ steps.changes.outputs.${{ matrix.role }} == 'true' }}
+        if: ${{ steps.changes.outputs.common == 'true' }}
       - name: Test role
         run: molecule test --scenario-name ${{  matrix.role }}
         working-directory: ansible_collections/vgh/system
@@ -55,4 +55,4 @@ jobs:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
-        if: ${{ steps.changes.outputs.${{ matrix.role }} == 'true' }}
+        if: ${{ steps.changes.outputs.common == 'true' }}
