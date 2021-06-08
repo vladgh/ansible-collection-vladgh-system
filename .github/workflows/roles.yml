@@ -39,6 +39,7 @@ jobs:
             "${{ matrix.role }}":
               - "**/roles/${{ matrix.role }}/**"
               - "**/molecule/${{ matrix.role }}/**"
+      - run: echo ${{ steps.changes.outputs }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
