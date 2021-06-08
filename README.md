@@ -8,6 +8,7 @@ Ansible collection that holds roles, that can be used to configure common system
   - [common](docs/common.md)
   - [hashicorp](docs/hashicorp.md)
   - [logs](docs/logs.md)
+  - [msmtp](docs/msmtp.md)
   - [qemu_guest_agent](docs/qemu_guest_agent.md)
   - [shellcheck](docs/shellcheck.md)
 
