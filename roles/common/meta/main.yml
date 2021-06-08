@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: common
+  author: vladgh
+  description: Vlad's Common Role
+  license: Apache v2
+  galaxy_tags: []
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+
+dependencies: []
