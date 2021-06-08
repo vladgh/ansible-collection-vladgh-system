@@ -20,7 +20,7 @@
   tasks:
     - name: Include hashicorp role
       include_role:
-        name: vgh.system.hashicorp
+        name: vladgh.system.hashicorp
       vars:
         install_packer: yes
         install_terraform: yes

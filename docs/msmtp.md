@@ -40,18 +40,24 @@ Available variables are listed below, along with default values (see defaults/ma
 ## Example Playbook
 
 ``` yaml
-# Sendgrid
-msmtp_enabled: yes
-msmtp_default_account: Sendgrid
-msmtp_alias_default: my_verified_sender@example.com
-msmtp_accounts:
-  - account: Sendgrid
-    host: smtp.sendgrid.net
-    port: 587
-    auth: 'on'  # Comment this value, otherwise it will become "True"
-    from: my_verified_sender@example.com
-    user: apikey
-    password: "{{ vault_msmtp_sendgrid_password }}"
+```yaml
+- hosts: all
+  become: yes
+  roles:
+      - vladgh.system.msmtp
+  vars:
+    # Sendgrid
+    msmtp_enabled: yes
+    msmtp_default_account: Sendgrid
+    msmtp_alias_default: my_verified_sender@example.com
+    msmtp_accounts:
+      - account: Sendgrid
+        host: smtp.sendgrid.net
+        port: 587
+        auth: 'on'  # Comment this value, otherwise it will become "True"
+        from: my_verified_sender@example.com
+        user: apikey
+        password: "{{ vault_msmtp_sendgrid_password }}"
 ```
 
 ## Contribute

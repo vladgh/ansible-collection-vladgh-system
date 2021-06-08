@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/vgh/system
+          path: ansible_collections/vladgh/system
       # In order to optimize CI usage, we want the tests to only run when specific files change.
       # We cannot use GH workflow path filters because entire workflow would be skipped vs skipping
       # individual jobs which would still allow this status check to pass.
@@ -33,7 +33,7 @@ jobs:
         uses: dorny/paths-filter@v2
         id: changes
         with:
-          working-directory: ansible_collections/vgh/system
+          working-directory: ansible_collections/vladgh/system
           token: ${{ secrets.GITHUB_TOKEN }}
           filters:  |
             "${{ matrix.role }}":
@@ -51,7 +51,7 @@ jobs:
         if: ${{ steps.changes.outputs[matrix.role] == 'true' }}
       - name: Test role
         run: molecule test --scenario-name ${{ matrix.role }}
-        working-directory: ansible_collections/vgh/system
+        working-directory: ansible_collections/vladgh/system
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1

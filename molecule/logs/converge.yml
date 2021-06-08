@@ -20,6 +20,6 @@
   tasks:
     - name: Include logs role
       include_role:
-        name: vgh.system.logs
+        name: vladgh.system.logs
       vars:
         remote_logs_server: example.com

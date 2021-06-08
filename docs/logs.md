@@ -39,7 +39,7 @@ Available variables are listed below, along with default values (see defaults/ma
       name: 'logzFormatFileTagName'
       string: '[{{ logzio_token }}] <%pri%>%protocol-version% %timestamp:::date-rfc3339% %HOSTNAME% %app-name% %procid% %msgid% [type=syslog] %msg%\n'
   roles:
-    - vladgh.logs
+    - vladgh.system.logs
 ```
 
 ## Contribute

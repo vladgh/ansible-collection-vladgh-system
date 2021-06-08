@@ -20,6 +20,6 @@
   tasks:
     - name: Include MSMTP role
       include_role:
-        name: vgh.system.msmtp
+        name: vladgh.system.msmtp
       vars:
         msmtp_enabled: yes

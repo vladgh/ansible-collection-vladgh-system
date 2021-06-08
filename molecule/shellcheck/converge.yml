@@ -20,4 +20,4 @@
   tasks:
     - name: Include shellcheck role
       include_role:
-        name: vgh.system.shellcheck
+        name: vladgh.system.shellcheck

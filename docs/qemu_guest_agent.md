@@ -24,7 +24,7 @@ Available variables are listed below, along with default values (see defaults/ma
 - hosts: all
   become: yes
   roles:
-      - vladgh.qemu_guest_agent
+      - vladgh.system.qemu_guest_agent
 ```
 
 ## Contribute
