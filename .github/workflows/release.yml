@@ -1,21 +1,51 @@
 name: Release
 
 on:
-  release:
-    types:
-      - published
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Name of version (ex. 5.5.0)'
+        required: true
 
 jobs:
   release:
-    name: Release
+    name: Generate changelog and tagged release
     runs-on: ubuntu-latest
     steps:
+      - name: Check version name
+        run: |
+          if [[ "${{ github.event.inputs.versionName }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version name seems ok"
+            exit 0
+          else
+            echo "Something is wrong with your version name" >&2
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-      - name: Publish collection
-        uses: docker://ghcr.io/artis3n/ansible_galaxy_collection@latest
         with:
-          api_key: '${{ secrets.ANSIBLE_GALAXY_API_KEY }}'
-          galaxy_version: '${{ env.RELEASE_VERSION }}'
+          ref: master
+
+      - name: Generate CHANGELOG.md
+        run: docker run -e CHANGELOG_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -v "$(pwd)":/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator --user ${{ github.repository_owner }} --project ${{ github.event.repository.name }} --future-release v${{ github.event.inputs.versionName }}
+
+      - name: Generate release notes
+        run: docker run -e CHANGELOG_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -v "$(pwd)":/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator --user ${{ github.repository_owner }} --project ${{ github.event.repository.name }} --future-release v${{ github.event.inputs.versionName }} --unreleased-only --output release_notes.md
+
+      - name: Commit CHANGELOG.md
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update Changelog for v${{ github.event.inputs.versionName }}
+          file_pattern: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.versionName }}
+          release_name: Release v${{ github.event.inputs.versionName }}
+          body_path: release_notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
