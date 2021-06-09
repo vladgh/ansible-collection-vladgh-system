@@ -61,4 +61,4 @@ jobs:
         uses: docker://ghcr.io/artis3n/ansible_galaxy_collection:latest
         with:
           api_key: '${{ secrets.ANSIBLE_GALAXY_API_KEY }}'
-          galaxy_version: v${{ github.event.inputs.versionName }}
+          galaxy_version: ${{ github.event.inputs.versionName }}
