@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.6](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.6) (2021-06-09)
+
+[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.5...v1.0.6)
+
+**Implemented enhancements:**
+
+- Publish to Ansible Galaxy when creating a release [\#20](https://github.com/vladgh/ansible-collection-vladgh-system/pull/20) ([vladgh](https://github.com/vladgh))
+
 ## [v1.0.5](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.5) (2021-06-09)
 
 [Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.4...v1.0.5)
