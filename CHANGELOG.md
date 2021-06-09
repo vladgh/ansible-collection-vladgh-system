@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/vladgh/ansible-collection-vladgh-system/tree/HEAD)
+## [v1.0.8](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.8) (2021-06-09)
 
-[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.7...HEAD)
+[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.7...v1.0.8)
 
 **Fixed bugs:**
 
