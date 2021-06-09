@@ -1,12 +1,16 @@
 # Changelog
 
-## [v1.0.7](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.7) (2021-06-09)
+## [Unreleased](https://github.com/vladgh/ansible-collection-vladgh-system/tree/HEAD)
 
-[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.6...v1.0.7)
+[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.7...HEAD)
 
 **Fixed bugs:**
 
 - Fix publish action [\#21](https://github.com/vladgh/ansible-collection-vladgh-system/issues/21)
+
+## [v1.0.7](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.7) (2021-06-09)
+
+[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.6...v1.0.7)
 
 ## [v1.0.6](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.6) (2021-06-09)
 
