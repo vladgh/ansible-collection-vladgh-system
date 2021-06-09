@@ -35,3 +35,6 @@
 - color: e4e669
   name: ignore
   description: This will be ignored
+- color: b20b02
+  name: security
+  description: Security fixes
