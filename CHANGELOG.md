@@ -1,8 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/vladgh/ansible-collection-vladgh-system/tree/HEAD)
+## [v1.0.4](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.4) (2021-06-09)
 
-[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/1.0.3...HEAD)
+[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/1.0.3...v1.0.4)
+
+**Implemented enhancements:**
+
+- Add new security label [\#18](https://github.com/vladgh/ansible-collection-vladgh-system/pull/18) ([vladgh](https://github.com/vladgh))
 
 **Merged pull requests:**
 
