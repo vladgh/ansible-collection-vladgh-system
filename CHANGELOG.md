@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/vladgh/ansible-collection-vladgh-system/tree/HEAD)
+
+[Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.9...HEAD)
+
+**Fixed bugs:**
+
+- Fix schedule run [\#22](https://github.com/vladgh/ansible-collection-vladgh-system/pull/22) ([vladgh](https://github.com/vladgh))
+
 ## [v1.0.9](https://github.com/vladgh/ansible-collection-vladgh-system/tree/v1.0.9) (2021-06-09)
 
 [Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.8...v1.0.9)
