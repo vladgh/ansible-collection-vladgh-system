@@ -29,7 +29,7 @@
       - rsyslog
       - rsyslog-gnutls
     update_cache: yes
-    cache_valid_time: 86400
+    cache_valid_time: 3600
     state: present
 
 - name: Configure RSysLog
