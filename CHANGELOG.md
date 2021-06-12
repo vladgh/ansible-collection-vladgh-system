@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/vladgh/ansible-collection-vladgh-system/compare/v1.0.9...HEAD)
 
+**Implemented enhancements:**
+
+- Decrease cache\_valid\_time for apt [\#23](https://github.com/vladgh/ansible-collection-vladgh-system/pull/23) ([vladgh](https://github.com/vladgh))
+
 **Fixed bugs:**
 
 - Fix schedule run [\#22](https://github.com/vladgh/ansible-collection-vladgh-system/pull/22) ([vladgh](https://github.com/vladgh))
