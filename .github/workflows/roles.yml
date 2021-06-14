@@ -23,14 +23,14 @@ jobs:
           - shellcheck
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           path: ansible_collections/vladgh/system
       # In order to optimize CI usage, we want the tests to only run when specific files change.
       # We cannot use GH workflow path filters because entire workflow would be skipped vs skipping
       # individual jobs which would still allow this status check to pass.
       - name: Check for python file changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v2.10.2
         id: changes
         with:
           working-directory: ansible_collections/vladgh/system
@@ -40,7 +40,7 @@ jobs:
               - "**/roles/${{ matrix.role }}/**"
               - "**/molecule/${{ matrix.role }}/**"
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.x
         if: ${{ steps.changes.outputs[matrix.role] == 'true' }}

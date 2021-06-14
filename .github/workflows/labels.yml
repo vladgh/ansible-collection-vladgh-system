@@ -1,6 +1,12 @@
 name: Labels
 
-on: [issues, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/labels.yml
+    branches:
+      - master
 
 jobs:
   labels:
@@ -8,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Label actions
-        uses: micnncim/action-label-syncer@v1
+        uses: micnncim/action-label-syncer@v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
