@@ -23,7 +23,7 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           ref: main
 
@@ -34,7 +34,7 @@ jobs:
         run: docker run -e CHANGELOG_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -v "$(pwd)":/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator --user ${{ github.repository_owner }} --project ${{ github.event.repository.name }} --future-release v${{ github.event.inputs.versionName }} --unreleased-only --output release_notes.md
 
       - name: Commit CHANGELOG.md
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v4.11.0
         with:
           commit_message: Update Changelog for v${{ github.event.inputs.versionName }}
           file_pattern: CHANGELOG.md
@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1 # this is unmaintained (https://github.com/actions/create-release)
         with:
           tag_name: v${{ github.event.inputs.versionName }}
           release_name: Release v${{ github.event.inputs.versionName }}
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       - name: Publish collection
         uses: docker://ghcr.io/artis3n/ansible_galaxy_collection:latest
         with:
