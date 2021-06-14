@@ -32,6 +32,19 @@ collections:
 
 See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
+## Changelog & Releases
+
+This repository keeps a change log using [GitHub's releases][releases]
+functionality.
+
+Releases are based on [Semantic Versioning][semver], and use the format
+of `MAJOR.MINOR.PATCH`. The version will be incremented
+based on the following:
+
+- `MAJOR`: Incompatible or major changes
+- `MINOR`: Backwards-compatible new features and enhancements
+- `PATCH`: Backwards-compatible bugfixes and package updates
+
 ## Contribute
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
