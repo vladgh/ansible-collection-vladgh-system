@@ -16,7 +16,9 @@ tags:
   - logs
   - qemu
   - shellcheck
-dependencies: {}
+dependencies:
+  ansible.posix: "*"
+  community.general: "*"
 repository: https://github.com/vladgh/ansible-collection-vladgh-system
 documentation: https://github.com/vladgh/ansible-collection-vladgh-system
 homepage: https://github.com/vladgh/ansible-collection-vladgh-system

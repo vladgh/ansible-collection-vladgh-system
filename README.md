@@ -19,7 +19,7 @@ Ansible collection that holds roles, that can be used to configure common system
 Install it with the Ansible Galaxy CLI:
 
 ```sh
-ansible-galaxy collection install vgh.system
+ansible-galaxy collection install vladgh.system  --upgrade
 ```
 
 You can also include it in a `requirements.yml` file and install it via `ansible-galaxy collection install -r requirements.yml`, using the format:
