@@ -1,0 +1,23 @@
+---
+- name: DNS
+  hosts: localhost
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Provision DNS records
+      community.general.cloudflare_dns:
+        state: "{{ item.state | default('present') }}"
+        zone: "{{ item.zone }}"
+        type: "{{ item.type }}"
+        record: "{{ item.record }}"
+        value: "{{ item.value }}"
+        proxied: "{{ item.proxied | default(omit) }}"
+        account_email: "{{ cloudflare_email }}"
+        account_api_token: "{{ cloudflare_api_token }}"
+      delegate_to: localhost
+      run_once: yes
+      with_items: "{{ cloudflare_dns_records }}"
+      when: >
+        ( cloudflare_email is defined and cloudflare_email ) and
+        ( cloudflare_api_token is defined and cloudflare_api_token ) and
+        ( cloudflare_dns_records is defined and cloudflare_dns_records )

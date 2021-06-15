@@ -1,0 +1,6 @@
+---
+- name: Common
+  hosts: all
+  become: yes
+  roles:
+    - role: vladgh.system.common
