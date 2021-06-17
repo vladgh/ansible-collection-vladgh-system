@@ -1,6 +1,17 @@
-name: Test roles
+name: Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - '*'
+  release:
+    types:
+      - published
 
 jobs:
   test:
@@ -29,7 +40,7 @@ jobs:
       # In order to optimize CI usage, we want the tests to only run when specific files change.
       # We cannot use GH workflow path filters because entire workflow would be skipped vs skipping
       # individual jobs which would still allow this status check to pass.
-      - name: Check for python file changes
+      - name: Check for file changes
         uses: dorny/paths-filter@v2.10.2
         id: changes
         with:
