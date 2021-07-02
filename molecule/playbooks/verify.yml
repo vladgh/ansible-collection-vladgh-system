@@ -1,0 +1,9 @@
+---
+- name: Verify
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Don't do much here.
+      debug:
+        msg: "Not implemented at this time."

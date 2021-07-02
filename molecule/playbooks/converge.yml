@@ -1,0 +1,5 @@
+---
+- name: Ansible
+  import_playbook: ../../playbooks/ansible.yml
+  vars:
+    deploy_ssh_rsa: ssh-ed25519 AAAA testing
