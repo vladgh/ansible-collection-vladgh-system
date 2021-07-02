@@ -9,6 +9,9 @@ platforms:
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      # Required for `timedatectl: Failed to create bus connection`
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
+
     privileged: true
     pre_build_image: true
 provisioner:
