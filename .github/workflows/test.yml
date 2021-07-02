@@ -27,7 +27,7 @@ jobs:
         with:
           filters: |
             modified:
-              - roles/**
+              - roles/!(**.md)/**
               - molecule/(**|!(*.md))
               - playbooks/(**|!(*.md))
 
