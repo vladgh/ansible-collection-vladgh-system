@@ -28,7 +28,8 @@ jobs:
         with:
           filters: |
             playbooks:
-              - playbooks/**
+              - playbooks/!(**.md)
+              - molecule/playbooks/**
             common:
               - roles/common/!(**.md)
               - molecule/common/**
