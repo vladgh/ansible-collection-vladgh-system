@@ -34,7 +34,7 @@ jobs:
               - playbooks/**
 
   test:
-    name: "Test role ${{ matrix.scenario }} on ${{ matrix.os }}"
+    name: "Test scenario ${{ matrix.scenario }} on ${{ matrix.os }}"
     runs-on: ubuntu-latest
     needs: changes
     if: ${{ needs.changes.outputs.scenario != '[]' && needs.changes.outputs.scenario != '' }}
