@@ -1,7 +1,5 @@
 # Ansible Role: Common
 
-![Build Status](https://github.com/vladgh/ansible-role-common/workflows/CI/badge.svg)
-
 Vlad's Common Ansible Role.
 
 ## Requirements
@@ -127,14 +125,3 @@ pip_user_install_packages:
   roles:
     - vladgh.system.common
 ```
-
-## Contribute
-
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
-
-Contributions are always welcome! Please read the [contribution guidelines](.github/CONTRIBUTING.md) and the [code of conduct](.github/CODE_OF_CONDUCT.md).
-
-## License
-
-Licensed under the Apache License, Version 2.0.
-See [LICENSE](LICENSE) file.
