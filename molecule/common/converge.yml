@@ -22,6 +22,7 @@
       include_role:
         name: vladgh.system.common
       vars:
+        timezone: US/Central
         local_groups:
           - name: admins
             system: yes
