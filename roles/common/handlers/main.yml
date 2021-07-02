@@ -14,9 +14,6 @@
 - name: Update trusted CA certificates
   command: /usr/sbin/update-ca-certificates --fresh
 
-- name: Update tzdata
-  command: dpkg-reconfigure --frontend noninteractive tzdata
-
 - name: Enable and start SystemD mount
   ansible.builtin.systemd:
     name: "{{ item.where[1:] | replace('/', '-') }}.mount"

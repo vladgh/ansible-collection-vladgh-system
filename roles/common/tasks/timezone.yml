@@ -10,7 +10,6 @@
     owner: root
     group: root
     mode: 0644
-  notify: Update tzdata
 
 - name: Set /etc/localtime
   file:
@@ -21,4 +20,3 @@
     group: root
     mode: 0644
     force: yes
-  notify: Update tzdata
