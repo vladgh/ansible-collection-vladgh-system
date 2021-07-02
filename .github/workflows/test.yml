@@ -27,8 +27,7 @@ jobs:
         with:
           filters: |
             common:
-              - "!(roles/common/**.md)"
-              - "roles/common/**"
+              - "roles/common/!(**.md)"
               - "molecule/common/**"
             playbooks:
               - "playbooks/**"
