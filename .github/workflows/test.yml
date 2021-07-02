@@ -27,9 +27,9 @@ jobs:
         with:
           filters: |
             modified:
-              - roles/(**|!(*.md))
-              - molecule/(**|!(*.md))
-              - playbooks/(**|!(*.md))
+              - **/roles/(**|!(*.md))
+              - **/molecule/(**|!(*.md))
+              - **/playbooks/(**|!(*.md))
 
   debug:
     runs-on: ubuntu-latest
