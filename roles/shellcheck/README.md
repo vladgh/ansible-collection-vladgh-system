@@ -1,7 +1,5 @@
 # Ansible Role: Shellcheck
 
-![Build Status](https://github.com/vladgh/ansible-role-shellcheck/workflows/CI/badge.svg)
-
 Vlad's Shellcheck Ansible Role
 
 <https://github.com/koalaman/shellcheck>
@@ -28,12 +26,3 @@ Available variables are listed below, along with default values (see defaults/ma
   roles:
       - vladgh.system.shellcheck
 ```
-
-## Contribute
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) file.
-
-## License
-
-Licensed under the Apache License, Version 2.0.
-See [LICENSE](LICENSE) file.
