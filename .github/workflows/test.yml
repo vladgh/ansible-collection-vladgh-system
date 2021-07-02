@@ -19,7 +19,10 @@ jobs:
     outputs:
       modified: ${{ steps.filter.outputs.changes }}
     steps:
-      - uses: dorny/paths-filter@v2
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Detect changes
+        uses: dorny/paths-filter@v2.10.2
         id: filter
         with:
           filters: |
