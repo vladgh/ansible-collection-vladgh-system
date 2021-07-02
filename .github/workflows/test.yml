@@ -27,11 +27,11 @@ jobs:
         with:
           filters: |
             common:
-              - roles/common/**
-              - !roles/common/**.md
-              - molecule/common/**
+              - "roles/common/**"
+              - "!(roles/common/**.md)"
+              - "molecule/common/**"
             playbooks:
-              - playbooks/**
+              - "playbooks/**"
 
   debug:
     runs-on: ubuntu-latest
