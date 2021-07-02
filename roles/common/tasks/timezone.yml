@@ -1,5 +1,8 @@
 ---
+- name: Ensure tzdata is installed
+  package:
+    name: tzdata
+
 - name: Set system timezone
   community.general.timezone:
     name: "{{ timezone }}"
-  when: timezone is defined and timezone
