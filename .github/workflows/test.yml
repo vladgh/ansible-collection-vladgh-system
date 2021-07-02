@@ -26,10 +26,12 @@ jobs:
         id: filter
         with:
           filters: |
-            modified:
-              - roles/(!(**.md)|**)
-              - molecule/(**|!(*.md))
-              - playbooks/(**|!(*.md))
+            common:
+              - roles/common/**
+              - !roles/common/**.md
+              - molecule/common/**
+            playbooks:
+              - playbooks/**
 
   debug:
     runs-on: ubuntu-latest
