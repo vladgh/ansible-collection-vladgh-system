@@ -31,6 +31,18 @@ jobs:
               - molecule/(**|!(*.md))
               - playbooks/(**|!(*.md))
 
+  debug:
+    runs-on: ubuntu-latest
+    needs: changes
+    strategy:
+      matrix:
+        role: ${{ fromJSON(needs.changes.outputs.modified) }}
+    steps:
+      - name: Print event data
+        env:
+          EVENT: ${{ toJSON( matrix ) }}
+        run: echo "$EVENT"
+
   # # JOB to build and test each of modified packages
   # build:
   #   needs: changes
