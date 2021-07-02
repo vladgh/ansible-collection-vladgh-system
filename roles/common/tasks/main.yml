@@ -6,6 +6,9 @@
     - "{{ ansible_distribution | lower }}.yml"
     - "{{ ansible_os_family | lower }}.yml"
 
+- import_tasks: timezone.yml
+  when: timezone is defined and timezone
+
 - import_tasks: accounts.yml
   when: >
     ( local_groups is defined and local_groups ) or

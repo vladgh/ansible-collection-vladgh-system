@@ -10,6 +10,14 @@ Vlad's Common Ansible Role.
 
 Available variables are listed below, along with default values (see defaults/main.yml)
 
+### Timezone
+
+Configure timezone setting (<https://docs.ansible.com/ansible/latest/collections/community/general/timezone_module.html>)
+
+```yaml
+timezone: US/Central
+```
+
 ### Users
 
 Check <https://docs.ansible.com/ansible/latest/modules/user_module.html> for a complete list of parameters
