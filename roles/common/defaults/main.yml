@@ -1,4 +1,7 @@
 ---
+# System
+timezone: UTC
+
 # Accounts
 local_groups: []
 local_users: []
