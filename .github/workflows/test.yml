@@ -58,10 +58,10 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu2004
-          - ubuntu1804
-          - debian10
-          - debian9
+          - ubuntu:focal
+          - ubuntu:bionic
+          - debian:bullseye
+          - debian:buster
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout

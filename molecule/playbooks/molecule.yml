@@ -4,15 +4,31 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: instance
+  # - name: instance
+  #   groups:
+  #     - ansible
+  #   image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #   privileged: true
+  #   pre_build_image: true
+  - name: molecule-ubuntu-focal-instance
     groups:
       - ansible
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    image: ubuntu:focal
+    dockerfile: ../resources/Dockerfile.j2
+    pre_build_image: false
+    env:
+      ansible_user: ansible
+      sudo_group: sudo
+      deploy_group: deployer
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-    pre_build_image: true
 provisioner:
   name: ansible
 lint: |

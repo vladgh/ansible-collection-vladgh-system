@@ -3,20 +3,6 @@
   hosts: all
   become: yes
 
-  pre_tasks:
-    - name: Update apt cache.
-      package:
-        update_cache: true
-        cache_valid_time: 3600
-      when: ansible_os_family == 'Debian'
-    - name: Ensure auth.log file is present.
-      copy:
-        dest: /var/log/auth.log
-        content: ""
-        force: false
-        mode: 0644
-      when: ansible_distribution == 'Debian'
-
   tasks:
     - name: Include common role
       include_role:
@@ -37,8 +23,8 @@
         additional_packages:
           - rolldice
         apt_repositories:
-          - name: GIT
-            repo: ppa:git-core/ppa
+          - name: Ansible
+            repo: ppa:ansible/ansible
         pip_install_packages: [pip-install-test]
         pip_user_install_packages:
           - user: test

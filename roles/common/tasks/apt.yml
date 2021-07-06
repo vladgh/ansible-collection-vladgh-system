@@ -7,6 +7,7 @@
 - name: Add extra APT repositories
   apt_repository:
     repo: "{{ item.repo }}"
+    codename: "{{ ansible_distribution_release }}"
     update_cache: no
   with_items: "{{ apt_repositories }}"
 
