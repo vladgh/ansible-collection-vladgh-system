@@ -1,6 +1,6 @@
 ---
 - name: Slack
-  hosts: all
+  hosts: slack
   gather_facts: false
   tasks:
     - name: Send notification message via Slack
