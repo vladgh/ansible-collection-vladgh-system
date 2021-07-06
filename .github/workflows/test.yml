@@ -58,11 +58,15 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu2004
-          - ubuntu1804
-          - debian10
-          - debian9
+          - ubuntu:focal
+          - ubuntu:bionic
+          - debian:bullseye
+          - debian:buster
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
+        exclude:
+          # until this platform is supported in the Hashicorp repositories
+          - os: debian:bullseye
+            scenario: hashicorp
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -75,7 +79,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install docker ansible ansible-lint yamllint molecule molecule-docker
+          python3 -m pip install --upgrade docker ansible ansible-lint yamllint molecule molecule-docker
       - name: Test scenario
         run: molecule test --scenario-name ${{ matrix.scenario }}
         working-directory: ansible_collections/vladgh/system
