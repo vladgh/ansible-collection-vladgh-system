@@ -5,14 +5,21 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    groups:
+      - ansible
+    image: ${MOLECULE_DISTRO:-'ubuntu:focal'}
+    dockerfile: ../Dockerfile.j2
+    pre_build_image: false
+    command: /sbin/init
+    capabilities:
+      - SYS_ADMIN
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-    pre_build_image: true
 provisioner:
   name: ansible
+  log: true
+  playbooks:
+    prepare: ../prepare.yml
 lint: |
   set -e
   yamllint .

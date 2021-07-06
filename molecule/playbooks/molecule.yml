@@ -10,11 +10,9 @@ platforms:
     image: ${MOLECULE_DISTRO:-'ubuntu:focal'}
     dockerfile: ../Dockerfile.j2
     pre_build_image: false
-    privileged: true
     command: /sbin/init
-    tmpfs:
-      - /run
-      - /tmp
+    capabilities:
+      - SYS_ADMIN
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
 provisioner:
