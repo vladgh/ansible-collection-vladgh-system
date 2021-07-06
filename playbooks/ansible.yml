@@ -1,9 +1,7 @@
 ---
 #   Provision Ansible on node
-# ansible-galaxy collection install vladgh.system
-# ansible-playbook -u ubuntu --ask-pass --ask-become-pass vladgh.system.ansible --limit mynode
 - name: Ansible
-  hosts: all
+  hosts: ansible
   become: yes
   gather_facts: false
   pre_tasks:
@@ -34,4 +32,10 @@
       state: present
       mode: 0440
       create: yes
-      validate: 'visudo -cf %s'
+      validate: '/usr/sbin/visudo -cf %s'
+  - name: Ensure includedir in Sudoers
+    ansible.builtin.lineinfile:
+      dest: /etc/sudoers
+      line: '#includedir /etc/sudoers.d'
+      state: present
+      validate: '/usr/sbin/visudo -cf %s'
