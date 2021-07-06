@@ -8,7 +8,7 @@ platforms:
     groups:
       - ansible
     image: ${MOLECULE_DISTRO:-'ubuntu:focal'}
-    dockerfile: ../resources/Dockerfile.j2
+    dockerfile: ../Dockerfile.j2
     pre_build_image: false
     privileged: true
     command: /sbin/init
@@ -21,7 +21,7 @@ provisioner:
   name: ansible
   log: true
   playbooks:
-    prepare: ../resources/prepare.yml
+    prepare: ../prepare.yml
 lint: |
   set -e
   yamllint .
