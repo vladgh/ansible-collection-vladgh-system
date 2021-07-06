@@ -4,25 +4,13 @@ dependency:
 driver:
   name: docker
 platforms:
-  # - name: instance
-  #   groups:
-  #     - ansible
-  #   image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
-  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  #   privileged: true
-  #   pre_build_image: true
-  - name: molecule-ubuntu-focal-instance
+  - name: instance
     groups:
       - ansible
-    image: ubuntu:focal
-    dockerfile: ../resources/Dockerfile.j2
+    image: ${MOLECULE_DISTRO:-'ubuntu:focal'}
+    dockerfile: ../Dockerfile.j2
     pre_build_image: false
-    env:
-      ansible_user: ansible
-      sudo_group: sudo
-      deploy_group: deployer
+    privileged: true
     command: /sbin/init
     tmpfs:
       - /run
@@ -31,6 +19,9 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
 provisioner:
   name: ansible
+  log: true
+  playbooks:
+    prepare: ../prepare.yml
 lint: |
   set -e
   yamllint .
