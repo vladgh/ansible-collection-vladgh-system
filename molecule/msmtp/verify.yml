@@ -4,6 +4,6 @@
   become: yes
 
   tasks:
-    - name: Don't do much here.
+    - name: Don't do much here
       debug:
-        msg: "Not implemented at this time."
+        msg: Not implemented at this time
