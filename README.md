@@ -17,9 +17,6 @@ Ansible collection that holds roles, that can be used to configure common system
 
 ### Playbooks
 - [ansible](playbooks/ansible.yml)
-- [common](playbooks/common.yml)
-- [dns](playbooks/dns.yml)
-- [slack](playbooks/slack.yml)
 
 ## Using this collection
 
