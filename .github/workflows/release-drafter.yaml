@@ -8,22 +8,6 @@ on:
       - main
 
 jobs:
-  galaxy:
-    name: Change Ansible Galaxy version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Change collection version to match tag
-        run: |
-          sed -Ei "s/^version: .*/version: 0.0.1/" galaxy.yml
-      - name: Commit galaxy.yml
-        uses: stefanzweifel/git-auto-commit-action@v4.11.0
-        with:
-          commit_message: "Update galaxy.yml for 0.0.1"
-          file_pattern: galaxy.yml
   update_release_draft:
     name: Draft release
     runs-on: ubuntu-latest
