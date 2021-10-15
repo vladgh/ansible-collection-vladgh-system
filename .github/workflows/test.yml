@@ -21,7 +21,7 @@ jobs:
       scenario: ${{ steps.filter.outputs.changes }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - name: Detect changes
         uses: dorny/paths-filter@v2.10.2
         id: filter
@@ -69,7 +69,7 @@ jobs:
             scenario: hashicorp
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
         with:
           path: ansible_collections/vladgh/system
       - name: Set up Python
