@@ -71,7 +71,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
-          path: ~/.ansible/ansible_collections/vladgh/system
+          path: ${{ github.repository }}
       - name: Set up Python
         uses: actions/setup-python@v2.2.2
         with:
@@ -81,9 +81,18 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade docker ansible ansible-lint yamllint molecule molecule-docker
       - name: Test scenario
-        run: pwd; molecule test --scenario-name ${{ matrix.scenario }}
-        working-directory: ~/.ansible/ansible_collections/vladgh/system
+        uses: gofrolist/molecule-action@v2.2.1
+        with:
+          molecule_command: test
+          molecule_args: --scenario-name ${{ matrix.scenario }}
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
+      # - name: Test scenario
+      #   run: pwd; molecule test --scenario-name ${{ matrix.scenario }}
+      #   working-directory: ansible_collections/vladgh/system
+      #   env:
+      #     PY_COLORS: 1
+      #     ANSIBLE_FORCE_COLOR: 1
+      #     MOLECULE_DISTRO: ${{ matrix.os }}
