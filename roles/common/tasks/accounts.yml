@@ -48,3 +48,4 @@
         - authorized_keys
         - skip_missing: yes
   when: local_users is defined and local_users
+  no_log: yes
