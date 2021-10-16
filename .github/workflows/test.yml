@@ -71,7 +71,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
-          path: /home/runner/.ansible/collections/ansible_collections/vladgh/system
+          path: ansible_collections/vladgh/system
       # - name: Set up Python
       #   uses: actions/setup-python@v2.2.2
       #   with:
@@ -85,7 +85,7 @@ jobs:
         with:
           molecule_command: test
           molecule_args: --scenario-name ${{ matrix.scenario }}
-          molecule_working_dir: /home/runner/.ansible/collections/ansible_collections/vladgh/system
+          molecule_working_dir: ansible_collections/vladgh/system
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
