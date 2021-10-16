@@ -18,6 +18,7 @@
             comment: Testing User
             groups: admins
             append: yes
+            password: mypassword
             authorized_keys:
               - ssh-ed25519 AAAA testing
         additional_packages:
