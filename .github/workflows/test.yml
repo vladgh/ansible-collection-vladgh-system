@@ -81,7 +81,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade docker ansible ansible-lint yamllint molecule molecule-docker
       - name: Test scenario
-        run: molecule test --scenario-name ${{ matrix.scenario }}
+        run: pwd; molecule test --scenario-name ${{ matrix.scenario }}
         working-directory: ansible_collections/vladgh/system
         env:
           PY_COLORS: 1
