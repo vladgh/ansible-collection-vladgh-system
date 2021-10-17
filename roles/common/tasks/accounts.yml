@@ -31,7 +31,7 @@
         group: "{{ item.group | default(omit) }}"
         groups: "{{ item.groups | default(omit) }}"
         append: "{{ item.append | default(omit) }}"
-        password: "{{ item.password | string  | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) | default(omit) }}"
+        password: "{{ item.password  | default(omit) | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
         shell: "{{ item.shell | default(omit) }}"
         home: "{{ item.home | default(omit) }}"
         create_home: "{{ item.create_home | default(omit) }}"
