@@ -1,11 +1,7 @@
 ---
-- name: Restart QEMU Guest Agent
-  service:
-    name: qemu-guest-agent
-    state: restarted
-  ignore_errors: "{{ ansible_virtualization_type in [\"docker\", \"VirtualPC\"] }}"
-
 - name: Enable QEMU Guest Agent
   service:
     name: qemu-guest-agent
     enabled: yes
+    state: started
+  ignore_errors: "{{ ansible_virtualization_type in [\"docker\", \"VirtualPC\"] }}"
