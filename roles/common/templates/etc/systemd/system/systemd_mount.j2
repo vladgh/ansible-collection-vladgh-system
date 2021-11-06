@@ -1,7 +1,7 @@
 [Unit]
 Description=Mount {{ item.name }}
 Before={{ item.before | default('') }}
-After={{ item.before | default('network-online.target') }}
+After={{ item.after | default('network-online.target') }}
 
 [Mount]
 What={{ item.what }}
