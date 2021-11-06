@@ -1,6 +1,7 @@
 [Unit]
 Description=Automount {{ item.name }}
-After=network-online.target
+Before={{ item.before | default('') }}
+After={{ item.before | default('network-online.target') }}
 
 [Automount]
 Where={{ item.where }}
