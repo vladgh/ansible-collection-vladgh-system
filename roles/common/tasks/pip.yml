@@ -1,4 +1,9 @@
 ---
+- name: Ensure dependencies are installed
+  package:
+    name: acl
+    state: present
+
 - name: Ensure Pip is installed
   package:
     name: "{{ pip_package | default('python3-pip') }}"
