@@ -48,12 +48,16 @@
             where: /mnt/srv
             options: bind
             type: none
+            service_state: started
+            service_enabled: yes
           - name: SystemD Auto Mount Test
             automount: yes
             what: localhost:/media
             where: /mnt/media
             options: _netdev,auto
             type: nfs
+            service_state: started
+            service_enabled: yes
         install_ca_certificates: yes
         fail2ban_enabled: yes
         unattended_upgrades_autoupdate_enabled: yes
