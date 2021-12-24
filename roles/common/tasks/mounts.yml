@@ -54,8 +54,17 @@
     owner: root
     group: root
     mode: 0644
-  notify: Enable and start SystemD mount
+  notify: Restart SystemD mount
   with_items: "{{ systemd_mounts }}"
+
+- name: Enable and start SystemD mount
+  ansible.builtin.systemd:
+    name: "{{ item.where[1:] | replace('/', '-') }}.mount"
+    state: "{{ item.service_state | default('started') }}"
+    enabled: "{{ item.service_enabled | default('yes') }}"
+    daemon_reload: yes
+  with_items: "{{ systemd_mounts }}"
+  when: ( item.automount is not defined ) or ( not item.automount )
 
 - name: Setup SystemD service for auto mount
   ansible.builtin.template:
@@ -64,6 +73,15 @@
     owner: root
     group: root
     mode: 0644
-  notify: Enable and start SystemD auto mount
+  notify: Restart SystemD auto mount
+  with_items: "{{ systemd_mounts }}"
+  when: item.automount is defined and item.automount
+
+- name: Enable and start SystemD auto mount
+  ansible.builtin.systemd:
+    name: "{{ item.where[1:] | replace('/', '-') }}.automount"
+    state: "{{ item.service_state | default('started') }}"
+    enabled: "{{ item.service_enabled | default('yes') }}"
+    daemon_reload: yes
   with_items: "{{ systemd_mounts }}"
   when: item.automount is defined and item.automount

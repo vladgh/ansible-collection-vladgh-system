@@ -14,7 +14,7 @@
 - name: Update trusted CA certificates
   command: /usr/sbin/update-ca-certificates --fresh
 
-- name: Enable and start SystemD mount
+- name: Restart SystemD mount
   ansible.builtin.systemd:
     name: "{{ item.where[1:] | replace('/', '-') }}.mount"
     state: "{{ item.service_state | default('started') }}"
@@ -23,7 +23,7 @@
   with_items: "{{ systemd_mounts }}"
   when: ( item.automount is not defined ) or ( not item.automount )
 
-- name: Enable and start SystemD auto mount
+- name: Restart SystemD auto mount
   ansible.builtin.systemd:
     name: "{{ item.where[1:] | replace('/', '-') }}.automount"
     state: "{{ item.service_state | default('started') }}"
