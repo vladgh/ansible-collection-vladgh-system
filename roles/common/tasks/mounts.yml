@@ -7,8 +7,8 @@
     - "{{ mounts }}"
     - "{{ systemd_mounts }}"
   when: >
-   ( item.fstype is defined and item.fstype is match('nfs') ) or
-   ( item.type is defined and item.type is match('nfs') )
+    ( item.fstype is defined and item.fstype is match('nfs') ) or
+    ( item.type is defined and item.type is match('nfs') )
 
 # Make sure the RPCBind service is enabled and running if any mount point is of 'nfs' type
 - name: Ensure RPCBind service is enabled and running
@@ -20,8 +20,8 @@
     - "{{ mounts }}"
     - "{{ systemd_mounts }}"
   when: >
-   ( item.fstype is defined and item.fstype is match('nfs') ) or
-   ( item.type is defined and item.type is match('nfs') )
+    ( item.fstype is defined and item.fstype is match('nfs') ) or
+    ( item.type is defined and item.type is match('nfs') )
 
 # FSTAB Mounts
 - name: Create the local directories
@@ -48,7 +48,7 @@
 
 # SystemD Mounts
 - name: Setup SystemD service for mount points
-  template:
+  ansible.builtin.template:
     src: etc/systemd/system/systemd_mount.j2
     dest: /etc/systemd/system/{{ item.where[1:] | replace('/', "-") }}.mount
     owner: root
@@ -58,7 +58,7 @@
   with_items: "{{ systemd_mounts }}"
 
 - name: Setup SystemD service for auto mount
-  template:
+  ansible.builtin.template:
     src: etc/systemd/system/systemd_automount.j2
     dest: /etc/systemd/system/{{ item.where[1:] | replace('/', "-") }}.automount
     owner: root
