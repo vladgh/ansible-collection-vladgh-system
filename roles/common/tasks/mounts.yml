@@ -30,7 +30,7 @@
     state: directory
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
-    mode: "{{ item.group | default('0775') }}"
+    mode: "{{ item.group | default(omit) }}"
   with_items: "{{ mounts }}"
   when: item is defined and item
 
