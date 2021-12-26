@@ -28,25 +28,25 @@ jobs:
         with:
           filters: |
             playbooks:
-              - playbooks/!(**.md)
+              - playbooks/**/!(**.md)
               - molecule/playbooks/**
             common:
-              - roles/common/!(**.md)
+              - roles/common/**/!(**.md)
               - molecule/common/**
             hashicorp:
-              - roles/hashicorp/!(**.md)
+              - roles/hashicorp/**/!(**.md)
               - molecule/hashicorp/**
             logs:
-              - roles/logs/!(**.md)
+              - roles/logs/**/!(**.md)
               - molecule/logs/**
             msmtp:
-              - roles/msmtp/!(**.md)
+              - roles/msmtp/**/!(**.md)
               - molecule/msmtp/**
             qemu_guest_agent:
-              - roles/qemu_guest_agent/!(**.md)
+              - roles/qemu_guest_agent/**/!(**.md)
               - molecule/qemu_guest_agent/**
             shellcheck:
-              - roles/shellcheck/!(**.md)
+              - roles/shellcheck/**/!(**.md)
               - molecule/shellcheck/**
 
   test:
