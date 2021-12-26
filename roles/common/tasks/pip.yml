@@ -1,22 +1,22 @@
 ---
 - name: Ensure dependencies are installed
-  package:
+  ansible.builtin.package:
     name: acl
     state: present
 
 - name: Ensure Pip is installed
-  package:
+  ansible.builtin.package:
     name: "{{ pip_package | default('python3-pip') }}"
     state: present
 
 - name: Upgrade Pip
-  pip:
+  ansible.builtin.pip:
     name: [pip, setuptools]
     state: latest  # noqa package-latest
     executable: "{{ pip_executable | default('pip3') }}"
 
 - name: Ensure Pip system wide packages are installed
-  pip:
+  ansible.builtin.pip:
     name: "{{ pip_install_packages }}"
     state: present
     executable: "{{ pip_executable | default('pip3') }}"
@@ -25,7 +25,7 @@
 - name: Ensure Pip user packages are installed
   become: yes
   become_user: "{{ item.user }}"
-  pip:
+  ansible.builtin.pip:
     name: "{{ item.packages }}"
     state: "{{ item.state | default(omit) }}"
     extra_args: --user

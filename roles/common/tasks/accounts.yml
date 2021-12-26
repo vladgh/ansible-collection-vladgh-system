@@ -2,7 +2,7 @@
 - name: Configure groups
   block:
     - name: Create groups
-      group:
+      ansible.builtin.group:
         name: "{{ item.name }}"
         gid: "{{ item.gid | default(omit) }}"
         system: "{{ item.system | default(omit) }}"
@@ -10,7 +10,7 @@
       with_items: "{{ local_groups }}"
 
     - name: Add Groups to Sudoers
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "/etc/sudoers.d/10_{{ item.name }}"
         line: "%{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
         state: "{{ item.state | default(omit) }}"
@@ -24,7 +24,7 @@
 - name: Configure users
   block:
     - name: Create users
-      user:
+      ansible.builtin.user:
         name: "{{ item.name }}"
         comment: "{{ item.comment | default(omit) }}"
         uid: "{{ item.uid | default(omit) }}"
@@ -40,7 +40,7 @@
       with_items: "{{ local_users }}"
 
     - name: Add authorized keys
-      authorized_key:
+      ansible.posix.authorized_key:
         user: "{{ item.0.name }}"
         key: "{{ item.1 }}"
       with_subelements:

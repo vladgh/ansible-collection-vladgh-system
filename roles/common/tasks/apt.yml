@@ -1,18 +1,18 @@
 ---
 - name: Ensure GnuPG package is installed
-  apt:
+  ansible.builtin.apt:
     name: gnupg2
     update_cache: yes
 
 - name: Add extra APT repositories
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ item.repo }}"
     codename: "{{ ansible_distribution_release }}"
     update_cache: no
   with_items: "{{ apt_repositories }}"
 
 - name: Update Apt cache
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
     cache_valid_time: 3600
   register: _update_apt_cache
