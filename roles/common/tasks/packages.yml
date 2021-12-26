@@ -1,6 +1,6 @@
 ---
 - name: Install additional packages (Debian/Ubuntu)
-  apt:
+  ansible.builtin.apt:
     name: "{{ additional_packages }}"
     state: present
     update_cache: yes

@@ -1,18 +1,18 @@
 ---
 - name: Ensure ACL is installed for file permission controls
-  package:
+  ansible.builtin.package:
     name: acl
     state: present
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '<=')
 
 - name: Check if logind.conf exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/systemd/logind.conf
   register: systemd_logind_conf
   when: disable_lid_switch is defined and disable_lid_switch|bool
 
 - name: Disable lid switch
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/systemd/logind.conf
     regexp: HandleLidSwitch
     line: 'HandleLidSwitch=lock'

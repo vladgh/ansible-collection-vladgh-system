@@ -1,10 +1,10 @@
 ---
 - name: Ensure Crontab is installed
-  package:
+  ansible.builtin.package:
     name: "{{ crontab_package_name }}"
 
 - name: Cron jobs
-  cron:
+  ansible.builtin.cron:
     name: "{{ item.name }}"
     user: "{{ item.user | default(omit) }}"
     minute: "{{ item.minute | default(omit) }}"

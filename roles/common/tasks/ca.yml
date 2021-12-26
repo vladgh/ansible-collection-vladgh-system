@@ -1,18 +1,18 @@
 ---
 # Adds  extra CA Certificates
 - name: Install ca-certificates package
-  package:
+  ansible.builtin.package:
     name: ca-certificates
     state: present
 
 - name: Ensure certificates directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ ca_path }}/"
     state: directory
     mode: 0755
 
 - name: Install CA Certificates
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ ca_path }}/"
     owner: root
