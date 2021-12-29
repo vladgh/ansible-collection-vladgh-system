@@ -3,4 +3,5 @@
   ansible.builtin.shell:
     cmd: "{{ item.cmd }}"
     chdir: "{{ item.chdir | default(omit) }}"
+    creates: "{{ item.creates | default(omit) }}"
   with_items: "{{ shell_extra_commands }}"
