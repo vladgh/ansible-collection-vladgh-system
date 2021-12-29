@@ -1,0 +1,50 @@
+---
+- name: Ensure WireGuard Packages
+  ansible.builtin.package:
+    name:
+      - wireguard
+      - wireguard-tools
+      - qrencode
+    state: present
+
+- name: Ensure Wireguard Directory
+  ansible.builtin.file:
+    path: /etc/wireguard
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: Generate Configuration
+  ansible.builtin.template:
+    src: wg.conf.j2
+    dest: "/etc/wireguard/{{ item.key }}.conf"
+    owner: root
+    group: root
+    mode: 0600
+  no_log: yes
+  with_dict: "{{ wireguard_config }}"
+  notify: Restart WireGuard
+
+- name: Create a resolvconf link
+  ansible.builtin.file:
+    src: /usr/bin/resolvectl
+    dest: /usr/local/bin/resolvconf
+    state: link
+
+- name: Change various sysctl-settings
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  with_dict: "{{ wireguard_sysctl_config }}"
+
+- name: Start and Enable WireGuard Service
+  service:
+    name: "wg-quick@{{ item }}"
+    state: started
+    enabled: yes
+  no_log: yes
+  with_items: "{{ wireguard_config }}"
