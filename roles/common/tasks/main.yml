@@ -44,4 +44,7 @@
 - import_tasks: unattended-upgrades.yml
   when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
 
+- import_tasks: apt.yml
+  when: shell_extra_commands is defined and shell_extra_commands
+
 - import_tasks: misc.yml

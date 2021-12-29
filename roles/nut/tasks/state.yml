@@ -1,3 +1,4 @@
+---
 - name: Ensure NUT Server Service
   ansible.builtin.service:
     name: nut-server

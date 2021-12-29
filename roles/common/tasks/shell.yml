@@ -1,0 +1,6 @@
+---
+- name: Run Shell Commands
+  ansible.builtin.shell:
+    cmd: "{{ item.command }}"
+    chdir: "{{ item.chdir | default(omit) }}"
+  with_items: "{{ shell_extra_commands }}"
