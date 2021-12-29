@@ -1,0 +1,76 @@
+---
+- name: CloudFlare Dynamic DNS Updater
+  block:
+    - name: Install script
+      ansible.builtin.get_url:
+        url: https://github.com/K0p1-Git/cloudflare-ddns-updater/raw/main/cloudflare-template.sh
+        dest: /usr/local/bin/cloudflare-ddns-updater
+        owner: root
+        group: root
+        mode: 0700
+    - name: Configure script
+      ansible.builtin.lineinfile:
+        dest: /usr/local/bin/cloudflare-ddns-updater
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      no_log: yes
+      with_items:
+        - { regexp: '^auth_email=', line: "auth_email='{{ cloudflare_ddns_updater_config.auth_email | default('') }}'" }
+        - { regexp: '^auth_method=', line: "auth_method='{{ cloudflare_ddns_updater_config.auth_method | default('') }}'" }
+        - { regexp: '^auth_key=', line: "auth_key='{{ cloudflare_ddns_updater_config.auth_key | default('') }}'" }
+        - { regexp: '^zone_identifier=', line: "zone_identifier='{{ cloudflare_ddns_updater_config.zone_identifier | default('') }}'" }
+        - { regexp: '^record_name=', line: "record_name='{{ cloudflare_ddns_updater_config.record_name | default('') }}'" }
+        - { regexp: '^ttl=', line: "ttl='{{ cloudflare_ddns_updater_config.ttl | default('3600') }}'" }
+        - { regexp: '^proxy=', line: "proxy={{ cloudflare_ddns_updater_config.proxy | default('false') }}" }
+        - { regexp: '^slacksitename=', line: "slacksitename='{{ cloudflare_ddns_updater_config.slacksitename | default('') }}'" }
+        - { regexp: '^slackchannel=', line: "slackchannel='{{ cloudflare_ddns_updater_config.slackchannel | default('') }}'" }
+        - { regexp: '^slackuri=', line: "slackuri='{{ cloudflare_ddns_updater_config.slackuri | default('') }}'" }
+      when: cloudflare_ddns_updater_config is defined and cloudflare_ddns_updater_config
+    - name: Configure cron job
+      cron:
+        name: cloudflare_ddns_updater-cron
+        job: /usr/local/bin/cloudflare-ddns-updater
+        minute: "*/10"
+        user: root
+        state: present
+  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled
+
+- name: Provision DNS records
+  community.general.cloudflare_dns:
+    state: "{{ item.state | default('present') }}"
+    zone: "{{ item.zone }}"
+    type: "{{ item.type }}"
+    record: "{{ item.record }}"
+    value: "{{ item.value }}"
+    proxied: "{{ item.proxied | default(omit) }}"
+    account_email: "{{ cloudflare_email }}"
+    account_api_token: "{{ cloudflare_api_token }}"
+  delegate_to: localhost
+  run_once: yes
+  with_items: "{{ cloudflare_dns_records }}"
+  when: >
+    ( cloudflare_email is defined and cloudflare_email ) and
+    ( cloudflare_api_token is defined and cloudflare_api_token ) and
+    ( cloudflare_dns_records is defined and cloudflare_dns_records )
+
+- name: Override SystemD Resolve
+  block:
+    - name: Disable DNSStubListener
+      ansible.builtin.copy:
+        content: |
+          [Resolve]
+          DNSStubListener={{ dns_stub_listener | default('yes') }}
+        dest: /etc/systemd/resolved.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: Restart SystemD Resolved
+    - name: Change symlink for systemd-resolved
+      ansible.builtin.file:
+        src: /var/run/systemd/resolve/resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+        force: yes
+        follow: no
+      notify: Restart SystemD Resolved
+  when: dns_stub_listener is defined and dns_stub_listener == 'no'
