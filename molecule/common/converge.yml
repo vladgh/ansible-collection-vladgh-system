@@ -64,3 +64,8 @@
         unattended_upgrades_autoupdate_reboot: "true"
         unattended_upgrades_autoupdate_mail_to: "root"
         unattended_upgrades_autoupdate_mail_on_error: yes
+        shell_extra_commands:
+          - name: Test
+            cmd: touch test.txt
+            chdir: /tmp
+            creates: test.txt

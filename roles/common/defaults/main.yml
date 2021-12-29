@@ -40,6 +40,9 @@ unattended_upgrades_autoupdate_mail_to: ""
 unattended_upgrades_autoupdate_mail_on_error: no
 unattended_upgrades_autoupdate_blacklist: []
 
+# Shell
+shell_extra_commands: []
+
 # Miscellaneous
 ## Set to `yes` to disable lid switch on laptops.
 disable_lid_switch: no
