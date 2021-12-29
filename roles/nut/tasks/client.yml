@@ -1,0 +1,25 @@
+---
+# Client
+- name: Ensure NUT Client Package
+  ansible.builtin.package:
+    name: nut-client
+    state: present
+
+- name: Generate NUT Configuration Files
+  ansible.builtin.template:
+    src: upsmon.conf.j2
+    dest: /etc/nut/upsmon.conf
+    owner: root
+    group: root
+    mode: 0640
+  notify:
+    - Restart NUT Client
+
+- name: Generate NUT Notification Script
+  ansible.builtin.template:
+    src: notifycmd.j2
+    dest: /etc/nut/notifycmd
+    owner: root
+    group: root
+    mode: 0770
+  notify: Restart NUT Client

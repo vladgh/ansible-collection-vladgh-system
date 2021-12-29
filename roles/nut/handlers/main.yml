@@ -1,0 +1,25 @@
+---
+- name: Restart NUT Server
+  ansible.builtin.service:
+    name: nut-server
+    enabled: yes
+    state: restarted
+  when: >
+    nut_mode is defined and
+    (
+      nut_mode == 'netserver' or
+      nut_mode == 'standalone'
+    )
+
+- name: Restart NUT Client
+  ansible.builtin.service:
+    name: nut-client
+    enabled: yes
+    state: restarted
+  when: >
+    nut_mode is defined and
+    (
+      nut_mode == 'netserver' or
+      nut_mode == 'standalone' or
+      nut_mode == 'netclient'
+    )

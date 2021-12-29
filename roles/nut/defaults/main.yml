@@ -1,0 +1,71 @@
+---
+# Mode
+nut_mode: none  # none, standalone, netserver or netclient
+
+# Server
+nut_driver: usbhid-ups
+nut_port: auto
+nut_ups_description: APC Back-UPS Pro
+nut_upsd_users:
+  admin:
+    password: changeme
+    actions: SET FSD
+    instcmds: ALL
+  monitor:
+    password: changeme
+    upsmon: master
+  monuser:
+    password: secret
+    upsmon: slave
+nut_ups_extra: |
+  maxretry = 3
+nut_upsd_extra: |
+  LISTEN {{ ansible_default_ipv4.address }} 3493
+
+# Client
+nut_host: ups@localhost
+nut_user: monitor
+nut_password: changeme
+nut_role: master
+nut_powervalue: 1
+nut_upsmon_extra: |
+  MINSUPPLIES 1
+  POLLFREQ 5
+  POLLFREQALERT 5
+  HOSTSYNC 15
+  DEADTIME 15
+  RBWARNTIME 43200
+  NOCOMMWARNTIME 300
+  FINALDELAY 5
+
+  POWERDOWNFLAG /etc/killpower
+  SHUTDOWNCMD "/sbin/shutdown -h +0"
+  NOTIFYCMD "/etc/nut/notifycmd"
+
+  # Possible values for <notify type>:
+  # ONLINE   : UPS is back online
+  # ONBATT   : UPS is on battery
+  # LOWBATT  : UPS has a low battery (if also on battery, it's "critical")
+  # FSD      : UPS is being shutdown by the master (FSD = "Forced Shutdown")
+  # COMMOK   : Communications established with the UPS
+  # COMMBAD  : Communications lost to the UPS
+  # SHUTDOWN : The system is being shutdown
+  # REPLBATT : The UPS battery is bad and needs to be replaced
+  # NOCOMM   : A UPS is unavailable (can't be contacted for monitoring)
+
+  # Possible values for the flags:
+  # SYSLOG - Write the message in the syslog
+  # WALL   - Write the message to all users on the system
+  # EXEC   - Execute NOTIFYCMD (see above) with the message
+  # IGNORE - Don't do anything
+
+  NOTIFYFLAG ONLINE      SYSLOG+WALL
+  NOTIFYFLAG ONBATT      SYSLOG+WALL
+  NOTIFYFLAG LOWBATT     SYSLOG+WALL
+  NOTIFYFLAG FSD         SYSLOG+WALL
+  NOTIFYFLAG COMMOK      SYSLOG+WALL
+  NOTIFYFLAG COMMBAD     SYSLOG+WALL
+  NOTIFYFLAG SHUTDOWN    SYSLOG+WALL+EXEC
+  NOTIFYFLAG REPLBATT    SYSLOG+WALL
+  NOTIFYFLAG NOCOMM      SYSLOG+WALL
+  NOTIFYFLAG NOPARENT    SYSLOG+WALL

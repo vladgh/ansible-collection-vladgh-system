@@ -1,0 +1,31 @@
+---
+# Server
+- import_tasks: server.yml
+  when: >
+    nut_mode is defined and
+    (
+      nut_mode == 'netserver' or
+      nut_mode == 'standalone'
+    )
+
+- import_tasks: client.yml
+  when: >
+    nut_mode is defined and
+    (
+      nut_mode == 'netserver' or
+      nut_mode == 'standalone' or
+      nut_mode == 'netclient'
+    )
+
+- name: Generate NUT Mode Configuration
+  ansible.builtin.template:
+    src: nut.conf.j2
+    dest: /etc/nut/nut.conf
+    owner: root
+    group: root
+    mode: 0640
+  notify:
+    - Restart NUT Server
+    - Restart NUT Client
+
+- import_tasks: state.yml
