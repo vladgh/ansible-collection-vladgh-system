@@ -1,0 +1,17 @@
+---
+- name: Ensure Unzip Package
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: Ensure vpn config directory exists
+  ansible.builtin.file:
+    path: "{{ pia_vpn_folder }}"
+    state: directory
+    mode: 0755
+
+- name: Extract PIA VPN configs
+  ansible.builtin.unarchive:
+    src: https://www.privateinternetaccess.com/openvpn/openvpn.zip
+    dest: "{{ pia_vpn_folder }}"
+    remote_src: yes
