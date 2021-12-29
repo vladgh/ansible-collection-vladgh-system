@@ -1,5 +1,4 @@
 ---
-# Server
 - import_tasks: server.yml
   when: >
     nut_mode is defined and
