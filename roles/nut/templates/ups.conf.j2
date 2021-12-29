@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+{{ nut_ups_extra }}
+
+[ups]
+  driver = {{ nut_driver }}
+  port = {{ nut_port }}
+  desc = "{{ nut_ups_description }}"
+  ignorelb
+  override.battery.charge.low = 25
+  override.battery.runtime.low = 300

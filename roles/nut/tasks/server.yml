@@ -1,0 +1,19 @@
+---
+- name: Ensure NUT Server Package
+  ansible.builtin.package:
+    name: nut-server
+    state: present
+
+- name: Generate NUT Configuration Files
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: root
+    mode: 0640
+  notify:
+    - Restart NUT Client
+  with_items:
+    - ups.conf
+    - upsd.conf
+    - upsd.users

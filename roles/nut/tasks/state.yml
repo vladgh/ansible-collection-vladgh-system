@@ -1,0 +1,24 @@
+- name: Ensure NUT Server Service
+  ansible.builtin.service:
+    name: nut-server
+    enabled: yes
+    state: started
+  when: >
+    nut_mode is defined and
+    (
+      nut_mode == 'netserver' or
+      nut_mode == 'standalone'
+    )
+
+- name: Ensure NUT Client Service
+  ansible.builtin.service:
+    name: nut-client
+    enabled: yes
+    state: started
+  when: >
+    nut_mode is defined and
+    (
+      nut_mode == 'netserver' or
+      nut_mode == 'standalone' or
+      nut_mode == 'netclient'
+    )
