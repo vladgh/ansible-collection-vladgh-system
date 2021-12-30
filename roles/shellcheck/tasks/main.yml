@@ -6,7 +6,6 @@
   register: shellcheck_installed
   changed_when: shellcheck_installed.rc != 0
   failed_when: false
-  when: shellcheck_version is changed  # noqa no-handler
 
 - name: Download Shellcheck
   ansible.builtin.get_url:
