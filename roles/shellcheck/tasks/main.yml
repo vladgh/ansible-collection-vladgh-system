@@ -1,6 +1,6 @@
 ---
 - name: Check if Shellcheck is installed
-  shell: set -euo pipefail && command -v shellcheck >/dev/null 2>&1
+  ansible.builtin.shell: set -euo pipefail && command -v shellcheck >/dev/null 2>&1
   args:
     executable: /bin/bash
   register: shellcheck_installed
@@ -8,14 +8,14 @@
   failed_when: false
 
 - name: Download Shellcheck
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/koalaman/shellcheck/releases/download/{{ shellcheck_version }}/shellcheck-{{ shellcheck_version }}.linux.x86_64.tar.xz"
     dest: "/tmp/shellcheck-{{ shellcheck_version }}.linux.x86_64.tar.xz"
-    mode: '0644'
+    mode: 0644
   when: shellcheck_installed is changed  # noqa no-handler
 
 - name: Unarchive Shellcheck
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/tmp/shellcheck-{{ shellcheck_version }}.linux.x86_64.tar.xz"
     dest: /tmp
     extra_opts:
@@ -24,9 +24,9 @@
   when: shellcheck_installed is changed  # noqa no-handler
 
 - name: Install Shellcheck
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/shellcheck-{{ shellcheck_version }}/shellcheck"
     dest: /usr/local/bin/shellcheck
     remote_src: yes
-    mode: '0755'
+    mode: 0755
   when: shellcheck_installed is changed  # noqa no-handler
