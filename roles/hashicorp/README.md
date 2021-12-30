@@ -8,11 +8,7 @@ Vlad's Hashicorp Ansible Role. It installs Packer, Terraform and Vault.
 
 ## Role Variables
 
-Available variables are listed below, along with default values (see defaults/main.yml):
-
-- `packer_version`: Packer version
-- `terraform_version`: Terraform version
-- `vault_version`: Vault version
+*_N/A_*
 
 ## Dependencies
 

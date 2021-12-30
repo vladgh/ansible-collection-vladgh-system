@@ -1,4 +1,0 @@
----
-install_packer: no
-install_terraform: no
-install_vault: no

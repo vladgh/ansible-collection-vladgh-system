@@ -1,38 +1,35 @@
 ---
 - name: Install role dependencies
-  apt:
+  ansible.builtin.apt:
     name:
       - gnupg2
       - apt-transport-https
     update_cache: yes
-    state: "present"
+    state: present
 
 - name: Add Hashicorp Apt signing key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     state: present
 
 - name: Add Hashicorp repo configuration
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
     filename: hashicorp
     state: present
   register: _hashicorp_repo
 
 - name: Install Hashicorp Packer
-  apt:
+  ansible.builtin.apt:
     name: packer
     state: present
-  when: install_packer is defined and install_packer|bool
 
 - name: Install Hashicorp Terraform
-  apt:
+  ansible.builtin.apt:
     name: terraform
     state: present
-  when: install_terraform is defined and install_terraform|bool
 
 - name: Install Hashicorp Vault
-  apt:
+  ansible.builtin.apt:
     name: vault
     state: present
-  when: install_vault is defined and install_vault|bool
