@@ -60,6 +60,8 @@
             service_enabled: yes
         install_ca_certificates: yes
         fail2ban_enabled: yes
+        sysctl_overwrite:
+          fs.inotify.max_user_watches: 524288
         unattended_upgrades_autoupdate_enabled: yes
         unattended_upgrades_autoupdate_reboot: "true"
         unattended_upgrades_autoupdate_mail_to: "root"

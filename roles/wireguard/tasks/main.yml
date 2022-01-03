@@ -32,15 +32,6 @@
     dest: /usr/local/bin/resolvconf
     state: link
 
-- name: Change various sysctl-settings
-  ansible.posix.sysctl:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
-    sysctl_set: yes
-    state: present
-    reload: yes
-  with_dict: "{{ wireguard_sysctl_config }}"
-
 - name: Start and Enable WireGuard Service
   service:
     name: "wg-quick@{{ item }}"
