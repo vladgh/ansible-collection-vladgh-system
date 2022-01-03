@@ -1,0 +1,25 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: instance
+    groups:
+      - ansible
+    image: ${MOLECULE_DISTRO:-'ubuntu:focal'}
+    dockerfile: ../Dockerfile.j2
+    pre_build_image: false
+    privileged: true
+    command: /sbin/init
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  log: true
+  playbooks:
+    prepare: ../prepare.yml
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
