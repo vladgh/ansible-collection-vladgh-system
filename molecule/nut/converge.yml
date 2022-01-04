@@ -2,5 +2,7 @@
 - name: Converge
   hosts: all
   become: yes
+  vars:
+    nut_mode: netserver
   roles:
-    - ./roles/qemu_guest_agent
+    - ./roles/nut
