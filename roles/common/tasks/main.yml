@@ -27,6 +27,9 @@
     ( pip_install_packages is defined and pip_install_packages ) or
     ( pip_user_install_packages is defined and pip_user_install_packages )
 
+- import_tasks: sysctl.yml
+  when: sysctl_overwrite is defined and sysctl_overwrite
+
 - import_tasks: ca.yml
   when: install_ca_certificates is defined and install_ca_certificates|bool
 
