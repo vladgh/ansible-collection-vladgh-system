@@ -12,10 +12,10 @@ Available variables are listed below, along with default values (see defaults/ma
 
 ### Timezone
 
-Configure timezone setting (<https://docs.ansible.com/ansible/latest/collections/community/general/timezone_module.html>)
+Configure timezone setting (<https://docs.ansible.com/ansible/latest/collections/community/general/timezone_module.html>; <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List>)
 
 ```yaml
-timezone: US/Central
+timezone: America/Chicago
 ```
 
 ### Users
@@ -42,6 +42,8 @@ Check <https://docs.ansible.com/ansible/latest/modules/group_module.html> for a 
 local_groups:
   - name: mygroup
     gid: 1234
+    system: yes
+    sudo: yes
 ```
 
 ### Extra APT repositories on Debian systems
@@ -52,6 +54,22 @@ Check <https://docs.ansible.com/ansible/latest/modules/apt_repository_module.htm
 apt_repositories:
   - name: GIT
     repo: ppa:git-core/ppa
+```
+
+### CA Certificates
+
+Set to `yes` to install all certificates from `files/ca`
+
+```yaml
+install_ca_certificates: yes
+```
+
+### System
+
+```yaml
+sysctl_overwrite:
+  # Increase the amount of inotify watchers
+  fs.inotify.max_user_watches: 524288
 ```
 
 ### CRON Jobs
@@ -77,17 +95,24 @@ mounts:
     src: UUID=1234-1234-1234-1234-1234
     fstype: ext4
     state: mounted
+  - name: NFS Share
+    src: 192.168.1.1:/share
+    path: /mnt/share
+    fstype: nfs
+    opts: defaults
+    state: mounted
 ```
 
 Using SystemD mount points
 
 ```yaml
 systemd_mounts:
-  - name: NFS auto mount
-    automount: yes
-    what: 192.168.1.10:/media
-    where: /mnt/media
+  - name: NFS Share
+    what: 192.168.1.1:/share
+    where: /mnt/share
     type: nfs
+    opts: defaults
+    state: mounted
 ```
 
 ### Security
