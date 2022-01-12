@@ -6,6 +6,8 @@ nut_mode: none  # none, standalone, netserver or netclient
 nut_driver: usbhid-ups
 nut_port: auto
 nut_ups_description: APC Back-UPS Pro
+nut_ups_override_battery_charge_low: 25
+nut_ups_override_battery_runtime_low: 300
 nut_upsd_users:
   admin:
     password: changeme
@@ -20,7 +22,7 @@ nut_upsd_users:
 nut_ups_extra: |
   maxretry = 3
 nut_upsd_extra: |
-  LISTEN {{ ansible_default_ipv4.address }} 3493
+  LISTEN 0.0.0.0 3493
 
 # Client
 nut_notification_email: root@localhost
@@ -39,7 +41,7 @@ nut_upsmon_extra: |
   NOCOMMWARNTIME 300
   FINALDELAY 5
 
-  POWERDOWNFLAG /etc/killpower
+  POWERDOWNFLAG "/etc/killpower"
   SHUTDOWNCMD "/sbin/shutdown -h +0"
   NOTIFYCMD "/etc/nut/notifycmd"
 

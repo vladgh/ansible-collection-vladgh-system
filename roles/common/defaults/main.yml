@@ -1,6 +1,6 @@
 ---
-# System
-timezone: UTC
+# Timezone
+timezone: ''
 
 # Accounts
 local_groups: []

@@ -11,9 +11,8 @@
     dest: /etc/nut/upsmon.conf
     owner: root
     group: root
-    mode: 0640
-  notify:
-    - Restart NUT Client
+    mode: 0644
+  notify: Restart NUT Client
 
 - name: Generate NUT Notification Script
   ansible.builtin.template:
@@ -21,5 +20,5 @@
     dest: /etc/nut/notifycmd
     owner: root
     group: root
-    mode: 0770
+    mode: 0775
   notify: Restart NUT Client

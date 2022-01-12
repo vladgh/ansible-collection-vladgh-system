@@ -5,6 +5,7 @@
       - wireguard
       - wireguard-tools
       - qrencode
+      - iptables
     state: present
 
 - name: Ensure Wireguard Directory

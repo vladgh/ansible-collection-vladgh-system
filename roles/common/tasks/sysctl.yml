@@ -7,6 +7,4 @@
     state: present
     reload: yes
   with_dict: "{{ sysctl_overwrite }}"
-  when: >
-    ( sysctl_overwrite is defined and sysctl_overwrite ) and
-    ansible_virtualization_type not in ['docker', 'lxc', 'openvz']
+  when: ansible_virtualization_type not in ['docker', 'lxc', 'openvz']
