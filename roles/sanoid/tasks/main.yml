@@ -98,7 +98,6 @@
       ConditionFileNotEmpty=/etc/sanoid/sanoid.conf
 
       [Service]
-      Environment=TZ={{ timezone }}
       Type=oneshot
       ExecStart=/usr/local/bin/sanoid --prune-snapshots --verbose
 
