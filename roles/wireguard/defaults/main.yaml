@@ -1,3 +1,4 @@
+---
 sample_wireguard_config:
   wg0:
     Description: 'Sample WireGuard Server Config'
