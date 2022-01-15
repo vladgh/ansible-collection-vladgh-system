@@ -11,6 +11,10 @@
       package:
         name: acl
         state: present
+    - name: Ensure /proc file system utilities
+      package:
+        name: procps
+        state: present
     - name: Ensure auth.log file is present
       copy:
         dest: /var/log/auth.log
