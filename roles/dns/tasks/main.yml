@@ -61,6 +61,8 @@
       ansible.builtin.copy:
         content: |
           [Resolve]
+          DNS={{ dns_resolved | default('127.0.0.1') }}
+          FallbackDNS=1.1.1.1 1.0.0.1
           DNSStubListener={{ dns_stub_listener | default('yes') }}
         dest: /etc/systemd/resolved.conf
         owner: root
