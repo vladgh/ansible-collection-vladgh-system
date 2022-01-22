@@ -1,8 +1,14 @@
 ---
 - name: QEMU Guest Agent
-  package:
-    name: qemu-guest-agent
-    state: present
+  block:
+    - name: QEMU Guest Agent
+      package:
+        name: qemu-guest-agent
+        state: present
+    - name: Enable QEMU Guest Agent
+      service:
+        name: qemu-guest-agent
+        enabled: yes
+        state: started
   when: ansible_system_vendor == 'QEMU' and
         ( qemu_guest_agent_enabled is defined and qemu_guest_agent_enabled|bool )
-  notify: Enable QEMU Guest Agent
