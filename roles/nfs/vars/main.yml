@@ -1,0 +1,5 @@
+---
+nfs_server_packages:
+  - nfs-common
+  - nfs-kernel-server
+nfs_server_daemon: nfs-kernel-server

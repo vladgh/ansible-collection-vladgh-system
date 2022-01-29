@@ -1,0 +1,28 @@
+---
+- name: Ensure NFS utilities are installed
+  package:
+    name: "{{ nfs_server_packages }}"
+    state: present
+
+- block:
+    - name: Ensure directories to export exist
+      file:  # noqa 208
+        path: "{{ item.strip().split()[0] }}"
+        state: directory
+      with_items: "{{ nfs_exports }}"
+
+    - name: Generate exports file
+      template:
+        src: exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: 0644
+      notify: Reload NFS
+
+    - name: Ensure NFS is running
+      service:
+        name: "{{ nfs_server_daemon }}"
+        state: started
+        enabled: yes
+  when: nfs_exports is defined and nfs_exports|length
