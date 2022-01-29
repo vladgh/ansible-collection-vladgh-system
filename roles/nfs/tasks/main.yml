@@ -26,6 +26,7 @@
         state: started
         enabled: yes
       register: dbg_res
+      ignore_errors: yes
 
     - name: debug stdout
       debug:
