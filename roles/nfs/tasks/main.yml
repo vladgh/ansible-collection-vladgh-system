@@ -25,14 +25,4 @@
         name: "{{ nfs_server_daemon }}"
         state: started
         enabled: yes
-      register: dbg_result
-      ignore_errors: yes
-
-    - name: debug stdout
-      debug:
-        msg: "{{ dbg_result.stdout }}"
-    - name: debug stderr
-      debug:
-        msg: "{{ dbg_result.stderr }}"
-
   when: nfs_exports is defined and nfs_exports|length

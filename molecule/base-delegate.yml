@@ -1,0 +1,16 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+platforms:
+  - name: molecule-test-instance  # must be able to `ssh molecule-test-instance`, edit your ~/.ssh/config
+provisioner:
+  name: ansible
+  log: true
+  playbooks:
+    prepare: ../prepare.yml
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
