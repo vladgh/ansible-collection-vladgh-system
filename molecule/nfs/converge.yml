@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Include role
+      include_role:
+        name: vladgh.system.nfs
+      vars:
+        nfs_exports:
+          - '/home/public  *(rw,async,no_root_squash)'
