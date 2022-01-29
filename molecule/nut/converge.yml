@@ -2,7 +2,7 @@
 - name: Converge
   hosts: all
   become: yes
-  vars:
-    nut_mode: netserver
   roles:
     - ./roles/nut
+  vars:
+    nut_mode: netserver

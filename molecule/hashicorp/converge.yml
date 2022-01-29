@@ -2,12 +2,9 @@
 - name: Converge
   hosts: all
   become: yes
-
-  tasks:
-    - name: Include hashicorp role
-      include_role:
-        name: vladgh.system.hashicorp
-      vars:
-        install_packer: yes
-        install_terraform: yes
-        install_vault: yes
+  roles:
+    - ./roles/hashicorp
+  vars:
+    install_packer: yes
+    install_terraform: yes
+    install_vault: yes

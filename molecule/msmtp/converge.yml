@@ -2,10 +2,7 @@
 - name: Converge
   hosts: all
   become: yes
-
-  tasks:
-    - name: Include MSMTP role
-      include_role:
-        name: vladgh.system.msmtp
-      vars:
-        msmtp_enabled: yes
+  roles:
+    - ./roles/msmtp
+  vars:
+    msmtp_enabled: yes

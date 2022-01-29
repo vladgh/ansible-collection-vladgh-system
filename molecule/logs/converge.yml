@@ -2,10 +2,7 @@
 - name: Converge
   hosts: all
   become: yes
-
-  tasks:
-    - name: Include logs role
-      include_role:
-        name: vladgh.system.logs
-      vars:
-        remote_logs_server: example.com
+  roles:
+    - ./roles/logs
+  vars:
+    remote_logs_server: example.com

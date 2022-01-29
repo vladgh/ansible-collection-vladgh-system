@@ -2,10 +2,7 @@
 - name: Converge
   hosts: all
   become: yes
-
-  tasks:
-    - name: Include role
-      include_role:
-        name: ./roles/nfs
-      vars:
-        nfs_exports: []
+  roles:
+    - ./roles/nfs
+  vars:
+    nfs_exports: []
