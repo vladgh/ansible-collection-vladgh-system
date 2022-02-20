@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: qemu_guest_agent
+  role_name: samba
   author: vladgh
-  description: Vlad's role for the QEMU Guest Agent
+  description: Vlad's Samba Role
   license: Apache v2
   galaxy_tags: []
   platforms:

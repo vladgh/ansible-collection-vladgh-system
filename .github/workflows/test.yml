@@ -54,6 +54,9 @@ jobs:
             qemu_guest_agent:
               - roles/qemu_guest_agent/**/!(**.md)
               - molecule/qemu_guest_agent/**
+            samba:
+              - roles/samba/**/!(**.md)
+              - molecule/samba/**
             shellcheck:
               - roles/shellcheck/**/!(**.md)
               - molecule/shellcheck/**
