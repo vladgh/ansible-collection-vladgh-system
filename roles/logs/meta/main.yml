@@ -8,11 +8,10 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - bionic
+        - impish
         - focal
     - name: Debian
       versions:
-        - stretch
+        - bullseye
         - buster
-
 dependencies: []
