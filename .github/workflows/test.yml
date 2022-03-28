@@ -85,7 +85,7 @@ jobs:
         with:
           path: ansible_collections/vladgh/system
       - name: Test scenario
-        uses: gofrolist/molecule-action@v2.2.20
+        uses: gofrolist/molecule-action@v2.2.21
         with:
           molecule_options: --base-config molecule/base.yml
           molecule_command: test
