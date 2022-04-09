@@ -1,0 +1,7 @@
+---
+pve_authorized_keys: []
+pve_cluster_disabled: false
+pve_zfs_tune: false
+pve_gpu_passthrough_enabled: false
+lvm_thin_pool_autoextend_threshold: 80
+lvm_thin_pool_autoextend_percent: 20
