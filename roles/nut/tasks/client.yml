@@ -10,7 +10,7 @@
     src: upsmon.conf.j2
     dest: /etc/nut/upsmon.conf
     owner: root
-    group: root
+    group: nut
     mode: 0644
   notify: Restart NUT Client
 
@@ -19,6 +19,6 @@
     src: notifycmd.j2
     dest: /etc/nut/notifycmd
     owner: root
-    group: root
+    group: nut
     mode: 0775
   notify: Restart NUT Client

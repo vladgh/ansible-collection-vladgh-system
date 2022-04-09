@@ -4,7 +4,7 @@
     path: /etc/nut
     state: directory
     owner: root
-    group: root
+    group: nut
     mode: 0755
 
 - import_tasks: server.yml
@@ -29,7 +29,7 @@
     src: nut.conf.j2
     dest: /etc/nut/nut.conf
     owner: root
-    group: root
+    group: nut
     mode: 0640
   notify:
     - Restart NUT Server
