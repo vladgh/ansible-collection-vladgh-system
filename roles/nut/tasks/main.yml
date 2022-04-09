@@ -1,4 +1,12 @@
 ---
+- name: Generate Configuration Directory
+  ansible.builtin.file:
+    path: /etc/nut
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
 - import_tasks: server.yml
   when: >
     nut_mode is defined and
