@@ -3,8 +3,6 @@
   ansible.builtin.file:
     path: /etc/nut
     state: directory
-    owner: root
-    group: nut
     mode: 0755
 
 - import_tasks: server.yml
