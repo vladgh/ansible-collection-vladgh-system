@@ -1,4 +1,10 @@
 ---
+- name: Generate Configuration Directory
+  ansible.builtin.file:
+    path: /etc/nut
+    state: directory
+    mode: 0755
+
 - import_tasks: server.yml
   when: >
     nut_mode is defined and
@@ -21,7 +27,7 @@
     src: nut.conf.j2
     dest: /etc/nut/nut.conf
     owner: root
-    group: root
+    group: nut
     mode: 0640
   notify:
     - Restart NUT Server

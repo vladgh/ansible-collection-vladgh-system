@@ -9,7 +9,7 @@
     src: "{{ item }}.j2"
     dest: "/etc/nut/{{ item }}"
     owner: root
-    group: root
+    group: nut
     mode: 0644
   notify:
     - Restart NUT Server
