@@ -32,6 +32,15 @@ collections:
   - name: vladgh.system
 ```
 
+Using the GitHub repository and branch
+
+```yaml
+collections:
+  - name: https://github.com/vladgh/ansible-collection-vladgh-system
+    version: main
+    type: git
+```
+
 ### Roles
 
 ```yaml
