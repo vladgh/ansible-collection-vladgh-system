@@ -1,9 +1,0 @@
----
-- name: Sample playbook
-  hosts: all
-  become: yes
-  gather_facts: false
-  tasks:
-    - name: Don't do much here.
-      debug:
-        msg: Not implemented at this time

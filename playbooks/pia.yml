@@ -1,0 +1,6 @@
+---
+- name: Upgrades
+  hosts: pia
+  become: yes
+  roles:
+    - vladgh.system.pia

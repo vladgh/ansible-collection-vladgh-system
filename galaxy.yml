@@ -8,14 +8,23 @@ authors:
 description: Ansible collection that holds roles, that can be used to configure common system services.
 license_file: LICENSE
 tags:
-  - linux
-  - ubuntu
-  - system
   - common
+  - dns
   - hashicorp
+  - linux
   - logs
+  - msmtp
+  - nfs
+  - nut
+  - proxmox
   - qemu
+  - samba
+  - sanoid
   - shellcheck
+  - system
+  - ubuntu
+  - wireguard
+  - zsh
 dependencies:
   ansible.posix: "*"
   community.general: "*"

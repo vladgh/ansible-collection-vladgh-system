@@ -1,0 +1,6 @@
+---
+- name: Ruby
+  hosts: ruby
+  become: yes
+  roles:
+    - rvm.ruby

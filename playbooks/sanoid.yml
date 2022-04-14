@@ -1,0 +1,6 @@
+---
+- name: Sanoid
+  hosts: sanoid
+  become: yes
+  roles:
+    - vladgh.system.sanoid

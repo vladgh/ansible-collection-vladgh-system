@@ -1,0 +1,6 @@
+---
+- name: Swap
+  hosts: swap
+  become: yes
+  roles:
+    - geerlingguy.swap

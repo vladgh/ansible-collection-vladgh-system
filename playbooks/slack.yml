@@ -1,0 +1,10 @@
+---
+- name: Slack
+  hosts: slack
+  gather_facts: false
+  tasks:
+    - name: Send notification message via Slack
+      community.general.slack:
+        token: "{{ slack_token }}"
+        msg: "Ansible run completed on `{{ inventory_hostname }}`"
+      when: slack_token is defined and slack_token
