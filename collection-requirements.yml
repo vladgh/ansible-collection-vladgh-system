@@ -4,9 +4,6 @@ collections:
   - name: community.general
   - name: kubernetes.core
   - name: devsec.hardening
-  - name: https://github.com/vladgh/ansible-collection-vladgh-system
-    version: main
-    type: git
 
 roles:
   - name: cloudalchemy.node_exporter
