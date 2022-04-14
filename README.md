@@ -8,15 +8,11 @@ Ansible collection that holds roles, that can be used to configure common system
 
 ### Roles
 
-- [common](roles/common/README.md)
-- [hashicorp](roles/hashicorp/README.md)
-- [logs](roles/logs/README.md)
-- [msmtp](roles/msmtp/README.md)
-- [qemu_guest_agent](roles/qemu_guest_agent/README.md)
-- [shellcheck](roles/shellcheck/README.md)
+See [Roles](roles/)
 
 ### Playbooks
-- [ansible](playbooks/ansible.yml)
+
+See [Playbooks](playbooks/)
 
 ## Using this collection
 
@@ -48,6 +44,14 @@ collections:
 ```
 
 ### Playbooks
+
+Before using the playbooks, install the required external roles and collections (modify to your own collections installation path)
+
+```sh
+ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansible_collections/vladgh/system/collection-requirements.yml`
+```
+
+Import playbooks
 
 ```yaml
 ---
