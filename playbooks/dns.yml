@@ -1,0 +1,6 @@
+---
+- name: DNS Configuration
+  hosts: dns
+  become: yes
+  roles:
+    - vladgh.system.dns

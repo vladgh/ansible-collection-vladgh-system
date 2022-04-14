@@ -1,0 +1,6 @@
+---
+- name: Mail Services
+  hosts: mail
+  become: yes
+  roles:
+    - oefenweb.postfix

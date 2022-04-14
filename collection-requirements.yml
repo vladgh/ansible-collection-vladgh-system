@@ -1,0 +1,19 @@
+---
+collections:
+  - name: ansible.posix
+  - name: community.general
+  - name: kubernetes.core
+  - name: devsec.hardening
+  - name: https://github.com/vladgh/ansible-collection-vladgh-system
+    version: main
+    type: git
+
+roles:
+  - name: cloudalchemy.node_exporter
+  - name: geerlingguy.docker
+  - name: geerlingguy.firewall
+  - name: geerlingguy.kubernetes
+  - name: geerlingguy.swap
+  - name: oefenweb.postfix
+  - name: rvm.ruby
+  - name: stefangweichinger.ansible_rclone

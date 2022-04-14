@@ -1,0 +1,7 @@
+---
+- name: Monitor
+  hosts: monitor
+  become: yes
+  roles:
+    # - vladgh.system.logs
+    - cloudalchemy.node_exporter

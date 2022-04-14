@@ -1,0 +1,6 @@
+---
+- name: NFS Servers
+  hosts: nfs_servers
+  become: yes
+  roles:
+    - vladgh.system.nfs
