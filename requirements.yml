@@ -11,7 +11,7 @@ collections:
 
 roles:
   - name: cloudalchemy.node_exporter
-    version: 1.0.0
+    version: 2.0.0
   - name: geerlingguy.docker
     version: 4.2.2
   - name: geerlingguy.firewall
