@@ -6,7 +6,7 @@ collections:
   - name: devsec.hardening
 
 roles:
-  - name: cloudalchemy.node_exporter
+  - name: cloudalchemy.node_exporter:1.0.0
   - name: geerlingguy.docker
   - name: geerlingguy.firewall
   - name: geerlingguy.kubernetes
