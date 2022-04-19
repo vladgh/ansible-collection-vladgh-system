@@ -3,16 +3,23 @@ collections:
   - name: ansible.posix
     version: 0.1.0
   - name: community.general
+    version: 4.7.0
   - name: kubernetes.core
+    version: 2.2.3
   - name: devsec.hardening
+    version: 7.14.0
 
 roles:
   - name: cloudalchemy.node_exporter
     version: 1.0.0
   - name: geerlingguy.docker
+    version: 4.2.2
   - name: geerlingguy.firewall
+    version: 2.5.0
   - name: geerlingguy.kubernetes
+    version: 7.1.0
   - name: geerlingguy.swap
+    version: 1.0.2
   - name: oefenweb.postfix
-  - name: rvm.ruby
+    version: v3.6.0
   - name: stefangweichinger.ansible_rclone
