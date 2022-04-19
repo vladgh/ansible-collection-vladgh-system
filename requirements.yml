@@ -21,5 +21,5 @@ roles:
   - name: geerlingguy.swap
     version: 1.0.2
   - name: oefenweb.postfix
-    version: v3.6.0
+    version: v3.6.1
   - name: stefangweichinger.ansible_rclone
