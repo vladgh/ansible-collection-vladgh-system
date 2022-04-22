@@ -2,9 +2,9 @@
 - name: Add Authorized Keys
   ansible.posix.authorized_key:
     user: root
-    key: "{{ item }}"
+    key: "{{ pve_authorized_keys }}"
     state: present
-  with_items: "{{ pve_authorized_keys }}"
+    exclusive: yes
   when: pve_authorized_keys is defined and pve_authorized_keys
 
 - name: Remove automatically installed PVE Enterprise repo configuration
