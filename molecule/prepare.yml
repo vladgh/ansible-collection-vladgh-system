@@ -22,3 +22,5 @@
         force: false
         mode: 0644
       when: ansible_distribution == 'Debian'
+    - name: Add Git Safe Directory
+      shell: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system

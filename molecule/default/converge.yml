@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  tasks:
+    - name: Don't do much here
+      debug:
+        msg: Use individual scenario
