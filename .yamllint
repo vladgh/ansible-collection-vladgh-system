@@ -3,7 +3,6 @@ extends: default
 ignore: |
   .github/
   .cache
-  playbooks/
 rules:
   line-length: disable
   truthy: disable
