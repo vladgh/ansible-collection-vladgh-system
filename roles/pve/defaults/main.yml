@@ -1,5 +1,7 @@
 ---
-pve_authorized_keys: []
+# Multiple keys can be specified in a single key string value by separating them by newlines.
+# This option is not loop aware, so if you use with_ , it will be exclusive per iteration of the loop.
+pve_authorized_keys: ''
 pve_cluster_disabled: no
 pve_zfs_tune: no
 pve_gpu_passthrough_enabled: no
