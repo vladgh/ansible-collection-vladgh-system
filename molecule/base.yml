@@ -24,6 +24,5 @@ provisioner:
     prepare: ../prepare.yml
 lint: |
   set -e
-  git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
   yamllint .
   ansible-lint .
