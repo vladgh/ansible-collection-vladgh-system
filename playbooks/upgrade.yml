@@ -6,27 +6,27 @@
     - name: Upgrade Debian Systems
       block:
         - name: Update apt-get repo and cache
-          apt:
+          ansible.builtin.apt:
             update_cache: yes
             force_apt_get: yes
             cache_valid_time: 21600  # Update the apt cache if its older than 6 hours
         - name: Upgrade all apt packages
-          apt:
+          ansible.builtin.apt:
             upgrade: dist
         - name: Remove dependencies that are no longer required
-          apt:
+          ansible.builtin.apt:
             autoremove: yes
             purge: yes
         - name: Remove useless packages from the cache
-          apt:
+          ansible.builtin.apt:
             autoclean: yes
         # - name: Check if a reboot is needed on all servers
-        #   register: reboot_required_file
+        #   ansible.builtin.register: reboot_required_file
         #   stat:
         #     path: /var/run/reboot-required
         #     get_md5: no
         # - name: Reboot the box if kernel updated
-        #   reboot:
+        #   ansible.builtin.reboot:
         #     msg: "Reboot initiated by Ansible for kernel updates"
         #     connect_timeout: 5
         #     reboot_timeout: 300
@@ -42,7 +42,6 @@
           ansible.builtin.package:
             name: unattended-upgrades
             state: present
-
         - name: Copy unattended-upgrades configuration files in place
           ansible.builtin.template:
             src: "etc/apt/apt.conf.d/{{ item }}.j2"
