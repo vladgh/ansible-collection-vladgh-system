@@ -70,15 +70,9 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu:jammy
           - ubuntu:focal
-          - debian:bullseye
           - debian:buster
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
-        # exclude:
-          # # until this platform is supported in the Hashicorp repositories
-          # - os: debian:bullseye
-          #   scenario: hashicorp
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
