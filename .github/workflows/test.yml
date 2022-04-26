@@ -82,6 +82,7 @@ jobs:
         run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
       - name: Test scenario
         uses: gofrolist/molecule-action@v2.2.25
+        continue-on-error: true
         with:
           molecule_options: --debug --base-config molecule/base.yml
           molecule_command: converge
