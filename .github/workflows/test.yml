@@ -91,3 +91,5 @@ jobs:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
+      - name: Debug
+        run: cat /github/home/.ansible_async/*
