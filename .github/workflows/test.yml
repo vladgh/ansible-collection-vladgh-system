@@ -93,4 +93,4 @@ jobs:
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
       - name: Debug
-        run: ls -lah /github/home/; find /github/home/.ansible_async/ -type f -exec cat {} \;
+        run: sudo ls -lah /github/home/; sudo find /github/home/.ansible_async/ -type f -exec cat {} \;
