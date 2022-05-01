@@ -70,29 +70,31 @@ jobs:
       fail-fast: false
       matrix:
         os:
+          - ubuntu:jammy
+          - ubuntu:impish
           - ubuntu:focal
+          - debian:bullseye
           - debian:buster
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
+        # exclude:
+          # # until this platform is supported in the Hashicorp repositories
+          # - os: debian:bullseye
+          #   scenario: hashicorp
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
         with:
           path: ansible_collections/vladgh/system
-      - name: Add home dir
-        run: mkdir -p /github/home
       - name: Add Git Safe Directories
         run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
       - name: Test scenario
         uses: gofrolist/molecule-action@v2.2.25
-        continue-on-error: true
         with:
-          molecule_options: --debug --base-config molecule/base.yml
-          molecule_command: converge
+          molecule_options: --base-config molecule/base.yml
+          molecule_command: test
           molecule_args: --scenario-name ${{ matrix.scenario }}
           molecule_working_dir: ansible_collections/vladgh/system
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
-      - name: Debug
-        run: sudo find /github/home/.ansible_async/ -type f -exec cat {} \;

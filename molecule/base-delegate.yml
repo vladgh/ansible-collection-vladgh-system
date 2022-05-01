@@ -10,3 +10,7 @@ provisioner:
   log: true
   playbooks:
     prepare: ../prepare.yml
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
