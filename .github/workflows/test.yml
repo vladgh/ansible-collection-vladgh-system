@@ -94,5 +94,7 @@ jobs:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
+      - name: Debugging with tmate
+        uses: mxschmitt/action-tmate@v3.11
       - name: Debug
         run: sudo find /github/home/.ansible_async/ -type f -exec cat {} \;
