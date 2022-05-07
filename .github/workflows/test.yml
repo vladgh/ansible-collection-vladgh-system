@@ -88,7 +88,7 @@ jobs:
       - name: Add Git Safe Directories
         run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
       - name: Test scenario
-        uses: gofrolist/molecule-action@v2.2.26
+        uses: gofrolist/molecule-action@v2.2.27
         with:
           molecule_options: --base-config molecule/base.yml
           molecule_command: test
