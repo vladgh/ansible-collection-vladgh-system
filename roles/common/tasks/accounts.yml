@@ -58,6 +58,6 @@
       ansible.posix.authorized_key:
         user: "{{ item.user }}"
         key: "{{ item.key }}"
-        state: "{{ item.state }}"
-        exclusive: "{{ item.exclusive }}"
+        state: "{{ item.state | default('present') }}"
+        exclusive: "{{ item.exclusive | default(omit) }}"
   when: local_user_authorized_keys is defined and local_user_authorized_keys
