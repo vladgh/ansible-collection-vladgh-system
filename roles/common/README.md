@@ -117,11 +117,10 @@ systemd_mounts:
 
 ### Security
 
-Install Fail2ban and Unattended Upgrades
+Install Fail2ban
 
 ```yaml
 fail2ban_enabled: yes
-unattended_upgrades_autoupdate_enabled: yes
 ```
 
 ### Miscellaneous
