@@ -44,9 +44,6 @@
 - import_tasks: fail2ban.yml
   when: fail2ban_enabled is defined and fail2ban_enabled|bool
 
-- import_tasks: unattended-upgrades.yml
-  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
-
 - import_tasks: shell.yml
   when: shell_extra_commands is defined and shell_extra_commands
 
