@@ -1,0 +1,8 @@
+---
+proxmox_zfs_tune: no
+proxmox_enable_chrony: no
+proxmox_cluster_disabled: no
+proxmox_gpu_passthrough_enabled: no
+proxmox_lvm_thin_pool_autoextend: no
+proxmox_lvm_thin_pool_autoextend_threshold: 80
+proxmox_lvm_thin_pool_autoextend_percent: 20
