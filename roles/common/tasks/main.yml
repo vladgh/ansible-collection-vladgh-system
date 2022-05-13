@@ -6,9 +6,6 @@
     - "{{ ansible_distribution | lower }}.yml"
     - "{{ ansible_os_family | lower }}.yml"
 
-- import_tasks: timezone.yml
-  when: timezone is defined and timezone
-
 - import_tasks: accounts.yml
   when: >
     ( local_groups is defined and local_groups ) or
@@ -26,6 +23,9 @@
   when: >
     ( pip_install_packages is defined and pip_install_packages ) or
     ( pip_user_install_packages is defined and pip_user_install_packages )
+
+- import_tasks: timezone.yml
+  when: timezone is defined and timezone
 
 - import_tasks: sysctl.yml
   when: sysctl_overwrite is defined and sysctl_overwrite
