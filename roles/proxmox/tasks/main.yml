@@ -1,0 +1,116 @@
+---
+- name: Replace SystemD Timesyncd with Chrony
+  block:
+    - name: Install Chrony as the default NTP daemon
+      ansible.builtin.package:
+        name: chrony
+        state: present
+    - name: Disable systemd-timesyncd
+      ansible.builtin.systemd:
+        name: systemd-timesyncd
+        state: stopped
+        enabled: no
+        daemon_reload: yes
+  when: proxmox_enable_chrony is defined and proxmox_enable_chrony
+
+- name: Stop HA Cluster Services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+    daemon_reload: yes
+  with_items:
+    - pve-ha-lrm
+    - pve-ha-crm
+    - corosync
+    - pvesr.timer
+  when: proxmox_cluster_disabled is defined and proxmox_cluster_disabled|bool
+
+- name: Tune ZFS
+  ansible.builtin.blockinfile:
+    path: /etc/modprobe.d/zfs.conf
+    block: |
+      options zfs zfs_arc_max=8589934592
+      options zfs zfs_arc_min=4294967296
+    owner: root
+    group: root
+    mode: 0664
+    create: yes
+  become: yes
+  notify:
+    - Regenerate initramfs
+    - Reboot
+  when: proxmox_zfs_tune is defined and proxmox_zfs_tune|bool
+
+- name: GPU Passthrough
+  block:
+    - name: Add VFIO modules
+      ansible.builtin.blockinfile:
+        path: /etc/modules-load.d/vfio.conf
+        block: |
+          vfio
+          vfio_iommu_type1
+          vfio_pci
+          vfio_virqfd
+        owner: root
+        group: root
+        mode: 0664
+        create: yes
+      become: yes
+      notify:
+        - Regenerate initramfs
+        - Reboot
+
+    - name: Add Intel GVT modules
+      ansible.builtin.blockinfile:
+        path: /etc/modules-load.d/gvt.conf
+        block: |
+          kvmgt
+          exngt
+          vfio-mdev
+        owner: root
+        group: root
+        mode: 0664
+        create: yes
+      become: yes
+      notify:
+        - Regenerate initramfs
+        - Reboot
+
+    - name: Configure Grub for VFIO
+      ansible.builtin.lineinfile:
+        dest: /etc/default/grub
+        regexp: "^GRUB_CMDLINE_LINUX_DEFAULT"
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt i915.enable_gvt=1"'
+        state: present
+      become: yes
+      notify:
+        - Update Grub
+        - Reboot
+
+    - name: Install Intel Graphics driver
+      ansible.builtin.package:
+        name:
+          - i965-va-driver
+          - vainfo
+        state: present
+  when: proxmox_gpu_passthrough_enabled is defined and proxmox_gpu_passthrough_enabled
+
+- name: LVM thinpool auto extend
+  block:
+    - name: Configure lvm thinpool extend threshold
+      ansible.builtin.lineinfile:
+        path: /etc/lvm/lvm.conf
+        regex: "thin_pool_autoextend_threshold"
+        backrefs: yes
+        line: "  thin_pool_autoextend_threshold = {{ proxmox_lvm_thin_pool_autoextend_threshold }}"
+      when: proxmox_lvm_thin_pool_autoextend_threshold is defined and proxmox_lvm_thin_pool_autoextend_threshold
+
+    - name: Configure lvm thinpool extend percentage
+      ansible.builtin.lineinfile:
+        path: /etc/lvm/lvm.conf
+        regex: "thin_pool_autoextend_percent"
+        backrefs: yes
+        line: "  thin_pool_autoextend_percent = {{ proxmox_lvm_thin_pool_autoextend_percent }}"
+      when: proxmox_lvm_thin_pool_autoextend_percent is defined and proxmox_lvm_thin_pool_autoextend_percent
+  when: proxmox_lvm_thin_pool_autoextend is defined and proxmox_lvm_thin_pool_autoextend
