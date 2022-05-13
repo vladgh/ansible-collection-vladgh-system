@@ -1,5 +1,5 @@
 ---
-#   Provision Ansible on node
+#   Provision Ansible on node(s)
 - name: Ansible
   hosts: ansible
   become: yes
