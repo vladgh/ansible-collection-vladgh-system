@@ -41,6 +41,7 @@
     - Regenerate initramfs
     - Reboot
   when: >
+    ( proxmox_zfs_tune is defined and proxmox_zfs_tune|bool ) and
     ( proxmox_zfs_arc_min is defined and proxmox_zfs_arc_min ) and
     ( proxmox_zfs_arc_max is defined and proxmox_zfs_arc_max )
 
