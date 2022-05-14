@@ -11,7 +11,7 @@
         state: started
         enabled: yes
         daemon_reload: yes
-  when: proxmox_enable_chrony is defined and proxmox_enable_chrony
+  when: proxmox_enable_chrony is defined and proxmox_enable_chrony|bool
 
 - name: Stop HA Cluster Services
   ansible.builtin.service:
@@ -94,7 +94,7 @@
           - i965-va-driver
           - vainfo
         state: present
-  when: proxmox_gpu_passthrough_enabled is defined and proxmox_gpu_passthrough_enabled
+  when: proxmox_gpu_passthrough_enabled is defined and proxmox_gpu_passthrough_enabled|bool
 
 - name: LVM thinpool auto extend
   block:
@@ -113,4 +113,4 @@
         backrefs: yes
         line: "  thin_pool_autoextend_percent = {{ proxmox_lvm_thin_pool_autoextend_percent }}"
       when: proxmox_lvm_thin_pool_autoextend_percent is defined and proxmox_lvm_thin_pool_autoextend_percent
-  when: proxmox_lvm_thin_pool_autoextend is defined and proxmox_lvm_thin_pool_autoextend
+  when: proxmox_lvm_thin_pool_autoextend is defined and proxmox_lvm_thin_pool_autoextend|bool
