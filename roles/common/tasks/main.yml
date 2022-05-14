@@ -12,14 +12,10 @@
     ( local_users is defined and local_users )
 
 - import_tasks: apt.yml
-  when: >
-    ansible_os_family == 'Debian' and
-    apt_extra_repositories is defined and apt_extra_repositories
+  when: apt_extra_repositories is defined and apt_extra_repositories
 
 - import_tasks: unattended.yml
-  when: >
-    ansible_os_family == 'Debian' and
-    unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
+  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
 
 - import_tasks: packages.yml
   when: additional_packages is defined and additional_packages
