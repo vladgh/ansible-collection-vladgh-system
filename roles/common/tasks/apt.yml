@@ -9,7 +9,7 @@
     repo: "{{ item.repo }}"
     codename: "{{ ansible_distribution_release | default(omit) }}"
     filename: "{{ item.filename | default(omit) }}"
-    update_cache: "{{ item.update_cache | default(no) }}"
+    update_cache: "{{ item.update_cache | default(false) }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ apt_repositories }}"
 
