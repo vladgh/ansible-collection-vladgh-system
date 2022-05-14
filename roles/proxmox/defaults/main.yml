@@ -1,5 +1,6 @@
 ---
-proxmox_zfs_tune: no
+proxmox_zfs_arc_min: 4294967296
+proxmox_zfs_arc_max: 8589934592
 proxmox_enable_chrony: no
 proxmox_cluster_disabled: no
 proxmox_gpu_passthrough_enabled: no
