@@ -5,11 +5,11 @@
       ansible.builtin.package:
         name: chrony
         state: present
-    - name: Disable systemd-timesyncd
+    - name: Make sure service is running
       ansible.builtin.systemd:
-        name: systemd-timesyncd
-        state: stopped
-        enabled: no
+        name: chrony
+        state: started
+        enabled: yes
         daemon_reload: yes
   when: proxmox_enable_chrony is defined and proxmox_enable_chrony
 
