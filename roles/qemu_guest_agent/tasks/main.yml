@@ -2,11 +2,11 @@
 - name: QEMU Guest Agent
   block:
     - name: QEMU Guest Agent
-      package:
+      ansible.builtin.package:
         name: qemu-guest-agent
         state: present
     - name: Enable QEMU Guest Agent
-      service:
+      ansible.builtin.service:
         name: qemu-guest-agent
         enabled: yes
         state: started
