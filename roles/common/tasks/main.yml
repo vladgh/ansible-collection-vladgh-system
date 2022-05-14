@@ -1,6 +1,6 @@
 ---
 - name: Gather variables for each operating system
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_distribution | lower }}.yml"
@@ -13,8 +13,13 @@
 
 - import_tasks: apt.yml
   when: >
-    ansible_distribution == 'Ubuntu' and
-    apt_repositories is defined and apt_repositories
+    ansible_os_family == 'Debian' and
+    apt_extra_repositories is defined and apt_extra_repositories
+
+- import_tasks: unattended.yml
+  when: >
+    ansible_os_family == 'Debian' and
+    unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
 
 - import_tasks: packages.yml
   when: additional_packages is defined and additional_packages

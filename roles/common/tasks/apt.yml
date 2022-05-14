@@ -11,7 +11,7 @@
     filename: "{{ item.filename | default(omit) }}"
     update_cache: "{{ item.update_cache | default(false) }}"
     state: "{{ item.state | default('present') }}"
-  with_items: "{{ apt_repositories }}"
+  with_items: "{{ apt_extra_repositories }}"
 
 - name: Update Apt cache
   ansible.builtin.apt:
@@ -21,7 +21,6 @@
   until: _update_apt_cache is success
   retries: 3
   delay: 2
-
 
 - name: Unattended upgrades
   block:
@@ -39,4 +38,3 @@
       with_items:
         - 10periodic
         - 50unattended-upgrades
-  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
