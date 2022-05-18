@@ -1,14 +1,24 @@
 ---
+- name: Disable APT repositories
+  ansible.builtin.apt_repository:
+    repo: "{{ item.repo }}"
+    codename: "{{ ansible_distribution_release | default(omit) }}"
+    filename: "{{ item.filename | default(omit) }}"
+    update_cache: "{{ item.update_cache | default(true) }}"
+    state: "{{ item.state | default('absent') }}"
+  with_items: "{{ apt_disable_repositories }}"
+
 - name: Ensure GnuPG package is installed
   ansible.builtin.apt:
     name: gnupg2
+    update_cache: yes
 
 - name: Add extra APT repositories
   ansible.builtin.apt_repository:
     repo: "{{ item.repo }}"
     codename: "{{ ansible_distribution_release | default(omit) }}"
     filename: "{{ item.filename | default(omit) }}"
-    update_cache: "{{ item.update_cache | default(false) }}"
+    update_cache: "{{ item.update_cache | default(true) }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ apt_extra_repositories }}"
 

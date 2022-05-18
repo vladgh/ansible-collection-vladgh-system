@@ -13,7 +13,9 @@
     ( local_user_authorized_keys is defined and local_user_authorized_keys )
 
 - import_tasks: apt.yml
-  when: apt_extra_repositories is defined and apt_extra_repositories
+  when: >
+    ( apt_extra_repositories is defined and apt_extra_repositories ) or
+    ( apt_disable_repositories is defined and apt_disable_repositories )
 
 - import_tasks: unattended.yml
   when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
