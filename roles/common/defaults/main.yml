@@ -21,6 +21,14 @@ pip_user_install_packages: []
 ## Set to `yes` to install all certificates from `files/ca`
 install_ca_certificates: no
 
+# BASH extra aliases
+bash_extra_aliases: []
+  # - alias: ll
+  #   command: ls -lahpF
+  #   dest: /root/.bashrc
+  #   owner: root
+  #   group: root
+
 # Cronjobs
 cron_jobs: []
 
