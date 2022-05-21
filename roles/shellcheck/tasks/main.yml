@@ -30,3 +30,5 @@
     remote_src: yes
     mode: 0755
   when: shellcheck_installed is changed  # noqa no-handler
+
+# trigger tests

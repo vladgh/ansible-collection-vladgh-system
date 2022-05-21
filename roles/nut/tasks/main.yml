@@ -34,3 +34,5 @@
     - Restart NUT Client
 
 - import_tasks: state.yml
+
+# trigger tests

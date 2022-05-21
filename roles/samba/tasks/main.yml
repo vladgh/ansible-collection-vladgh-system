@@ -113,3 +113,5 @@
   register: create_user_output
   changed_when: "'Added user' in create_user_output.stdout"
   tags: samba
+
+# trigger tests

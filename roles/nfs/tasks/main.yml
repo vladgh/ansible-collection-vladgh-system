@@ -26,3 +26,5 @@
         state: started
         enabled: yes
   when: nfs_exports is defined and nfs_exports|length
+
+# trigger tests

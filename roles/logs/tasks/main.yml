@@ -41,3 +41,5 @@
     mode: 0644
   notify:
     - Restart RSysLog
+
+# trigger tests

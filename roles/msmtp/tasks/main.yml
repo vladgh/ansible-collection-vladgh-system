@@ -34,3 +34,5 @@
     name: mta
     link: /usr/sbin/sendmail
     path: /usr/bin/msmtp
+
+# trigger tests
