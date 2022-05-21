@@ -70,8 +70,10 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu:focal
-          - debian:buster
+          - ubuntu2204
+          - ubuntu2004
+          - debian11
+          - debian10
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
@@ -85,7 +87,7 @@ jobs:
         continue-on-error: true
         with:
           molecule_options: --debug --base-config molecule/base.yml
-          molecule_command: converge
+          molecule_command: test
           molecule_args: --scenario-name ${{ matrix.scenario }}
           molecule_working_dir: ansible_collections/vladgh/system
         env:
