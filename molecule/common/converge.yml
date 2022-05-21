@@ -21,10 +21,8 @@
     additional_packages:
       - rolldice
     apt_extra_repositories:
-      - name: Google Chrome
-        repo: deb http://dl.google.com/linux/chrome/deb/ stable main
-        state: present
-        filename: google-chrome
+      - name: Test docker repo
+        repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
     pip_install_packages: [pip-install-test]
     pip_user_install_packages:
       - user: test
