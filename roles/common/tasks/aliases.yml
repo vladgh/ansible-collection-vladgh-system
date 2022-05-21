@@ -6,7 +6,7 @@
     group: "{{ item.group | default(omit) }}"
     mode: 0644
     create: yes
-    line: 'alias {{ item.alias }}="{{ item.command }}"'
+    line: "alias {{ item.alias }}='{{ item.command }}'"
     regexp: "alias {{ item.alias }}="
     state: "{{ item.state | default('present') }}"
   with_items: "{{ bash_extra_aliases }}"
