@@ -21,8 +21,8 @@
     additional_packages:
       - rolldice
     apt_extra_repositories:
-      - name: Ansible
-        repo: ppa:ansible/ansible
+      - name: NginX
+        repo: ppa:nginx/stable
     pip_install_packages: [pip-install-test]
     pip_user_install_packages:
       - user: test
