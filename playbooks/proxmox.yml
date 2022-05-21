@@ -3,4 +3,4 @@
   hosts: proxmox
   become: yes
   roles:
-    - vladgh.system.pve
+    - vladgh.system.proxmox

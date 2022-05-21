@@ -51,7 +51,7 @@ local_groups:
 Check <https://docs.ansible.com/ansible/latest/modules/apt_repository_module.html> for a complete list of parameters
 
 ```yaml
-apt_repositories:
+apt_extra_repositories:
   - name: GIT
     repo: ppa:git-core/ppa
 ```

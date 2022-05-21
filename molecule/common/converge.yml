@@ -20,7 +20,7 @@
           - ssh-ed25519 AAAA testing
     additional_packages:
       - rolldice
-    apt_repositories:
+    apt_extra_repositories:
       - name: Ansible
         repo: ppa:ansible/ansible
     pip_install_packages: [pip-install-test]
@@ -28,6 +28,12 @@
       - user: test
         packages: [colorama]
         state: latest
+    bash_extra_aliases:
+      - alias: ll
+        command: ls -lahpF
+        dest: /root/.bashrc
+        owner: root
+        group: root
     cron_jobs:
       - name: Testing
         minute: '0'

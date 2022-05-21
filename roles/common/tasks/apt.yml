@@ -1,21 +1,27 @@
 ---
-- name: Ensure GnuPG package is installed
-  ansible.builtin.apt:
-    name: gnupg2
-    update_cache: yes
-
-- name: Add extra APT repositories
+- name: Disable APT repositories
   ansible.builtin.apt_repository:
     repo: "{{ item.repo }}"
-    codename: "{{ ansible_distribution_release }}"
-    update_cache: no
-  with_items: "{{ apt_repositories }}"
+    codename: "{{ ansible_distribution_release | default(omit) }}"
+    filename: "{{ item.filename | default(omit) }}"
+    update_cache: "{{ item.update_cache | default(true) }}"
+    state: "{{ item.state | default('absent') }}"
+  with_items: "{{ apt_disable_repositories }}"
+  when: apt_disable_repositories is defined and apt_disable_repositories
 
-- name: Update Apt cache
-  ansible.builtin.apt:
-    update_cache: yes
-    cache_valid_time: 3600
-  register: _update_apt_cache
-  until: _update_apt_cache is success
-  retries: 3
-  delay: 2
+- name: Add extra APT repositories
+  block:
+    - name: Ensure GnuPG package is installed
+      ansible.builtin.apt:
+        name: gnupg2
+        update_cache: yes
+
+    - name: Add extra APT repositories
+      ansible.builtin.apt_repository:
+        repo: "{{ item.repo }}"
+        codename: "{{ ansible_distribution_release | default(omit) }}"
+        filename: "{{ item.filename | default(omit) }}"
+        update_cache: "{{ item.update_cache | default(true) }}"
+        state: "{{ item.state | default('present') }}"
+      with_items: "{{ apt_extra_repositories }}"
+  when: apt_extra_repositories is defined and apt_extra_repositories

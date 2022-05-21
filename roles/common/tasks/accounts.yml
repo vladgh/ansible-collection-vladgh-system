@@ -49,3 +49,16 @@
         - skip_missing: yes
   when: local_users is defined and local_users
   no_log: yes
+
+# Multiple keys can be specified in a single key string value by separating them by newlines.
+# This option is not loop aware, so if you use with_ , it will be exclusive per iteration of the loop.
+- name: Configure ssh authorized keys
+  block:
+    - name: Add authorized keys
+      ansible.posix.authorized_key:
+        user: "{{ item.user }}"
+        key: "{{ item.key }}"
+        state: "{{ item.state | default('present') }}"
+        exclusive: "{{ item.exclusive | default(omit) }}"
+      with_items: "{{ local_user_authorized_keys }}"
+  when: local_user_authorized_keys is defined and local_user_authorized_keys

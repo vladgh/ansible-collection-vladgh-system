@@ -1,23 +1,17 @@
 ---
 - name: Gather variables for each operating system
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_distribution | lower }}.yml"
     - "{{ ansible_os_family | lower }}.yml"
 
-- import_tasks: timezone.yml
-  when: timezone is defined and timezone
-
 - import_tasks: accounts.yml
-  when: >
-    ( local_groups is defined and local_groups ) or
-    ( local_users is defined and local_users )
 
 - import_tasks: apt.yml
-  when: >
-    ansible_distribution == 'Ubuntu' and
-    apt_repositories is defined and apt_repositories
+
+- import_tasks: unattended.yml
+  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
 
 - import_tasks: packages.yml
   when: additional_packages is defined and additional_packages
@@ -27,11 +21,17 @@
     ( pip_install_packages is defined and pip_install_packages ) or
     ( pip_user_install_packages is defined and pip_user_install_packages )
 
+- import_tasks: timezone.yml
+  when: timezone is defined and timezone
+
 - import_tasks: sysctl.yml
   when: sysctl_overwrite is defined and sysctl_overwrite
 
 - import_tasks: ca.yml
   when: install_ca_certificates is defined and install_ca_certificates|bool
+
+- import_tasks: aliases.yml
+  when: bash_extra_aliases is defined and bash_extra_aliases
 
 - import_tasks: cron.yml
   when: cron_jobs is defined and cron_jobs
@@ -43,9 +43,6 @@
 
 - import_tasks: fail2ban.yml
   when: fail2ban_enabled is defined and fail2ban_enabled|bool
-
-- import_tasks: unattended-upgrades.yml
-  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
 
 - import_tasks: shell.yml
   when: shell_extra_commands is defined and shell_extra_commands

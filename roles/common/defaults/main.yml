@@ -5,9 +5,10 @@ timezone: ''
 # Accounts
 local_groups: []
 local_users: []
+local_user_authorized_keys: []
 
 # APT
-apt_repositories: []
+apt_extra_repositories: []
 
 # APT Packages
 additional_packages: []
@@ -19,6 +20,14 @@ pip_user_install_packages: []
 # CA Certificates
 ## Set to `yes` to install all certificates from `files/ca`
 install_ca_certificates: no
+
+# BASH extra aliases
+bash_extra_aliases: []
+  # - alias: ll
+  #   command: ls -lahpF
+  #   dest: /root/.bashrc
+  #   owner: root
+  #   group: root
 
 # Cronjobs
 cron_jobs: []
