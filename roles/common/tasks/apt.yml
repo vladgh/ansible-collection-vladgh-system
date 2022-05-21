@@ -18,18 +18,21 @@
 
     - name: Add an Apt signing key to a specific keyring file
       ansible.builtin.apt_key:
-        id: "{{ item.id }}"
-        url: "{{ item.url }}"
-        keyring: "/etc/apt/trusted.gpg.d/{{ item.filename }}.gpg"
+        id: "{{ item.id | default(omit) }}"
+        url: "{{ item.url | default(omit) }}"
+        keyring: "/etc/apt/trusted.gpg.d/{{ item.filename | default(item.id) }}.gpg"
         with_items: "{{ apt_extra_keys }}"
-  when: apt_extra_keys is defined and apt_extra_keys
+      when: apt_extra_keys is defined and apt_extra_keys
 
-- name: Add extra APT repositories
-  ansible.builtin.apt_repository:
-    repo: "{{ item.repo }}"
-    codename: "{{ ansible_distribution_release | default(omit) }}"
-    filename: "{{ item.filename | default(omit) }}"
-    update_cache: "{{ item.update_cache | default(true) }}"
-    state: "{{ item.state | default('present') }}"
-  with_items: "{{ apt_extra_repositories }}"
-  when: apt_extra_repositories is defined and apt_extra_repositories
+    - name: Add extra APT repositories
+      ansible.builtin.apt_repository:
+        repo: "{{ item.repo }}"
+        codename: "{{ ansible_distribution_release | default(omit) }}"
+        filename: "{{ item.filename | default(omit) }}"
+        update_cache: "{{ item.update_cache | default(true) }}"
+        state: "{{ item.state | default('present') }}"
+      with_items: "{{ apt_extra_repositories }}"
+      when: apt_extra_repositories is defined and apt_extra_repositories
+  when: >
+    ( apt_extra_keys is defined and apt_extra_keys ) or
+    ( apt_extra_repositories is defined and apt_extra_repositories )
