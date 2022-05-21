@@ -19,7 +19,7 @@
     - name: Add extra APT repositories
       ansible.builtin.apt_repository:
         repo: "{{ item.repo }}"
-        codename: "{{ ansible_distribution_release | default(omit) }}"
+        codename: "{{ ansible_distribution_release | default(ansible_distribution_release) }}"
         filename: "{{ item.filename | default(omit) }}"
         update_cache: "{{ item.update_cache | default(true) }}"
         state: "{{ item.state | default('present') }}"

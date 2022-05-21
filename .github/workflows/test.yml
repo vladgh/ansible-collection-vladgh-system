@@ -95,6 +95,7 @@ jobs:
           MOLECULE_DISTRO: ${{ matrix.os }}
       # # - name: Add Git Safe Directories
       # #   run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
+      # Cannot use this action until https://github.com/ansible/creator-ee/issues/19 is resolved or a workaround is found
       # - name: Test scenario
       #   uses: gofrolist/molecule-action@v2.2.28
       #   with:
