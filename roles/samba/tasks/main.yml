@@ -1,6 +1,6 @@
 ---
 - name: Gather variables for each operating system
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_distribution | lower }}.yml"
@@ -48,6 +48,7 @@
     dest: "{{ samba_configuration }}"
     src: etc/samba/smb.conf.j2
     validate: 'testparm -s %s'
+    mode: 0644
   notify:
     - Restart Samba services
   tags: samba
@@ -57,6 +58,7 @@
     src: "{{ samba_global_include }}"
     dest: "{{ samba_configuration_dir }}"
     validate: 'testparm -s %s'
+    mode: 0644
   when: samba_global_include is defined and samba_global_include
   notify:
     - Restart Samba services
@@ -67,6 +69,7 @@
     src: "{{ samba_homes_include }}"
     dest: "{{ samba_configuration_dir }}"
     validate: 'testparm -s %s'
+    mode: 0644
   when: samba_homes_include is defined and samba_homes_include
   notify:
     - Restart Samba services
@@ -77,6 +80,7 @@
     src: "{{ item.include_file }}"
     dest: "{{ samba_configuration_dir }}"
     validate: 'testparm -s %s'
+    mode: 0644
   when: item.include_file is defined and item.include_file
   with_items: "{{ samba_shares }}"
   notify:
@@ -87,6 +91,7 @@
   ansible.builtin.template:
     dest: "{{ samba_username_map_file }}"
     src: etc/samba/smbusers.j2
+    mode: 0644
   notify:
     - Restart Samba services
   when: samba_username_map is defined and samba_username_map

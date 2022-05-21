@@ -1,8 +1,7 @@
 ---
 samba_packages:
   - samba
-  - samba-common
-  - samba-client
+  - smbclient
 
 samba_vfs_packages:
   - samba-vfs-modules
