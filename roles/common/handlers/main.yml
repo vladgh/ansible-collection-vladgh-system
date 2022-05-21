@@ -1,18 +1,18 @@
 ---
 - name: Restart SSH Daemon
-  service:
+  ansible.builtin.service:
     name: sshd
     state: restarted
   ignore_errors: "{{ ansible_virtualization_type in [\"docker\", \"VirtualPC\"] }}"
 
 - name: Restart LoginD
-  service:
+  ansible.builtin.service:
     name: systemd-logind
     state: restarted
   ignore_errors: "{{ ansible_virtualization_type in [\"docker\", \"VirtualPC\"] }}"
 
 - name: Update trusted CA certificates
-  command: /usr/sbin/update-ca-certificates --fresh
+  ansible.builtin.command: /usr/sbin/update-ca-certificates --fresh
 
 - name: Restart SystemD mount
   ansible.builtin.systemd:
