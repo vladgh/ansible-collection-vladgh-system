@@ -77,20 +77,20 @@ jobs:
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3
         with:
           path: ansible_collections/vladgh/system
       - name: Set up Python 3.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: '3.x'
       - name: Install test dependencies.
         run: pip3 install ansible molecule[docker] docker
       - name: Run Molecule tests.
-        run: molecule test --scenario-name ${{ matrix.scenario }} --base-config molecule/base.yml
+        run: molecule --base-config molecule/base.yml test --scenario-name ${{ matrix.scenario }}
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: 1
+          ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
       # - name: Add Git Safe Directories
       #   run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
