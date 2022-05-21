@@ -70,16 +70,31 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu:focal
-          - debian:buster
+          - ubuntu2204
+          - ubuntu2004
+          - debian11
+          - debian10
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3
         with:
           path: ansible_collections/vladgh/system
-      - name: Add Git Safe Directories
-        run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
+      # - name: Set up Python
+      #   uses: actions/setup-python@v3
+      #   with:
+      #     python-version: '3.x'
+      # - name: Install test dependencies.
+      #   run: pip3 install ansible molecule[docker] docker
+      # - name: Run Molecule tests.
+      #   run: molecule --base-config molecule/base.yml test --scenario-name ${{ matrix.scenario }}
+      #   working-directory: ansible_collections/vladgh/system
+      #   env:
+      #     PY_COLORS: 1
+      #     ANSIBLE_FORCE_COLOR: 1
+      #     MOLECULE_DISTRO: ${{ matrix.os }}
+      # # - name: Add Git Safe Directories
+      # #   run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
       - name: Test scenario
         uses: gofrolist/molecule-action@v2.2.28
         with:
