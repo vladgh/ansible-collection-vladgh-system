@@ -21,8 +21,10 @@
     additional_packages:
       - rolldice
     apt_extra_repositories:
-      - name: NginX
-        repo: ppa:nginx/stable
+      - name: Google Chrome
+        repo: deb http://dl.google.com/linux/chrome/deb/ stable main
+        state: present
+        filename: google-chrome
     pip_install_packages: [pip-install-test]
     pip_user_install_packages:
       - user: test
