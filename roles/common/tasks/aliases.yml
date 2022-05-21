@@ -10,4 +10,3 @@
     regexp: "alias {{ item.alias }}="
     state: "{{ item.state | default('present') }}"
   with_items: "{{ bash_extra_aliases }}"
-  when: bash_extra_aliases is defined and bash_extra_aliases
