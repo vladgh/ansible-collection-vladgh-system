@@ -80,16 +80,28 @@ jobs:
         uses: actions/checkout@v3.0.2
         with:
           path: ansible_collections/vladgh/system
-      - name: Add Git Safe Directories
-        run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
-      - name: Test scenario
-        uses: gofrolist/molecule-action@v2.2.25
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
         with:
-          molecule_options: --debug --base-config molecule/base.yml
-          molecule_command: test
-          molecule_args: --scenario-name ${{ matrix.scenario }}
-          molecule_working_dir: ansible_collections/vladgh/system
+          python-version: '3.x'
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule[docker] docker
+      - name: Run Molecule tests.
+        run: molecule test -scenario-name ${{ matrix.scenario }}
         env:
-          PY_COLORS: 1
-          ANSIBLE_FORCE_COLOR: 1
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.os }}
+      # - name: Add Git Safe Directories
+      #   run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
+      # - name: Test scenario
+      #   uses: gofrolist/molecule-action@v2.2.25
+      #   with:
+      #     molecule_options: --debug --base-config molecule/base.yml
+      #     molecule_command: test
+      #     molecule_args: --scenario-name ${{ matrix.scenario }}
+      #     molecule_working_dir: ansible_collections/vladgh/system
+      #   env:
+      #     PY_COLORS: 1
+      #     ANSIBLE_FORCE_COLOR: 1
+      #     MOLECULE_DISTRO: ${{ matrix.os }}
