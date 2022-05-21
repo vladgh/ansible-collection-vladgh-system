@@ -1,0 +1,13 @@
+---
+- name: Add extra Bash aliases
+  ansible.builtin.lineinfile:
+    dest: "{{ item.dest | default('~/.bashrc') }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: 0644
+    create: yes
+    line: 'alias {{ item.alias }}="{{ item.command }}"'
+    regexp: "alias {{ item.alias }}="
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ bash_extra_aliases }}"
+  when: bash_extra_aliases is defined and bash_extra_aliases

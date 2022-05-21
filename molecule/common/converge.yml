@@ -28,6 +28,12 @@
       - user: test
         packages: [colorama]
         state: latest
+    bash_extra_aliases:
+      - alias: ll
+        command: ls -lahpF
+        dest: /root/.bashrc
+        owner: root
+        group: root
     cron_jobs:
       - name: Testing
         minute: '0'

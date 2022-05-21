@@ -37,6 +37,9 @@
 - import_tasks: ca.yml
   when: install_ca_certificates is defined and install_ca_certificates|bool
 
+- import_tasks: aliases.yml
+  when: bash_extra_aliases is defined and bash_extra_aliases
+
 - import_tasks: cron.yml
   when: cron_jobs is defined and cron_jobs
 
