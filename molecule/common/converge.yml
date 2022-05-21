@@ -21,8 +21,9 @@
     additional_packages:
       - rolldice
     apt_extra_repositories:
-      - name: Test repo
-        repo: deb http://archive.canonical.com/ubuntu trusty partner
+      - name: Add nginx stable repository from PPA and install its signing key on Debian target
+        repo: ppa:nginx/stable
+        codename: trusty
     pip_install_packages: [pip-install-test]
     pip_user_install_packages:
       - user: test
