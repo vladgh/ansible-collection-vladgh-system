@@ -21,8 +21,8 @@
     additional_packages:
       - rolldice
     apt_extra_repositories:
-      - name: Test docker repo
-        repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+      - name: Test repo
+        repo: deb http://archive.canonical.com/ubuntu trusty partner
     pip_install_packages: [pip-install-test]
     pip_user_install_packages:
       - user: test
