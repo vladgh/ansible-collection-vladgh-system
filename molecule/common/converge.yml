@@ -21,8 +21,9 @@
     additional_packages:
       - rolldice
     apt_extra_keys:
-      url: https://download.docker.com/linux/ubuntu/gpg
-      filename: docker
+      - name: docker key
+        url: https://download.docker.com/linux/ubuntu/gpg
+        filename: docker
     apt_extra_repositories:
       - name: Add test Docker repository
         repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.docker.gpg] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
