@@ -9,7 +9,11 @@
       ansible.builtin.file:
         path: /etc/lvm
         state: directory
-        mode: 0755
+        mode: 0777
+      with_items:
+        - /etc/lvm
+        - /var/log/chrony
+        - /run/chrony
     - name: Ensure required files
       ansible.builtin.copy:
         content: ''
