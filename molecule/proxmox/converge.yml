@@ -7,7 +7,7 @@
   pre_tasks:
     - name: Ensure required directories
       ansible.builtin.file:
-        path: /etc/lvm
+        path: "{{ item }} "
         state: directory
         mode: 0777
       with_items:
