@@ -24,7 +24,7 @@
   register: ohmyzsh_installed
 - name: Install Oh My ZSH
   become_user: "{{ zsh_user }}"
-  command: /tmp/install-ohmyzsh.sh --unattended
+  ansible.builtin.command: /tmp/install-ohmyzsh.sh --unattended
   when: not ohmyzsh_installed.stat.exists
 
 - name: Install Oh My ZSH plugins and themes

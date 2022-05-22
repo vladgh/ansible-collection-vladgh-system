@@ -60,6 +60,9 @@ jobs:
             shellcheck:
               - roles/shellcheck/**/!(**.md)
               - molecule/shellcheck/**
+            zsh:
+              - roles/zsh/**/!(**.md)
+              - molecule/zsh/**
 
   test:
     name: "Test scenario ${{ matrix.scenario }} on ${{ matrix.os }}"
