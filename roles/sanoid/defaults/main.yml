@@ -1,0 +1,14 @@
+---
+# Sanoid Sample Configurations
+sample_sanoid_templates:
+  default:
+    frequently: 4
+    hourly: 24
+    daily: 7
+    monthly: 12
+    yearly: 1
+    autosnap: 'yes'
+    autoprune: 'yes'
+sample_sanoid_datasets:
+  wpool/code:
+    use_template: default

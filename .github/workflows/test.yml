@@ -57,6 +57,9 @@ jobs:
             samba:
               - roles/samba/**/!(**.md)
               - molecule/samba/**
+            sanoid:
+              - roles/sanoid/**/!(**.md)
+              - molecule/sanoid/**
             shellcheck:
               - roles/shellcheck/**/!(**.md)
               - molecule/shellcheck/**
