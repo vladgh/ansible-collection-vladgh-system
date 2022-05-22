@@ -9,11 +9,14 @@
   delay: 2
 - name: Regenerate initramfs
   ansible.builtin.command: bash update-initramfs -u
-  become: yes
+  when:
+    - not skip_initramfs | default(false)
 - name: Update Grub
   ansible.builtin.command: bash update-grub
-  become: yes
+  when:
+    - not skip_grub | default(false)
 - name: Reboot
   ansible.builtin.reboot:
     msg: Rebooting the hypervisor
-  become: yes
+  when:
+    - not skip_reboot | default(false)
