@@ -7,13 +7,16 @@
   pre_tasks:
     - name: Ensure required directories
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: /etc/lvm
         state: directory
-        mode: 0777
       with_items:
         - /etc/lvm
         - /var/log/chrony
-        - /run/chrony
+    - name: Ensure required directories
+      ansible.builtin.file:
+        path: /run/chrony
+        state: directory
+        mode: 0777
     - name: Ensure required files
       ansible.builtin.copy:
         content: ''
