@@ -99,17 +99,19 @@ jobs:
       - name: Install test dependencies
         run: python3 -m pip install ansible-core molecule[docker] docker
       - name: Run Molecule tests
-        run: molecule --base-config molecule/base.yml converge --scenario-name ${{ matrix.scenario }}
+        run: molecule --base-config molecule/base.yml test --scenario-name ${{ matrix.scenario }}
         working-directory: ansible_collections/vladgh/system
-        continue-on-error: true
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
-      - name: Debugging with tmate
-        uses: mxschmitt/action-tmate@v3.11
+      #   continue-on-error: true
+      # - name: Debugging with tmate
+      #   uses: mxschmitt/action-tmate@v3.11
+
       # # - name: Add Git Safe Directories
       # #   run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
+
       # Cannot use this action until https://github.com/ansible/creator-ee/issues/19 is resolved or a workaround is found
       # - name: Test scenario
       #   uses: gofrolist/molecule-action@v2.2.28
