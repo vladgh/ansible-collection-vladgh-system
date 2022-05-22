@@ -22,7 +22,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0700
+    mode: 0755
 
 - name: WireGuard Configuration
   block:
@@ -45,6 +45,9 @@
       no_log: yes
       with_items: "{{ wireguard_config }}"
   when: wireguard_config is defined and wireguard_config
+  tags:
+    # for the first run the default ipv4 interface is eth0 but for subsequent runs is wgX
+    - molecule-idempotence-notest
 
 - name: Create a resolvconf link
   ansible.builtin.file:

@@ -4,7 +4,8 @@ dependency:
 driver:
   name: delegated
 platforms:
-  - name: molecule-test-instance  # must be able to `ssh molecule-test-instance`, edit your ~/.ssh/config
+  # must be able to `ssh molecule-test-instance`, edit your ~/.ssh/config
+  - name: molecule-test-instance
 provisioner:
   name: ansible
   log: true
