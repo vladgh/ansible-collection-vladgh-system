@@ -51,6 +51,9 @@ jobs:
             pia:
               - roles/pia/**/!(**.md)
               - molecule/pia/**
+            proxmox:
+              - roles/proxmox/**/!(**.md)
+              - molecule/proxmox/**
             qemu_guest_agent:
               - roles/qemu_guest_agent/**/!(**.md)
               - molecule/qemu_guest_agent/**
