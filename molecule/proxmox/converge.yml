@@ -9,8 +9,6 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        group: root
-        owner: root
         mode: 0777
       with_items:
         - /etc/lvm
