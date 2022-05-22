@@ -60,6 +60,9 @@ jobs:
             shellcheck:
               - roles/shellcheck/**/!(**.md)
               - molecule/shellcheck/**
+            wireguard:
+              - roles/wireguard/**/!(**.md)
+              - molecule/wireguard/**
             zsh:
               - roles/zsh/**/!(**.md)
               - molecule/zsh/**

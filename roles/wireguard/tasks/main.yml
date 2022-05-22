@@ -30,7 +30,7 @@
       notify: Restart WireGuard
 
     - name: Start and Enable WireGuard Service
-      service:
+      ansible.builtin.service:
         name: "wg-quick@{{ item }}"
         state: started
         enabled: yes
