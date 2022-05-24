@@ -90,7 +90,7 @@ jobs:
           - ubuntu2004
           - debian11
           - debian10
-        scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
+        scenario: ${{ fromJSON(needs.changes.outputs.scenario) || [playbooks,common,dns] }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
