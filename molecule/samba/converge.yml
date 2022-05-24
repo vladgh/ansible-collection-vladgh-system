@@ -2,10 +2,12 @@
 - name: Converge
   hosts: all
   become: yes
-  vars:
-    local_users:
-      - name: myuser
+  pre_tasks:
+    - name: Add the user 'myuser'
+      ansible.builtin.user:
+        name: myuser
         shell: /sbin/nologin
+  vars:
     samba_netbios_name: NAS
     samba_server_string: NAS
     samba_workgroup: WORKGROUP
@@ -25,5 +27,4 @@
         directory_mode: '0775'
         force_directory_mode: '0775'
   roles:
-    - ./roles/common
     - ./roles/samba

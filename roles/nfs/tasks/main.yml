@@ -1,18 +1,19 @@
 ---
 - name: Ensure NFS utilities are installed
-  package:
+  ansible.builtin.package:
     name: "{{ nfs_server_packages }}"
     state: present
 
-- block:
+- name: Generate NFS shares
+  block:
     - name: Ensure directories to export exist
-      file:  # noqa 208
+      ansible.builtin.file:  # noqa 208
         path: "{{ item.strip().split()[0] }}"
         state: directory
       with_items: "{{ nfs_exports }}"
 
     - name: Generate exports file
-      template:
+      ansible.builtin.template:
         src: exports.j2
         dest: /etc/exports
         owner: root
@@ -21,10 +22,10 @@
       notify: Reload NFS
 
     - name: Ensure NFS is running
-      service:
+      ansible.builtin.service:
         name: "{{ nfs_server_daemon }}"
         state: started
         enabled: yes
+      tags:
+        - molecule-notest
   when: nfs_exports is defined and nfs_exports|length
-
-# trigger tests

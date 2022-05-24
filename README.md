@@ -41,6 +41,12 @@ collections:
     type: git
 ```
 
+Install the requirements for playbooks
+
+```sh
+ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansible_collections/vladgh/system/requirements.yml
+```
+
 ### Roles
 
 ```yaml

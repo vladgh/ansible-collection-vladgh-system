@@ -12,5 +12,3 @@
         state: started
   when: ansible_system_vendor == 'QEMU' and
         ( qemu_guest_agent_enabled is defined and qemu_guest_agent_enabled|bool )
-
-# trigger tests

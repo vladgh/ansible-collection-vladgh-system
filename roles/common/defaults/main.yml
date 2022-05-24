@@ -8,6 +8,7 @@ local_users: []
 local_user_authorized_keys: []
 
 # APT
+apt_extra_keys: []
 apt_extra_repositories: []
 
 # APT Packages
@@ -23,14 +24,12 @@ install_ca_certificates: no
 
 # BASH extra aliases
 bash_extra_aliases: []
-  # - alias: ll
-  #   command: ls -lahpF
-  #   dest: /root/.bashrc
-  #   owner: root
-  #   group: root
 
 # Cronjobs
 cron_jobs: []
+
+# SYSCTL
+sysctl_overwrite: {}
 
 # Mount points
 mounts: []

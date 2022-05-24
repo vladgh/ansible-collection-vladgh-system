@@ -8,7 +8,11 @@ Vlad's Sanoid Ansible Role
 
 ## Role Variables
 
-See `defaults/main.yml`
+Available variables are listed below, along with default values (see `defaults/main.yml`)
+
+```yaml
+qemu_guest_agent_enabled: yes  # Set to `yes` to enable the QEMU Guest Agent
+```
 
 ## Dependencies
 

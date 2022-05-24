@@ -30,8 +30,22 @@ local_users:
     groups: mygroup
     append: yes
     shell: /bin/bash
-    authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0yyqRUbBGOW9PcYyuaUMaRi/EFwL59E3wwMn5dJAKQ MyKey
+    authorized_keys: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0yyqRUbBGOW9PcYyuaUMaRi/EFwL59E3wwMn5dJAKQ MyKey
+```
+
+### Add authorized keys
+
+Multiple keys can be specified in a single key string value by separating them by newlines.
+This option is not loop aware, so if you use with_ , it will be exclusive per iteration of the loop.
+
+```yaml
+local_user_authorized_keys:
+  - user: root
+    key: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0yyqRUbBGOW9PcYyuaUMaRi/EFwL59E3wwMn5dJAKQ MyKey
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB3UqcY2v7iKkxmbjIwHfGW9BuvVaOq7xFmfaJnarpL MyOtherKey
+    exclusive: yes
 ```
 
 ### Groups
@@ -51,9 +65,41 @@ local_groups:
 Check <https://docs.ansible.com/ansible/latest/modules/apt_repository_module.html> for a complete list of parameters
 
 ```yaml
+# Add Docker signing key
+apt_extra_keys:
+  - name: docker key
+    url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
+    filename: docker
+# Disable PBS Enterprise Repository
+apt_disable_repositories:
+  - name: PBS Enterprise
+    repo: "deb https://enterprise.proxmox.com/debian/pbs {{ ansible_distribution_release }} pbs-enterprise"
+    filename: pbs-enterprise
+    state: absent
+# Enable PBS Community Repository
 apt_extra_repositories:
-  - name: GIT
-    repo: ppa:git-core/ppa
+  - name: PBS Community
+    repo: "deb http://download.proxmox.com/debian/pbs {{ ansible_distribution_release }} pbs-no-subscription"
+    filename: pbs-no-subscription
+    state: present
+```
+
+### Additional packages
+
+- `additional_packages`: A list of packages to install using APT/YUM
+
+### Python packages
+
+Check <https://docs.ansible.com/ansible/latest/modules/pip_module.html> for more info
+
+```yaml
+# System wide install
+pip_install_packages: [ipaddress]
+# User install
+pip_user_install_packages:
+  - user: test
+    packages: [colorama]
+    state: latest
 ```
 
 ### CA Certificates
@@ -62,6 +108,17 @@ Set to `yes` to install all certificates from `files/ca`
 
 ```yaml
 install_ca_certificates: yes
+```
+
+### BASH Extra Aliases
+
+```yaml
+bash_extra_aliases: []
+  - alias: ll
+    command: ls -lahpF
+    dest: /root/.bashrc
+    owner: root
+    group: root
 ```
 
 ### System
@@ -123,27 +180,29 @@ Install Fail2ban
 fail2ban_enabled: yes
 ```
 
+### Extra shell commands
+
+```yaml
+shell_extra_commands:
+  - name: Test
+    cmd: touch test.txt
+    chdir: /tmp
+    creates: test.txt
+```
+
+### Unattemded-upgrades
+
+```yaml
+unattended_upgrades_autoupdate_enabled: yes
+unattended_upgrades_autoupdate_reboot: "false"
+unattended_upgrades_autoupdate_reboot_time: "03:33"
+unattended_upgrades_autoupdate_mail_to: ""
+unattended_upgrades_autoupdate_mail_on_error: no
+```
+
 ### Miscellaneous
 
 - `disable_lid_switch`: Set to yes to disable lid switch on laptops (defaults to `no`)
-
-### Additional packages
-
-- `additional_packages`: A list of packages to install using APT/YUM
-
-### Python packages
-
-Check <https://docs.ansible.com/ansible/latest/modules/pip_module.html> for more info
-
-```yaml
-# System wide install
-pip_install_packages: [ipaddress]
-# User install
-pip_user_install_packages:
-  - user: test
-    packages: [colorama]
-    state: latest
-```
 
 ## Dependencies
 

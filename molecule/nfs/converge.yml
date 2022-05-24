@@ -5,4 +5,6 @@
   roles:
     - ./roles/nfs
   vars:
-    nfs_exports: []
+    skip_handlers: yes
+    nfs_exports:
+      - '/home/public  *(rw,async,no_root_squash)'

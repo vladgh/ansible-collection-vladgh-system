@@ -1,3 +1,2 @@
 ---
-# Set to `no` to disable QEMU Guest Agent
 qemu_guest_agent_enabled: yes
