@@ -16,8 +16,8 @@
         groups: admins
         append: yes
         password: mypassword
-        authorized_keys: |
-          ssh-ed25519 AAAA testing
+        authorized_keys:
+          - ssh-ed25519 AAAA testing
     local_user_authorized_keys:
       - user: root
         key: |
