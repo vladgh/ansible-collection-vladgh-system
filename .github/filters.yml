@@ -1,0 +1,49 @@
+---
+playbooks:
+  - playbooks/**/!(**.md)
+  - molecule/playbooks/**
+common:
+  - roles/common/**/!(**.md)
+  - molecule/common/**
+dns:
+  - roles/dns/**/!(**.md)
+  - molecule/dns/**
+hashicorp:
+  - roles/hashicorp/**/!(**.md)
+  - molecule/hashicorp/**
+logs:
+  - roles/logs/**/!(**.md)
+  - molecule/logs/**
+msmtp:
+  - roles/msmtp/**/!(**.md)
+  - molecule/msmtp/**
+nfs:
+  - roles/nfs/**/!(**.md)
+  - molecule/nfs/**
+nut:
+  - roles/nut/**/!(**.md)
+  - molecule/nut/**
+pia:
+  - roles/pia/**/!(**.md)
+  - molecule/pia/**
+proxmox:
+  - roles/proxmox/**/!(**.md)
+  - molecule/proxmox/**
+qemu_guest_agent:
+  - roles/qemu_guest_agent/**/!(**.md)
+  - molecule/qemu_guest_agent/**
+samba:
+  - roles/samba/**/!(**.md)
+  - molecule/samba/**
+sanoid:
+  - roles/sanoid/**/!(**.md)
+  - molecule/sanoid/**
+shellcheck:
+  - roles/shellcheck/**/!(**.md)
+  - molecule/shellcheck/**
+wireguard:
+  - roles/wireguard/**/!(**.md)
+  - molecule/wireguard/**
+zsh:
+  - roles/zsh/**/!(**.md)
+  - molecule/zsh/**
