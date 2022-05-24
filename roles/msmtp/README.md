@@ -37,7 +37,6 @@ Available variables are listed below, along with default values (see defaults/ma
 
 ## Example Playbook
 
-``` yaml
 ```yaml
 - hosts: all
   become: yes

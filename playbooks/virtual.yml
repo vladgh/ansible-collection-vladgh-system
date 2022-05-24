@@ -7,14 +7,14 @@
   tasks:
     # The timesyncd service provided by systemd conflicts with the ntp service (which we need for timezone) on Ubuntu 18 VMs
     - name: Disable systemd-timesyncd.service - Network Time Synchronization
-      systemd:
+      ansible.builtin.systemd:
         name: systemd-timesyncd
         state: stopped
         enabled: no
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('18.04', '<=')
     # Fix for "A start job is running for wait for network to be configured" 2 minute delay on Ubuntu 18 VMs
     - name: Disable and mask systemd-networkd-wait-online
-      systemd:
+      ansible.builtin.systemd:
         name: systemd-networkd-wait-online
         state: stopped
         enabled: no

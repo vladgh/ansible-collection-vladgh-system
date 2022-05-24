@@ -33,5 +33,3 @@
   ansible.builtin.apt:
     name: vault
     state: present
-
-# trigger tests

@@ -48,5 +48,3 @@
   when: shell_extra_commands is defined and shell_extra_commands
 
 - import_tasks: misc.yml
-
-# trigger tests

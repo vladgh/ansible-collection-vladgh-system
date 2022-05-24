@@ -4,7 +4,3 @@
   become: yes
   roles:
     - ./roles/hashicorp
-  vars:
-    install_packer: yes
-    install_terraform: yes
-    install_vault: yes

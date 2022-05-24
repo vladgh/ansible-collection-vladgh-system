@@ -8,9 +8,22 @@ Vlad's Ansible Role for QEMU Guest Agent.
 
 ## Role Variables
 
-Available variables are listed below, along with default values (see defaults/main.yml):
+Available variables are listed below, along with default values (see `defaults/main.yml`)
 
-- `qemu_guest_agent_enabled`: Set to `yes` to enable the QEMU Guest Agent (defaults to `yes`)
+```yaml
+sanoid_templates:
+  default:
+    frequently: 4
+    hourly: 24
+    daily: 7
+    monthly: 12
+    yearly: 1
+    autosnap: 'yes'
+    autoprune: 'yes'
+sanoid_datasets:
+  wpool/code:
+    use_template: default
+```
 
 ## Dependencies
 

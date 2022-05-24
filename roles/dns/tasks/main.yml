@@ -26,8 +26,11 @@
         - {regexp: '^slackchannel=', line: "slackchannel='{{ cloudflare_ddns_updater_config.slackchannel | default('') }}'"}
         - {regexp: '^slackuri=', line: "slackuri='{{ cloudflare_ddns_updater_config.slackuri | default('') }}'"}
       when: cloudflare_ddns_updater_config is defined and cloudflare_ddns_updater_config
+    - name: Ensure Cron package is installed
+      ansible.builtin.package:
+        name: cron
     - name: Configure cron job
-      cron:
+      ansible.builtin.cron:
         name: cloudflare_ddns_updater-cron
         job: /usr/local/bin/cloudflare-ddns-updater
         minute: "*/10"

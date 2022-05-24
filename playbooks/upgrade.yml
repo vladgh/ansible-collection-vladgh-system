@@ -20,18 +20,18 @@
         - name: Remove useless packages from the cache
           ansible.builtin.apt:
             autoclean: yes
-        # - name: Check if a reboot is needed on all servers
-        #   ansible.builtin.register: reboot_required_file
-        #   stat:
-        #     path: /var/run/reboot-required
-        #     get_md5: no
-        # - name: Reboot the box if kernel updated
-        #   ansible.builtin.reboot:
-        #     msg: "Reboot initiated by Ansible for kernel updates"
-        #     connect_timeout: 5
-        #     reboot_timeout: 300
-        #     pre_reboot_delay: 0
-        #     post_reboot_delay: 30
-        #     test_command: uptime
-        #   when: reboot_required_file.stat.exists and inventory_hostname != 'vdev'
+      # - name: Check if a reboot is needed on all servers
+      #   ansible.builtin.register: reboot_required_file
+      #   stat:
+      #     path: /var/run/reboot-required
+      #     get_md5: no
+      # - name: Reboot the box if kernel updated
+      #   ansible.builtin.reboot:
+      #     msg: "Reboot initiated by Ansible for kernel updates"
+      #     connect_timeout: 5
+      #     reboot_timeout: 300
+      #     pre_reboot_delay: 0
+      #     post_reboot_delay: 30
+      #     test_command: uptime
+      #   when: reboot_required_file.stat.exists and inventory_hostname != 'vdev'
       when: ansible_os_family is defined and ansible_os_family == 'Debian'

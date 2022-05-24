@@ -33,6 +33,9 @@ jobs:
             common:
               - roles/common/**/!(**.md)
               - molecule/common/**
+            dns:
+              - roles/dns/**/!(**.md)
+              - molecule/dns/**
             hashicorp:
               - roles/hashicorp/**/!(**.md)
               - molecule/hashicorp/**
