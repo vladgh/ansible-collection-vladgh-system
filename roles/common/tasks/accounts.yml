@@ -31,34 +31,20 @@
         group: "{{ item.group | default(omit) }}"
         groups: "{{ item.groups | default(omit) }}"
         append: "{{ item.append | default(omit) }}"
-        password: "{{ item.password | default('*') | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
+        password: "{{ item.password | default(omit) | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
         shell: "{{ item.shell | default(omit) }}"
         home: "{{ item.home | default(omit) }}"
         create_home: "{{ item.create_home | default(omit) }}"
         system: "{{ item.system | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
+      when: item.name is defined and item.name != 'root'
       with_items: "{{ local_users }}"
 
     - name: Add authorized keys
       ansible.posix.authorized_key:
-        user: "{{ item.0.name }}"
-        key: "{{ item.1 }}"
-      with_subelements:
-        - "{{ local_users }}"
-        - authorized_keys
-        - skip_missing: yes
+        user: "{{ item.name }}"
+        key: "{{ item.authorized_keys | default(omit) }}"
+        exclusive: "{{ item.exclusive | default(omit) }}"
+      with_items: "{{ local_users }}"
   when: local_users is defined and local_users
   no_log: yes
-
-# Multiple keys can be specified in a single key string value by separating them by newlines.
-# This option is not loop aware, so if you use with_ , it will be exclusive per iteration of the loop.
-- name: Configure ssh authorized keys
-  block:
-    - name: Add authorized keys
-      ansible.posix.authorized_key:
-        user: "{{ item.user }}"
-        key: "{{ item.key }}"
-        state: "{{ item.state | default('present') }}"
-        exclusive: "{{ item.exclusive | default(omit) }}"
-      with_items: "{{ local_user_authorized_keys }}"
-  when: local_user_authorized_keys is defined and local_user_authorized_keys

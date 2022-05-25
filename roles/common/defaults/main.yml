@@ -5,11 +5,11 @@ timezone: ''
 # Accounts
 local_groups: []
 local_users: []
-local_user_authorized_keys: []
 
 # APT
 apt_extra_keys: []
 apt_extra_repositories: []
+apt_disable_repositories: []
 
 # APT Packages
 additional_packages: []
