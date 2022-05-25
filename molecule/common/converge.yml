@@ -16,13 +16,13 @@
         groups: admins
         append: yes
         password: mypassword
-        authorized_keys:
-          - ssh-ed25519 AAAA testing
-    local_user_authorized_keys:
-      - user: root
-        key: |
-          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0yyqRUbBGOW9PcYyuaUMaRi/EFwL59E3wwMn5dJAKQ MyKey
-          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB3UqcY2v7iKkxmbjIwHfGW9BuvVaOq7xFmfaJnarpL MyOtherKey
+        authorized_keys: |
+          ssh-ed25519 1234 MyKey
+          ssh-ed25519 5678 MyOtherKey
+      - name: root
+        authorized_keys: |
+          ssh-ed25519 1234 MyKey
+          ssh-ed25519 5678 MyOtherKey
         exclusive: yes
     additional_packages:
       - rolldice

@@ -21,6 +21,8 @@ timezone: America/Chicago
 ### Users
 
 Check <https://docs.ansible.com/ansible/latest/modules/user_module.html> for a complete list of parameters
+Multiple authorized keys can be specified in a single key string value by separating them by newlines.
+This option is not loop aware, so if you use with_ , it will be exclusive per iteration of the loop.
 
 ```yaml
 local_users:
@@ -31,20 +33,12 @@ local_users:
     append: yes
     shell: /bin/bash
     authorized_keys: |
-      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0yyqRUbBGOW9PcYyuaUMaRi/EFwL59E3wwMn5dJAKQ MyKey
-```
-
-### Add authorized keys
-
-Multiple keys can be specified in a single key string value by separating them by newlines.
-This option is not loop aware, so if you use with_ , it will be exclusive per iteration of the loop.
-
-```yaml
-local_user_authorized_keys:
-  - user: root
-    key: |
-      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE0yyqRUbBGOW9PcYyuaUMaRi/EFwL59E3wwMn5dJAKQ MyKey
-      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB3UqcY2v7iKkxmbjIwHfGW9BuvVaOq7xFmfaJnarpL MyOtherKey
+      ssh-ed25519 1234 MyKey
+      ssh-ed25519 5678 MyOtherKey
+  - name: root
+    authorized_keys: |
+      ssh-ed25519 1234 MyKey
+      ssh-ed25519 5678 MyOtherKey
     exclusive: yes
 ```
 
