@@ -3,7 +3,7 @@
 - name: Ensure NFS package is installed
   ansible.builtin.package:
     name: "{{ nfs_client_package_name }}"
-  with_items:
+  loop:
     - "{{ mounts }}"
     - "{{ systemd_mounts }}"
   when: >
@@ -16,7 +16,7 @@
     name: rpcbind
     state: started
     enabled: yes
-  with_items:
+  loop:
     - "{{ mounts }}"
     - "{{ systemd_mounts }}"
   when: >
@@ -31,7 +31,7 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.group | default(omit) }}"
-  with_items: "{{ mounts }}"
+  loop: "{{ mounts }}"
   when: item is defined and item
 
 - name: Create mount points
@@ -43,7 +43,7 @@
     dump: "{{ item.dump | default(omit) }}"
     passno: "{{ item.passno | default(omit) }}"
     state: "{{ item.state | default('mounted') }}"
-  with_items: "{{ mounts }}"
+  loop: "{{ mounts }}"
   when: item is defined and item
 
 # SystemD Mounts
@@ -55,7 +55,7 @@
     group: root
     mode: 0644
   notify: Restart SystemD mount
-  with_items: "{{ systemd_mounts }}"
+  loop: "{{ systemd_mounts }}"
 
 - name: Enable and start SystemD mount
   ansible.builtin.systemd:
@@ -63,7 +63,7 @@
     state: "{{ item.service_state | default('started') }}"
     enabled: "{{ item.service_enabled | default('yes') }}"
     daemon_reload: yes
-  with_items: "{{ systemd_mounts }}"
+  loop: "{{ systemd_mounts }}"
   when: ( item.automount is not defined ) or ( not item.automount )
 
 - name: Setup SystemD service for auto mount
@@ -74,7 +74,7 @@
     group: root
     mode: 0644
   notify: Restart SystemD auto mount
-  with_items: "{{ systemd_mounts }}"
+  loop: "{{ systemd_mounts }}"
   when: item.automount is defined and item.automount
 
 - name: Enable and start SystemD auto mount
@@ -83,5 +83,5 @@
     state: "{{ item.service_state | default('started') }}"
     enabled: "{{ item.service_enabled | default('yes') }}"
     daemon_reload: yes
-  with_items: "{{ systemd_mounts }}"
+  loop: "{{ systemd_mounts }}"
   when: item.automount is defined and item.automount

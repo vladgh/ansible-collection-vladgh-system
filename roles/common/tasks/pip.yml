@@ -30,5 +30,5 @@
     state: "{{ item.state | default(omit) }}"
     extra_args: --user
     executable: "{{ pip_executable | default('pip3') }}"
-  with_items: "{{ pip_user_install_packages }}"
+  loop: "{{ pip_user_install_packages }}"
   when: pip_user_install_packages is defined and pip_user_install_packages

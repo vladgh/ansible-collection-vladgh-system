@@ -13,7 +13,7 @@
     mode: 0644
   notify:
     - Restart NUT Server
-  with_items:
+  loop:
     - ups.conf
     - upsd.conf
     - upsd.users

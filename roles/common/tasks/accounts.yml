@@ -7,7 +7,7 @@
         gid: "{{ item.gid | default(omit) }}"
         system: "{{ item.system | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
-      with_items: "{{ local_groups }}"
+      loop: "{{ local_groups }}"
 
     - name: Add Groups to Sudoers
       ansible.builtin.lineinfile:
@@ -18,7 +18,7 @@
         create: yes
         validate: 'visudo -cf %s'
       when: item.sudo is defined and item.sudo
-      with_items: "{{ local_groups }}"
+      loop: "{{ local_groups }}"
   when: local_groups is defined and local_groups
 
 - name: Configure users
@@ -38,13 +38,13 @@
         system: "{{ item.system | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
       when: item.name is defined and item.name != 'root'
-      with_items: "{{ local_users }}"
+      loop: "{{ local_users }}"
 
     - name: Add authorized keys
       ansible.posix.authorized_key:
         user: "{{ item.name }}"
         key: "{{ item.authorized_keys | default(omit) }}"
         exclusive: "{{ item.exclusive | default(omit) }}"
-      with_items: "{{ local_users }}"
+      loop: "{{ local_users }}"
   when: local_users is defined and local_users
   no_log: yes

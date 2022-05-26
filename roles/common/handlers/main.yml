@@ -18,7 +18,7 @@
     state: "{{ item.service_state | default('started') }}"
     enabled: "{{ item.service_enabled | default('yes') }}"
     daemon_reload: yes
-  with_items: "{{ systemd_mounts }}"
+  loop: "{{ systemd_mounts }}"
   when: ( item.automount is not defined ) or ( not item.automount )
 
 - name: Restart SystemD auto mount
@@ -27,5 +27,5 @@
     state: "{{ item.service_state | default('started') }}"
     enabled: "{{ item.service_enabled | default('yes') }}"
     daemon_reload: yes
-  with_items: "{{ systemd_mounts }}"
+  loop: "{{ systemd_mounts }}"
   when: item.automount is defined and item.automount

@@ -16,7 +16,7 @@
     owner: root
     group: root
     recurse: true
-  with_items:
+  loop:
     - /usr/local/bin
     - /etc/sanoid
 
@@ -27,7 +27,7 @@
     owner: root
     group: root
     mode: 0755
-  with_items:
+  loop:
     - sanoid
     - syncoid
     - findoid

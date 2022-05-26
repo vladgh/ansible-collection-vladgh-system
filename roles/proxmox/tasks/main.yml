@@ -19,7 +19,7 @@
     state: stopped
     enabled: no
     daemon_reload: yes
-  with_items:
+  loop:
     - pve-ha-lrm
     - pve-ha-crm
     - corosync

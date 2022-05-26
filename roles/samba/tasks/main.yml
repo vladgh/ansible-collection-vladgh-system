@@ -39,7 +39,7 @@
     owner: "{{ item.owner|default('root') }}"
     group: "{{ item.group|default('users') }}"
     mode: "{{ item.directory_mode|default('0775') }}"
-  with_items: "{{ samba_shares }}"
+  loop: "{{ samba_shares }}"
   when: samba_shares is defined and samba_shares
   tags: samba
 
@@ -82,7 +82,7 @@
     validate: 'testparm -s %s'
     mode: 0644
   when: item.include_file is defined and item.include_file
-  with_items: "{{ samba_shares }}"
+  loop: "{{ samba_shares }}"
   notify:
     - Restart Samba services
   tags: samba
@@ -102,7 +102,7 @@
     name: "{{ item }}"
     state: started
     enabled: true
-  with_items: "{{ samba_services }}"
+  loop: "{{ samba_services }}"
   tags: samba
 
 - name: Create Samba users if they don't exist yet
@@ -113,7 +113,7 @@
     | smbpasswd -s -a {{ item.name }}
   args:
     executable: /bin/bash
-  with_items: "{{ samba_users }}"
+  loop: "{{ samba_users }}"
   no_log: true
   register: create_user_output
   changed_when: "'Added user' in create_user_output.stdout"
