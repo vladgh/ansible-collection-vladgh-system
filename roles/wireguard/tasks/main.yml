@@ -39,11 +39,11 @@
 
     - name: Start and Enable WireGuard Service
       ansible.builtin.service:
-        name: "wg-quick@{{ item }}"
+        name: "wg-quick@{{ item.key }}"
         state: started
         enabled: yes
       no_log: yes
-      with_items: "{{ wireguard_config }}"
+      with_dict: "{{ wireguard_config }}"
   when: wireguard_config is defined and wireguard_config
   tags:
     # for the first run the default ipv4 interface is eth0 but for subsequent runs is wgX

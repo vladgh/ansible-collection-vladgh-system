@@ -7,9 +7,9 @@
   pre_tasks:
     - name: Ensure required directories
       ansible.builtin.file:
-        path: /etc/lvm
+        path: "{{ item }}"
         state: directory
-      with_items:
+      loop:
         - /etc/lvm
         - /var/log/chrony
     - name: Ensure required directories
@@ -25,7 +25,7 @@
         group: root
         owner: root
         mode: 0664
-      with_items:
+      loop:
         - /etc/default/grub
         - /etc/lvm/lvm.conf
   vars:

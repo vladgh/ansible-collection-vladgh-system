@@ -15,4 +15,4 @@
     special_time: "{{ item.special_time | default(omit) }}"
     job: "{{ item.job }}"
     state: "{{ item.state | default(omit) }}"
-  with_items: "{{ cron_jobs }}"
+  loop: "{{ cron_jobs }}"

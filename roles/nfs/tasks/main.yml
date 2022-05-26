@@ -10,7 +10,7 @@
       ansible.builtin.file:  # noqa 208
         path: "{{ item.strip().split()[0] }}"
         state: directory
-      with_items: "{{ nfs_exports }}"
+      loop: "{{ nfs_exports }}"
 
     - name: Generate exports file
       ansible.builtin.template:

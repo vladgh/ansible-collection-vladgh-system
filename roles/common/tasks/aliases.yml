@@ -9,4 +9,4 @@
     line: "alias {{ item.alias }}='{{ item.command }}'"
     regexp: "alias {{ item.alias }}="
     state: "{{ item.state | default('present') }}"
-  with_items: "{{ bash_extra_aliases }}"
+  loop: "{{ bash_extra_aliases }}"
