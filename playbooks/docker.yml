@@ -2,5 +2,15 @@
 - name: Docker
   hosts: docker
   become: yes
+  pre_tasks:
+    # Required on ARM devices in order to install docker-compose
+    - name: Ensure Pip is installed
+      package:
+        name: "{{ pip_package | default('python3-pip') }}"
+        state: present
+      when: ansible_architecture == 'aarch64'
   roles:
-    - geerlingguy.docker
+    - name: geerlingguy.docker
+      when: ansible_architecture == 'x86_64'
+    - name: geerlingguy.docker_arm
+      when: ansible_architecture == 'aarch64'
