@@ -32,6 +32,7 @@ local_users:
     groups: mygroup
     append: yes
     shell: /bin/bash
+    password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
     authorized_keys: |
       ssh-ed25519 1234 MyKey
       ssh-ed25519 5678 MyOtherKey
