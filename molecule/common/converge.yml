@@ -15,7 +15,7 @@
         comment: Testing User
         groups: admins
         append: yes
-        password: mypassword
+        password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
         authorized_keys: |
           ssh-ed25519 1234 MyKey
           ssh-ed25519 5678 MyOtherKey

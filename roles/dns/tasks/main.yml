@@ -36,7 +36,7 @@
         minute: "*/10"
         user: root
         state: present
-  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled
+  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled|bool
 
 - name: Provision DNS records
   community.general.cloudflare_dns:
