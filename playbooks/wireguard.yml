@@ -1,6 +1,6 @@
 ---
 - name: WireGuard
-  hosts: wireguard_servers, wireguard_clients
+  hosts: wireguard
   become: yes
   roles:
     - vladgh.system.wireguard
