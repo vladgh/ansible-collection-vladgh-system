@@ -4,11 +4,12 @@ galaxy_info:
   author: vladgh
   description: Vlad's Common Role
   license: Apache v2
+  min_ansible_version: '2.11'
   galaxy_tags: []
   platforms:
     - name: Ubuntu
       versions:
-        - impish
+        - jammy
         - focal
     - name: Debian
       versions:
