@@ -9,7 +9,7 @@ collections:
   - name: kubernetes.core
     version: 2.3.2
   - name: devsec.hardening
-    version: 7.15.0
+    version: 7.15.1
 
 roles:
   - name: cloudalchemy.node_exporter
