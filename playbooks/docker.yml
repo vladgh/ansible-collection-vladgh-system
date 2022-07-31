@@ -5,7 +5,7 @@
   pre_tasks:
     # Required on ARM devices in order to install docker-compose
     - name: Ensure Pip is installed
-      package:
+      ansible.builtin.package:
         name: "{{ pip_package | default('python3-pip') }}"
         state: present
       when: ansible_architecture == 'aarch64'
