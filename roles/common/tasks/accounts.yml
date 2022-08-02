@@ -43,8 +43,9 @@
     - name: Add authorized keys
       ansible.posix.authorized_key:
         user: "{{ item.name }}"
-        key: "{{ item.authorized_keys | default(omit) }}"
+        key: "{{ item.authorized_keys }}"
         exclusive: "{{ item.exclusive | default(omit) }}"
+      when: item.authorized_keys is defined and item.authorized_keys
       loop: "{{ local_users }}"
   when: local_users is defined and local_users
   no_log: no
