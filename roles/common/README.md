@@ -163,8 +163,7 @@ systemd_mounts:
     what: 192.168.1.1:/share
     where: /mnt/share
     type: nfs
-    opts: defaults
-    state: mounted
+    options: defaults
 ```
 
 ### Security

@@ -1,21 +1,21 @@
 [Unit]
 Description=Mount {{ item.name }}
-{% if item.before is defined and item.before %}
+{%- if item.before is defined and item.before %}
 Before={{ item.before }}
-{% endif %}
-{% if item.after is defined and item.after %}
+{%- endif %}
+{%- if item.after is defined and item.after %}
 After={{ item.after }}
-{% endif %}
+{%- endif %}
 
 [Mount]
 What={{ item.what }}
 Where={{ item.where }}
-{% if item.type is defined and item.type %}
+{%- if item.type is defined and item.type %}
 Type={{ item.type }}
-{% endif %}
-{% if item.options is defined and item.options %}
+{%- endif %}
+{%- if item.options is defined and item.options %}
 Options={{ item.options }}
-{% endif %}
+{%- endif %}
 
 [Install]
 WantedBy=multi-user.target
