@@ -1,13 +1,21 @@
 [Unit]
 Description=Mount {{ item.name }}
-Before={{ item.before | default('') }}
-After={{ item.after | default('network-online.target') }}
+{% if item.before is defined and item.before %}
+Before={{ item.before }}
+{% endif %}
+{% if item.after is defined and item.after %}
+After={{ item.after }}
+{% endif %}
 
 [Mount]
 What={{ item.what }}
 Where={{ item.where }}
-Type={{ item.type | default('') }}
-Options={{ item.options | default('') }}
+{% if item.type is defined and item.type %}
+Type={{ item.type }}
+{% endif %}
+{% if item.options is defined and item.options %}
+Options={{ item.options }}
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target
