@@ -8,9 +8,9 @@
       ansible.builtin.package:
         name: "{{ pip_package | default('python3-pip') }}"
         state: present
-      when: ansible_architecture == 'aarch64'
+      when: ansible_architecture in ['aarch64', 'armv7l']
   roles:
     - name: geerlingguy.docker
       when: ansible_architecture == 'x86_64'
     - name: geerlingguy.docker_arm
-      when: ansible_architecture == 'aarch64'
+      when: ansible_architecture in ['aarch64', 'armv7l']
