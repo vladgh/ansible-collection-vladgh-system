@@ -10,6 +10,9 @@
   when: apt_disable_repositories is defined and apt_disable_repositories
 
 - name: Add extra APT repositories
+  when: >
+    ( apt_extra_keys is defined and apt_extra_keys ) or
+    ( apt_extra_repositories is defined and apt_extra_repositories )
   block:
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
@@ -33,6 +36,3 @@
         state: "{{ item.state | default('present') }}"
       loop: "{{ apt_extra_repositories }}"
       when: apt_extra_repositories is defined and apt_extra_repositories
-  when: >
-    ( apt_extra_keys is defined and apt_extra_keys ) or
-    ( apt_extra_repositories is defined and apt_extra_repositories )

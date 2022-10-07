@@ -64,7 +64,7 @@
     enabled: "{{ item.service_enabled | default('yes') }}"
     daemon_reload: yes
   loop: "{{ systemd_mounts }}"
-  when: ( item.automount is not defined ) or ( not item.automount )
+  when: (item.automount is not defined) or (not item.automount)
 
 - name: Setup SystemD service for auto mount
   ansible.builtin.template:

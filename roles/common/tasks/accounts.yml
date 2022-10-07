@@ -1,5 +1,6 @@
 ---
 - name: Configure groups
+  when: local_groups is defined and local_groups
   block:
     - name: Create groups
       ansible.builtin.group:
@@ -19,9 +20,10 @@
         validate: 'visudo -cf %s'
       when: item.sudo is defined and item.sudo
       loop: "{{ local_groups }}"
-  when: local_groups is defined and local_groups
 
 - name: Configure users
+  when: local_users is defined and local_users
+  no_log: no
   block:
     - name: Create users
       ansible.builtin.user:
@@ -47,5 +49,3 @@
         exclusive: "{{ item.exclusive | default(omit) }}"
       when: item.authorized_keys is defined and item.authorized_keys
       loop: "{{ local_users }}"
-  when: local_users is defined and local_users
-  no_log: no
