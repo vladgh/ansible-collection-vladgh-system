@@ -6,6 +6,12 @@ Before={{ item.before }}
 {% if item.after is defined and item.after -%}
 After={{ item.after }}
 {% endif %}
+{% if item.wants is defined and item.wants -%}
+Wants={{ item.wants }}
+{% endif %}
+{% if item.requires is defined and item.requires -%}
+Requires={{ item.requires }}
+{% endif %}
 
 [Mount]
 What={{ item.what }}
