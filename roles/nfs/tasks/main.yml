@@ -5,6 +5,7 @@
     state: present
 
 - name: Generate NFS shares
+  when: nfs_exports is defined and nfs_exports | length
   block:
     - name: Ensure directories to export exist
       ansible.builtin.file:  # noqa 208
@@ -28,4 +29,3 @@
         enabled: yes
       tags:
         - molecule-notest
-  when: nfs_exports is defined and nfs_exports|length
