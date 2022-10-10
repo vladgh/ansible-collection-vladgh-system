@@ -4,16 +4,6 @@
 
 Ansible collection that holds roles, that can be used to configure common system services.
 
-## Included content
-
-### Roles
-
-See [Roles](roles/)
-
-### Playbooks
-
-See [Playbooks](playbooks/)
-
 ## Using this collection
 
 ### Installing the Collection from Ansible Galaxy
@@ -77,10 +67,10 @@ See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_gui
 
 ## Changelog & Releases
 
-This repository keeps a change log using [GitHub's releases][releases]
+This repository keeps a change log using [GitHub's releases](releases)
 functionality.
 
-Releases are based on [Semantic Versioning][semver], and use the format
+Releases are based on [Semantic Versioning](https://semver.org/), and use the format
 of `MAJOR.MINOR.PATCH`. The version will be incremented
 based on the following:
 
