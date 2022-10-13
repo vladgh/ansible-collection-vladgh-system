@@ -18,7 +18,7 @@
 - name: Ensure Pip system wide packages are installed
   ansible.builtin.pip:
     name: "{{ pip_install_packages }}"
-    state: present
+    state: "{{ item.state | default('present') }}"
     executable: "{{ pip_executable | default('pip3') }}"
   when: pip_install_packages is defined and pip_install_packages
 
@@ -27,7 +27,7 @@
   become_user: "{{ item.user }}"
   ansible.builtin.pip:
     name: "{{ item.packages }}"
-    state: "{{ item.state | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
     extra_args: --user
     executable: "{{ pip_executable | default('pip3') }}"
   loop: "{{ pip_user_install_packages }}"
