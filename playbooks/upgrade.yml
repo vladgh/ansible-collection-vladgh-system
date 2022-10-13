@@ -4,6 +4,7 @@
   become: yes
   tasks:
     - name: Upgrade Debian Systems
+      when: ansible_os_family is defined and ansible_os_family == 'Debian'
       block:
         - name: Update apt-get repo and cache
           ansible.builtin.apt:
@@ -20,18 +21,33 @@
         - name: Remove useless packages from the cache
           ansible.builtin.apt:
             autoclean: yes
-      # - name: Check if a reboot is needed on all servers
-      #   ansible.builtin.register: reboot_required_file
-      #   stat:
-      #     path: /var/run/reboot-required
-      #     get_md5: no
-      # - name: Reboot the box if kernel updated
-      #   ansible.builtin.reboot:
-      #     msg: "Reboot initiated by Ansible for kernel updates"
-      #     connect_timeout: 5
-      #     reboot_timeout: 300
-      #     pre_reboot_delay: 0
-      #     post_reboot_delay: 30
-      #     test_command: uptime
-      #   when: reboot_required_file.stat.exists and inventory_hostname != 'vdev'
-      when: ansible_os_family is defined and ansible_os_family == 'Debian'
+        # - name: Check if a reboot is needed on all servers
+        #   ansible.builtin.register: reboot_required_file
+        #   stat:
+        #     path: /var/run/reboot-required
+        #     get_md5: no
+        # - name: Reboot the box if kernel updated
+        #   ansible.builtin.reboot:
+        #     msg: "Reboot initiated by Ansible for kernel updates"
+        #     connect_timeout: 5
+        #     reboot_timeout: 300
+        #     pre_reboot_delay: 0
+        #     post_reboot_delay: 30
+        #     test_command: uptime
+        #   when: reboot_required_file.stat.exists and inventory_hostname != 'vdev'
+        - name: Update Pip system wide packages
+          ansible.builtin.pip:
+            name: "{{ pip_install_packages }}"
+            state: "{{ item.state | default('present') }}"
+            executable: "{{ pip_executable | default('pip3') }}"
+          when: pip_install_packages is defined and pip_install_packages
+        - name: Update Pip user packages
+          become: yes
+          become_user: "{{ item.user }}"
+          ansible.builtin.pip:
+            name: "{{ item.packages }}"
+            state: "{{ item.state | default('present') }}"
+            extra_args: --user
+            executable: "{{ pip_executable | default('pip3') }}"
+          loop: "{{ pip_user_install_packages }}"
+          when: pip_user_install_packages is defined and pip_user_install_packages
