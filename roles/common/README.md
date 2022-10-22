@@ -184,7 +184,7 @@ shell_extra_commands:
     creates: test.txt
 ```
 
-### Unattemded-upgrades
+### Unattended-upgrades
 
 ```yaml
 unattended_upgrades_autoupdate_enabled: yes
