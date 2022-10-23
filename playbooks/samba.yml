@@ -1,6 +1,6 @@
 ---
 - name: Samba Servers
-  hosts: samba_servers
+  hosts: samba
   become: yes
   roles:
     - vladgh.system.samba

@@ -20,7 +20,8 @@
       name: ansible
       state: present
       uid: 2674
-      password: "{{ deploy_user_password | default('*') | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
+      shell: '/bin/bash'
+      password: "{{ deploy_user_password | default('*') | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
   - name: Ansible user authorized keys
     ansible.posix.authorized_key:
       user: ansible
