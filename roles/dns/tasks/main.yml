@@ -1,5 +1,6 @@
 ---
 - name: CloudFlare Dynamic DNS Updater
+  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled|bool
   block:
     - name: Install script
       ansible.builtin.get_url:
@@ -36,7 +37,6 @@
         minute: "*/10"
         user: root
         state: present
-  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled|bool
 
 - name: Provision DNS records
   community.general.cloudflare_dns:
@@ -59,6 +59,7 @@
     ( cloudflare_api_token is defined and cloudflare_api_token ))
 
 - name: Override SystemD Resolve
+  when: dns_stub_listener is defined and dns_stub_listener == 'no'
   block:
     - name: Disable DNSStubListener
       ansible.builtin.copy:
@@ -80,4 +81,3 @@
         force: yes
         follow: no
       notify: Restart SystemD Resolved
-  when: dns_stub_listener is defined and dns_stub_listener == 'no'

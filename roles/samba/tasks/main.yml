@@ -35,10 +35,10 @@
 - name: Create share directories
   ansible.builtin.file:
     state: directory
-    path: "{{ item.path|default([samba_shares_root,item.name]|join('/')) }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('users') }}"
-    mode: "{{ item.directory_mode|default('0775') }}"
+    path: "{{ item.path | default([samba_shares_root, item.name] | join('/')) }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('users') }}"
+    mode: "{{ item.directory_mode | default('0775') }}"
   loop: "{{ samba_shares }}"
   when: samba_shares is defined and samba_shares
   tags: samba

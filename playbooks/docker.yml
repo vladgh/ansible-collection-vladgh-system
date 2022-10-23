@@ -10,7 +10,7 @@
         state: present
       when: ansible_architecture in ['aarch64', 'armv7l']
   roles:
-    - name: geerlingguy.docker
+    - role: geerlingguy.docker
       when: ansible_architecture == 'x86_64'
-    - name: geerlingguy.docker_arm
+    - role: geerlingguy.docker_arm
       when: ansible_architecture in ['aarch64', 'armv7l']

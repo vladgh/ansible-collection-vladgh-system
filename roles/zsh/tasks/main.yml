@@ -28,6 +28,7 @@
   when: not ohmyzsh_installed.stat.exists
 
 - name: Install Oh My ZSH plugins and themes
+  become_user: "{{ zsh_user }}"
   block:
     - name: Clone zsh-autosuggestions
       ansible.builtin.git:
@@ -47,4 +48,3 @@
         dest: "/home/{{ zsh_user }}/.oh-my-zsh/custom/themes/powerlevel10k"
         version: master
         force: yes
-  become_user: "{{ zsh_user }}"
