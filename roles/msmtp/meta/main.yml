@@ -15,4 +15,5 @@ galaxy_info:
       versions:
         - bullseye
         - buster
-dependencies: []
+dependencies:
+  - role: community.general

@@ -6,45 +6,59 @@
     - "{{ ansible_distribution | lower }}.yml"
     - "{{ ansible_os_family | lower }}.yml"
 
-- import_tasks: accounts.yml
+- name: Users and groups
+  ansible.builtin.import_tasks: accounts.yml
 
-- import_tasks: apt.yml
+- name: APT
+  ansible.builtin.import_tasks: apt.yml
 
-- import_tasks: unattended.yml
+- name: Unattended upgrades
+  ansible.builtin.import_tasks: unattended.yml
   when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
 
-- import_tasks: packages.yml
+- name: Additional packages
+  ansible.builtin.import_tasks: packages.yml
   when: additional_packages is defined and additional_packages
 
-- import_tasks: pip.yml
+- name: Python PIP
+  ansible.builtin.import_tasks: pip.yml
   when: >
     ( pip_install_packages is defined and pip_install_packages ) or
     ( pip_user_install_packages is defined and pip_user_install_packages )
 
-- import_tasks: timezone.yml
+- name: Timezone
+  ansible.builtin.import_tasks: timezone.yml
   when: timezone is defined and timezone
 
-- import_tasks: sysctl.yml
+- name: SysCtl overrides
+  ansible.builtin.import_tasks: sysctl.yml
   when: sysctl_overwrite is defined and sysctl_overwrite
 
-- import_tasks: ca.yml
+- name: Certificate Authority
+  ansible.builtin.import_tasks: ca.yml
   when: install_ca_certificates is defined and install_ca_certificates|bool
 
-- import_tasks: aliases.yml
+- name: Extra BASH aliases
+  ansible.builtin.import_tasks: aliases.yml
   when: bash_extra_aliases is defined and bash_extra_aliases
 
-- import_tasks: cron.yml
+- name: Cron jobs
+  ansible.builtin.import_tasks: cron.yml
   when: cron_jobs is defined and cron_jobs
 
-- import_tasks: mounts.yml
+- name: Mount points
+  ansible.builtin.import_tasks: mounts.yml
   when: >
     ( mounts is defined and mounts ) or
     ( systemd_mounts is defined and systemd_mounts )
 
-- import_tasks: fail2ban.yml
+- name: Fail2Ban
+  ansible.builtin.import_tasks: fail2ban.yml
   when: fail2ban_enabled is defined and fail2ban_enabled|bool
 
-- import_tasks: shell.yml
+- name: Extra shell commands
+  ansible.builtin.import_tasks: shell.yml
   when: shell_extra_commands is defined and shell_extra_commands
 
-- import_tasks: misc.yml
+- name: Miscelaneous
+  ansible.builtin.import_tasks: misc.yml

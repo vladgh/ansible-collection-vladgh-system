@@ -1,18 +1,18 @@
 ---
 # Adds  extra CA Certificates
 - name: Install ca-certificates package
-  package:
+  ansible.builtin.package:
     name: ca-certificates
     state: present
 
 - name: Ensure certificates directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ ca_path }}/"
     state: directory
     mode: 0755
 
 - name: Install CA Certificates
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ ca_path }}/"
     owner: root
@@ -24,7 +24,7 @@
     - Update trusted CA certificates
 
 - name: Ensure RSysLog Packages
-  apt:
+  ansible.builtin.apt:
     name:
       - rsyslog
       - rsyslog-gnutls
@@ -33,7 +33,7 @@
     state: present
 
 - name: Configure RSysLog
-  template:
+  ansible.builtin.template:
     src: "etc/rsyslog.d/remote_logs.conf.j2"
     dest: "/etc/rsyslog.d/00_{{ remote_logs_server }}.conf"
     owner: root

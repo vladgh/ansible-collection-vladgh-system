@@ -1,11 +1,11 @@
 ---
 - name: Install CA Certificates
-  package:
+  ansible.builtin.package:
     name: ca-certificates
     state: present
 
 - name: Install MSMTP and MailX
-  apt:
+  ansible.builtin.apt:
     name:
       - msmtp
       - msmtp-mta
@@ -14,7 +14,7 @@
     update_cache: yes
 
 - name: Configure MSMTP
-  template:
+  ansible.builtin.template:
     src: etc/msmtprc.j2
     dest: /etc/msmtprc
     owner: root
@@ -22,7 +22,7 @@
     mode: 0644
 
 - name: Configure aliases
-  template:
+  ansible.builtin.template:
     src: etc/aliases.j2
     dest: /etc/aliases
     owner: root
@@ -30,7 +30,7 @@
     mode: 0644
 
 - name: Setup alternatives for MTA
-  alternatives:
+  community.general.alternatives:
     name: mta
     link: /usr/sbin/sendmail
     path: /usr/bin/msmtp

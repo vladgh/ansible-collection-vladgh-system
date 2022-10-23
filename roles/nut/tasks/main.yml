@@ -5,7 +5,8 @@
     state: directory
     mode: 0755
 
-- import_tasks: server.yml
+- name: Generate Server Configuration
+  ansible.builtin.import_tasks: server.yml
   when: >
     nut_mode is defined and
     (
@@ -13,7 +14,8 @@
       nut_mode == 'standalone'
     )
 
-- import_tasks: client.yml
+- name: Generate Client Configuration
+  ansible.builtin.import_tasks: client.yml
   when: >
     nut_mode is defined and
     (
@@ -33,4 +35,5 @@
     - Restart NUT Server
     - Restart NUT Client
 
-- import_tasks: state.yml
+- name: Service State
+  ansible.builtin.import_tasks: state.yml

@@ -1,5 +1,6 @@
 ---
 - name: Run Shell Commands
+  # noqa command-instead-of-shell
   ansible.builtin.shell:
     cmd: "{{ item.cmd }}"
     chdir: "{{ item.chdir | default(omit) }}"
