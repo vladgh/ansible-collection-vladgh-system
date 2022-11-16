@@ -25,7 +25,7 @@
         dest: "/etc/apt/trusted.gpg.d/{{ item.filename | default(item.name) }}.asc"
         mode: "{{ item.mode | default('0644') }}"
       loop: "{{ apt_extra_keys }}"
-      when: apt_extra_keys.url is defined and apt_extra_keys.url
+      when: item.url is defined and item.url
 
     - name: Add extra APT repositories
       ansible.builtin.apt_repository:
