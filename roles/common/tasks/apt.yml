@@ -21,11 +21,11 @@
 
     - name: Add an Apt signing key to a specific keyring file
       ansible.builtin.get_url:
-        url: "{{ item.key_url }}"
+        url: "{{ item.url }}"
         dest: "/etc/apt/trusted.gpg.d/{{ item.filename | default(item.name) }}.asc"
         mode: "{{ item.mode | default('0644') }}"
       loop: "{{ apt_extra_keys }}"
-      when: apt_extra_keys.key_url is defined and apt_extra_keys.key_url
+      when: apt_extra_keys.url is defined and apt_extra_keys.url
 
     - name: Add extra APT repositories
       ansible.builtin.apt_repository:
