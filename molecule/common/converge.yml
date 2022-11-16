@@ -26,13 +26,11 @@
         exclusive: yes
     additional_packages:
       - rolldice
-    apt_extra_keys:
-      - name: docker key
-        url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
-        filename: docker
     apt_extra_repositories:
       - name: Add test Docker repository
         repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
+        key_url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
+        key_filename: docker.asc
     pip_install_packages: [pip-install-test]
     pip_user_install_packages:
       - user: test
