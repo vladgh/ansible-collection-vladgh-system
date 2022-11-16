@@ -10,9 +10,7 @@
   when: apt_disable_repositories is defined and apt_disable_repositories
 
 - name: Add extra APT repositories
-  when: >
-    ( apt_extra_keys is defined and apt_extra_keys ) or
-    ( apt_extra_repositories is defined and apt_extra_repositories )
+  when: apt_extra_repositories is defined and apt_extra_repositories
   block:
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
@@ -20,19 +18,19 @@
         update_cache: yes
 
     - name: Add an Apt signing key to a specific keyring file
-      ansible.builtin.apt_key:
-        id: "{{ item.id | default(omit) }}"
-        url: "{{ item.url | default(omit) }}"
-        keyring: "/etc/apt/trusted.gpg.d/{{ item.filename | default(item.id) }}.gpg"
-      loop: "{{ apt_extra_keys }}"
-      when: apt_extra_keys is defined and apt_extra_keys
+      ansible.builtin.get_url:
+        url: "{{ item.key_url }}"
+        dest: "/etc/apt/trusted.gpg.d/{{ item.key_filename | default(item.name) }}"
+        mode: "{{ item.key_filemode | default('0644') }}"
+      loop: "{{ apt_extra_repositories }}"
+      when: item.key_url is defined and item.key_url
 
     - name: Add extra APT repositories
       ansible.builtin.apt_repository:
         repo: "{{ item.repo }}"
         codename: "{{ ansible_distribution_release | default(omit) }}"
-        filename: "{{ item.filename | default(omit) }}"
+        filename: "{{ item.repo_filename | default(omit) }}"
+        mode: "{{ item.repo_filemode | default('0644') }}"
         update_cache: "{{ item.update_cache | default(true) }}"
         state: "{{ item.state | default('present') }}"
       loop: "{{ apt_extra_repositories }}"
-      when: apt_extra_repositories is defined and apt_extra_repositories
