@@ -3,9 +3,9 @@ collections:
   - name: ansible.posix
     version: 1.4.0
   - name: community.general
-    version: 5.8.0
+    version: 6.0.1
   - name: community.docker
-    version: 3.2.0
+    version: 3.2.1
   - name: kubernetes.core
     version: 2.3.2
   - name: devsec.hardening
@@ -15,7 +15,7 @@ roles:
   - name: cloudalchemy.node_exporter
     version: 2.0.0
   - name: geerlingguy.docker
-    version: 6.0.2
+    version: 6.0.3
   - name: geerlingguy.docker_arm
     version: 5.0.0
   - name: geerlingguy.firewall
