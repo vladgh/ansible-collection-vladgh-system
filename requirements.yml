@@ -19,7 +19,7 @@ roles:
   - name: geerlingguy.docker_arm
     version: 5.0.0
   - name: geerlingguy.firewall
-    version: 2.5.0
+    version: 2.5.1
   - name: geerlingguy.kubernetes
     version: 7.1.1
   - name: geerlingguy.swap
