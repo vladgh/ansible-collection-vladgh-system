@@ -4,4 +4,4 @@
   become: yes
   roles:
     # - vladgh.system.logs
-    - cloudalchemy.node_exporter
+    - prometheus.prometheus.node_exporter
