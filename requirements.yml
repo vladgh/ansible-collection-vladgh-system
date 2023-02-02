@@ -5,9 +5,9 @@ collections:
   - name: community.crypto
     version: 2.10.0
   - name: community.general
-    version: 6.1.0
+    version: 6.3.0
   - name: community.docker
-    version: 3.3.2
+    version: 3.4.0
   - name: kubernetes.core
     version: 2.3.2
   - name: devsec.hardening
@@ -28,5 +28,5 @@ roles:
   - name: geerlingguy.swap
     version: 1.0.2
   - name: oefenweb.postfix
-    version: v3.6.1
+    version: v3.6.3
   - name: stefangweichinger.ansible_rclone
