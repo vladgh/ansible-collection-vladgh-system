@@ -18,7 +18,7 @@ collections:
 
 roles:
   - name: geerlingguy.docker
-    version: 6.0.4
+    version: 6.1.0
   - name: geerlingguy.docker_arm
     version: 5.0.0
   - name: geerlingguy.firewall
