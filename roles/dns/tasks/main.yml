@@ -61,21 +61,29 @@
 - name: Override SystemD Resolve
   when: dns_stub_listener is defined and dns_stub_listener == 'no'
   block:
+    - name: Create a local systemd-resolved configuration directory.
+      ansible.builtin.file:
+        path: /etc/systemd/resolved.conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
     - name: Disable DNSStubListener
       ansible.builtin.copy:
         content: |
           [Resolve]
+          {% if dns_stub_listener is defined and dns_stub_listener -%}
+          DNSStubListener={{ dns_stub_listener }}
           DNS={{ dns_resolved | default('127.0.0.1') }}
-          FallbackDNS=1.1.1.1 1.0.0.1
-          DNSStubListener={{ dns_stub_listener | default('yes') }}
-        dest: /etc/systemd/resolved.conf
+          {% endif %}
+        dest: /etc/systemd/resolved.conf.d/local.conf
         owner: root
         group: root
         mode: 0644
       notify: Restart SystemD Resolved
     - name: Change symlink for systemd-resolved
       ansible.builtin.file:
-        src: /var/run/systemd/resolve/resolv.conf
+        src: /run/systemd/resolve/resolv.conf
         dest: /etc/resolv.conf
         state: link
         force: yes

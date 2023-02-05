@@ -45,7 +45,7 @@ cloudflare_dns_records:
 
 ```yaml
 dns_stub_listener: no  # Set to `no` to remove local stub listener and use the DNS below
-dns_resolved: 8.8.8.8 8.8.4.4  # Space separated list
+dns_resolved: 127.0.0.1  # Space separated list (Ex: 8.8.8.8 8.8.4.4)
 ```
 
 ## Dependencies
