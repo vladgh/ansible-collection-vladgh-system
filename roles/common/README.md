@@ -40,6 +40,7 @@ local_users:
     authorized_keys: |
       ssh-ed25519 1234 MyKey
       ssh-ed25519 5678 MyOtherKey
+    authorized_key_path: /etc/pve/priv/authorized_keys
     exclusive: yes
 ```
 
