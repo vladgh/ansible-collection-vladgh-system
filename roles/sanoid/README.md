@@ -1,6 +1,6 @@
 # Ansible Role: Sanoid
 
-Vlad's Sanoid Ansible Role
+Vlad's Ansible role to install Sanoid, Syncoid and Findoid
 
 ## Requirements
 
@@ -11,7 +11,18 @@ Vlad's Sanoid Ansible Role
 Available variables are listed below, along with default values (see `defaults/main.yml`)
 
 ```yaml
-qemu_guest_agent_enabled: yes  # Set to `yes` to enable the QEMU Guest Agent
+# Templates can be used to define common behavior
+sanoid_templates:
+  default:
+    frequently: 4
+    hourly: 24
+    daily: 7
+    monthly: 12
+    yearly: 1
+    autosnap: 'yes'
+    autoprune: 'yes'
+# The datasetys you want to configure
+sanoid_datasets: {}
 ```
 
 ## Dependencies
