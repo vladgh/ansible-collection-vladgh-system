@@ -1,7 +1,7 @@
 ---
 - name: Monitor
   hosts: monitor
-  become: yes
+  become: true
   roles:
     # - vladgh.system.logs
     - prometheus.prometheus.node_exporter

@@ -4,7 +4,7 @@
     repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
     state: present
     filename: backports
-    update_cache: yes
+    update_cache: true
   when: ansible_distribution_release == 'buster'
 
 - name: Ensure WireGuard Packages
@@ -37,7 +37,7 @@
         owner: root
         group: root
         mode: 0600
-      no_log: yes
+      no_log: true
       with_dict: "{{ wireguard_config }}"
       notify: Restart WireGuard
 
@@ -45,8 +45,8 @@
       ansible.builtin.service:
         name: "wg-quick@{{ item.key }}"
         state: started
-        enabled: yes
-      no_log: yes
+        enabled: true
+      no_log: true
       with_dict: "{{ wireguard_config }}"
 
 - name: Create a resolvconf link

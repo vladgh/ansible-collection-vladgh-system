@@ -1,8 +1,8 @@
 ---
 - name: Update Apt Cache
   ansible.builtin.apt:
-    update_cache: yes
-    force_apt_get: yes
+    update_cache: true
+    force_apt_get: true
   register: _pve_update_apt_cache
   until: _pve_update_apt_cache is success
   retries: 3

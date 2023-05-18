@@ -16,14 +16,14 @@
         line: "%{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
         state: "{{ item.state | default(omit) }}"
         mode: 0440
-        create: yes
+        create: true
         validate: 'visudo -cf %s'
       when: item.sudo is defined and item.sudo
       loop: "{{ local_groups }}"
 
 - name: Configure users
   when: local_users is defined and local_users
-  no_log: no
+  no_log: false
   block:
     - name: Create users
       ansible.builtin.user:

@@ -2,7 +2,7 @@
 # Security-related configurations, compliant with the DevSec Linux Baseline (https://github.com/dev-sec/linux-baseline).
 - name: Harden
   hosts: harden
-  become: yes
+  become: true
   roles:
     - devsec.hardening.os_hardening
     - devsec.hardening.ssh_hardening

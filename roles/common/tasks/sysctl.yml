@@ -3,8 +3,8 @@
   ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
+    reload: true
   with_dict: "{{ sysctl_overwrite }}"
   when: ansible_virtualization_type not in ['docker', 'lxc', 'openvz']

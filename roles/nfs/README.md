@@ -26,7 +26,7 @@ nfs_exports:
 
 ```yaml
 - hosts: nfs_servers
-  become: yes
+  become: true
   roles:
       - vladgh.system.nfs
 ```

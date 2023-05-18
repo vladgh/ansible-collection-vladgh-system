@@ -1,7 +1,7 @@
 ---
 - name: Virtual Machine
   hosts: virtual
-  become: yes
+  become: true
   roles:
     - vladgh.system.qemu_guest_agent
   tasks:
@@ -10,13 +10,13 @@
       ansible.builtin.systemd:
         name: systemd-timesyncd
         state: stopped
-        enabled: no
+        enabled: false
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('18.04', '<=')
     # Fix for "A start job is running for wait for network to be configured" 2 minute delay on Ubuntu 18 VMs
     - name: Disable and mask systemd-networkd-wait-online
       ansible.builtin.systemd:
         name: systemd-networkd-wait-online
         state: stopped
-        enabled: no
-        masked: yes
+        enabled: false
+        masked: true
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('18.04', '<=')

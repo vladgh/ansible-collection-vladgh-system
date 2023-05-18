@@ -10,15 +10,15 @@
       ansible.builtin.systemd:
         name: chrony
         state: started
-        enabled: yes
-        daemon_reload: yes
+        enabled: true
+        daemon_reload: true
 
 - name: Stop HA Cluster Services
   ansible.builtin.service:
     name: "{{ item }}"
     state: stopped
-    enabled: no
-    daemon_reload: yes
+    enabled: false
+    daemon_reload: true
   loop:
     - pve-ha-lrm
     - pve-ha-crm
@@ -35,8 +35,8 @@
     owner: root
     group: root
     mode: 0664
-    create: yes
-  become: yes
+    create: true
+  become: true
   notify:
     - Regenerate initramfs
     - Reboot
@@ -59,8 +59,8 @@
         owner: root
         group: root
         mode: 0664
-        create: yes
-      become: yes
+        create: true
+      become: true
       notify:
         - Regenerate initramfs
         - Reboot
@@ -75,8 +75,8 @@
         owner: root
         group: root
         mode: 0664
-        create: yes
-      become: yes
+        create: true
+      become: true
       notify:
         - Regenerate initramfs
         - Reboot
@@ -87,7 +87,7 @@
         regexp: "^GRUB_CMDLINE_LINUX_DEFAULT"
         line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt i915.enable_gvt=1"'
         state: present
-      become: yes
+      become: true
       notify:
         - Update Grub
         - Reboot
@@ -106,7 +106,7 @@
       ansible.builtin.lineinfile:
         path: /etc/lvm/lvm.conf
         regex: "thin_pool_autoextend_threshold"
-        backrefs: yes
+        backrefs: true
         line: "  thin_pool_autoextend_threshold = {{ proxmox_lvm_thin_pool_autoextend_threshold }}"
       when: proxmox_lvm_thin_pool_autoextend_threshold is defined and proxmox_lvm_thin_pool_autoextend_threshold
 
@@ -114,6 +114,6 @@
       ansible.builtin.lineinfile:
         path: /etc/lvm/lvm.conf
         regex: "thin_pool_autoextend_percent"
-        backrefs: yes
+        backrefs: true
         line: "  thin_pool_autoextend_percent = {{ proxmox_lvm_thin_pool_autoextend_percent }}"
       when: proxmox_lvm_thin_pool_autoextend_percent is defined and proxmox_lvm_thin_pool_autoextend_percent

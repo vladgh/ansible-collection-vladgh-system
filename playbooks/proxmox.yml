@@ -1,6 +1,6 @@
 ---
 - name: Proxmox Virtual Environment
   hosts: proxmox
-  become: yes
+  become: true
   roles:
     - vladgh.system.proxmox

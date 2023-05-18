@@ -20,13 +20,13 @@
     dest: /tmp
     extra_opts:
       - --xz
-    remote_src: yes
+    remote_src: true
   when: shellcheck_installed is changed  # noqa no-handler
 
 - name: Install Shellcheck
   ansible.builtin.copy:
     src: "/tmp/shellcheck-{{ shellcheck_version }}/shellcheck"
     dest: /usr/local/bin/shellcheck
-    remote_src: yes
+    remote_src: true
     mode: 0755
   when: shellcheck_installed is changed  # noqa no-handler

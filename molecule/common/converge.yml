@@ -1,20 +1,20 @@
 ---
 - name: Converge
   hosts: all
-  become: yes
+  become: true
   roles:
     - ./roles/common
   vars:
     timezone: US/Central
     local_groups:
       - name: admins
-        system: yes
-        sudo: yes
+        system: true
+        sudo: true
     local_users:
       - name: test
         comment: Testing User
         groups: admins
-        append: yes
+        append: true
         password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
         authorized_keys: |
           ssh-ed25519 1234 MyKey
@@ -23,7 +23,7 @@
         authorized_keys: |
           ssh-ed25519 1234 MyKey
           ssh-ed25519 5678 MyOtherKey
-        exclusive: yes
+        exclusive: true
     additional_packages:
       - rolldice
     apt_extra_repositories:
@@ -54,29 +54,29 @@
         fstype: none
     systemd_mounts:
       - name: SystemD Mount Test
-        automount: no
+        automount: false
         what: /srv
         where: /mnt/srv
         options: bind
         type: none
         service_state: started
-        service_enabled: yes
+        service_enabled: true
       - name: SystemD Auto Mount Test
-        automount: yes
+        automount: true
         what: localhost:/media
         where: /mnt/media
         options: _netdev,auto
         type: nfs
         service_state: started
-        service_enabled: yes
-    install_ca_certificates: yes
-    fail2ban_enabled: yes
+        service_enabled: true
+    install_ca_certificates: true
+    fail2ban_enabled: true
     sysctl_overwrite:
       fs.inotify.max_user_watches: 524288
-    unattended_upgrades_autoupdate_enabled: yes
+    unattended_upgrades_autoupdate_enabled: true
     unattended_upgrades_autoupdate_reboot: "true"
     unattended_upgrades_autoupdate_mail_to: "root"
-    unattended_upgrades_autoupdate_mail_on_error: yes
+    unattended_upgrades_autoupdate_mail_on_error: true
     shell_extra_commands:
       - name: Test
         cmd: touch test.txt

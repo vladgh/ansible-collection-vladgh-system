@@ -15,7 +15,7 @@
   ansible.builtin.service:
     name: rpcbind
     state: started
-    enabled: yes
+    enabled: true
   loop:
     - "{{ mounts }}"
     - "{{ systemd_mounts }}"
@@ -61,8 +61,8 @@
   ansible.builtin.systemd:
     name: "{{ item.where[1:] | replace('/', '-') }}.mount"
     state: "{{ item.service_state | default('started') }}"
-    enabled: "{{ item.service_enabled | default('yes') }}"
-    daemon_reload: yes
+    enabled: "{{ item.service_enabled | default(true) }}"
+    daemon_reload: true
   loop: "{{ systemd_mounts }}"
   when: (item.automount is not defined) or (not item.automount)
 
@@ -81,7 +81,7 @@
   ansible.builtin.systemd:
     name: "{{ item.where[1:] | replace('/', '-') }}.automount"
     state: "{{ item.service_state | default('started') }}"
-    enabled: "{{ item.service_enabled | default('yes') }}"
-    daemon_reload: yes
+    enabled: "{{ item.service_enabled | default(true) }}"
+    daemon_reload: true
   loop: "{{ systemd_mounts }}"
   when: item.automount is defined and item.automount

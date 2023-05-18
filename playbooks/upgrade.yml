@@ -1,31 +1,31 @@
 ---
 - name: Upgrade everything
   hosts: upgrade
-  become: yes
+  become: true
   tasks:
     - name: Upgrade Debian Systems
       when: ansible_os_family is defined and ansible_os_family == 'Debian'
       block:
         - name: Update apt-get repo and cache
           ansible.builtin.apt:
-            update_cache: yes
-            force_apt_get: yes
+            update_cache: true
+            force_apt_get: true
             cache_valid_time: 21600  # Update the apt cache if its older than 6 hours
         - name: Upgrade all apt packages
           ansible.builtin.apt:
             upgrade: dist
         - name: Remove dependencies that are no longer required
           ansible.builtin.apt:
-            autoremove: yes
-            purge: yes
+            autoremove: true
+            purge: true
         - name: Remove useless packages from the cache
           ansible.builtin.apt:
-            autoclean: yes
+            autoclean: true
         # - name: Check if a reboot is needed on all servers
         #   ansible.builtin.register: reboot_required_file
         #   stat:
         #     path: /var/run/reboot-required
-        #     get_md5: no
+        #     get_md5: false
         # - name: Reboot the box if kernel updated
         #   ansible.builtin.reboot:
         #     msg: "Reboot initiated by Ansible for kernel updates"
@@ -42,7 +42,7 @@
             executable: "{{ pip_executable | default('pip3') }}"
           when: pip_install_packages is defined and pip_install_packages
         - name: Update Pip user packages
-          become: yes
+          become: true
           become_user: "{{ item.user }}"
           ansible.builtin.pip:
             name: "{{ item.packages }}"

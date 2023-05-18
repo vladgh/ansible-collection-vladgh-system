@@ -1,6 +1,6 @@
 ---
 - name: Mail Services
   hosts: mail
-  become: yes
+  become: true
   roles:
     - oefenweb.postfix

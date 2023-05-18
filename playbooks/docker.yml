@@ -1,7 +1,7 @@
 ---
 - name: Docker
   hosts: docker
-  become: yes
+  become: true
   pre_tasks:
     # Required on ARM devices in order to install docker-compose
     - name: Ensure Pip is installed

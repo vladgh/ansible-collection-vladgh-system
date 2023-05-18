@@ -2,44 +2,44 @@
 #   Provision Ansible on node(s)
 - name: Ansible
   hosts: ansible
-  become: yes
+  become: true
   gather_facts: false
   tasks:
-  - name: Update apt-get repo and cache
-    ansible.builtin.apt:
-      update_cache: yes
-      force_apt_get: yes
-      cache_valid_time: 21600  # Update the apt cache if its older than 6 hours
-    when: ansible_os_family is defined and ansible_os_family == 'Debian'
-  - name: Install required packages
-    ansible.builtin.package:
-      name: [sudo, python3]
-      state: present
-  - name: Ansible user
-    ansible.builtin.user:
-      name: ansible
-      state: present
-      uid: 2674
-      shell: '/bin/bash'
-      password: "{{ deploy_user_password | default('*') | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
-  - name: Ansible user authorized keys
-    ansible.posix.authorized_key:
-      user: ansible
-      key: "{{ authorized_deploy_keys }}"
-      state: present
-      exclusive: yes
-    when: authorized_deploy_keys is defined and authorized_deploy_keys
-  - name: Add Ansible user to Sudoers
-    ansible.builtin.lineinfile:
-      path: /etc/sudoers.d/00_ansible
-      line: 'ansible ALL=(ALL) NOPASSWD: ALL'
-      state: present
-      mode: 0440
-      create: yes
-      validate: '/usr/sbin/visudo -cf %s'
-  - name: Ensure includedir in Sudoers
-    ansible.builtin.lineinfile:
-      dest: /etc/sudoers
-      line: '#includedir /etc/sudoers.d'
-      state: present
-      validate: '/usr/sbin/visudo -cf %s'
+    - name: Update apt-get repo and cache
+      ansible.builtin.apt:
+        update_cache: true
+        force_apt_get: true
+        cache_valid_time: 21600  # Update the apt cache if its older than 6 hours
+      when: ansible_os_family is defined and ansible_os_family == 'Debian'
+    - name: Install required packages
+      ansible.builtin.package:
+        name: [sudo, python3]
+        state: present
+    - name: Ansible user
+      ansible.builtin.user:
+        name: ansible
+        state: present
+        uid: 2674
+        shell: '/bin/bash'
+        password: "{{ deploy_user_password | default('*') | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+    - name: Ansible user authorized keys
+      ansible.posix.authorized_key:
+        user: ansible
+        key: "{{ authorized_deploy_keys }}"
+        state: present
+        exclusive: true
+      when: authorized_deploy_keys is defined and authorized_deploy_keys
+    - name: Add Ansible user to Sudoers
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/00_ansible
+        line: 'ansible ALL=(ALL) NOPASSWD: ALL'
+        state: present
+        mode: 0440
+        create: true
+        validate: '/usr/sbin/visudo -cf %s'
+    - name: Ensure includedir in Sudoers
+      ansible.builtin.lineinfile:
+        dest: /etc/sudoers
+        line: '#includedir /etc/sudoers.d'
+        state: present
+        validate: '/usr/sbin/visudo -cf %s'

@@ -14,7 +14,7 @@ Installs this script  used to update Dynamic DNS (DDNS) service based on Cloudfl
 <https://github.com/K0p1-Git/cloudflare-ddns-updater>
 
 ```yml
-cloudflare_ddns_updater_enabled: yes  # Set to `yes` to install ddns updater script
+cloudflare_ddns_updater_enabled: true  # Set to `true` to install ddns updater script
 cloudflare_ddns_updater_config:
   auth_email: ""           # The email used to login 'https://dash.cloudflare.com'
   auth_method: "token"     # Set to "global" for Global API Key or "token" for Scoped API Token
@@ -44,7 +44,7 @@ cloudflare_dns_records:
 ### Local DNS resolver
 
 ```yaml
-dns_stub_listener: no  # Set to `no` to remove local stub listener and use the DNS below
+dns_stub_listener: false  # Set to `false` to remove local stub listener and use the DNS below
 dns_resolved: 127.0.0.1  # Space separated list (Ex: 8.8.8.8 8.8.4.4)
 ```
 
@@ -56,7 +56,7 @@ dns_resolved: 127.0.0.1  # Space separated list (Ex: 8.8.8.8 8.8.4.4)
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
       - vladgh.system.dns
 ```

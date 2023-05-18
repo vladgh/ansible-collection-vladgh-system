@@ -2,7 +2,7 @@
 - name: Restart NUT Server
   ansible.builtin.service:
     name: nut-server
-    enabled: yes
+    enabled: true
     state: restarted
   when: >
     nut_mode is defined and
@@ -14,7 +14,7 @@
 - name: Restart NUT Client
   ansible.builtin.service:
     name: nut-client
-    enabled: yes
+    enabled: true
     state: restarted
   when: >
     nut_mode is defined and

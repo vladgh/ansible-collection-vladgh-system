@@ -1,2 +1,2 @@
 ---
-qemu_guest_agent_enabled: yes
+qemu_guest_agent_enabled: true

@@ -5,7 +5,7 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: 0644
-    create: yes
+    create: true
     line: "alias {{ item.alias }}='{{ item.command }}'"
     regexp: "alias {{ item.alias }}="
     state: "{{ item.state | default('present') }}"

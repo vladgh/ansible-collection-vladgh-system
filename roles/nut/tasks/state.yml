@@ -2,7 +2,7 @@
 - name: Ensure NUT Server Service
   ansible.builtin.service:
     name: nut-server
-    enabled: yes
+    enabled: true
     state: started
   when: >
     nut_mode is defined and
@@ -14,7 +14,7 @@
 - name: Ensure NUT Client Service
   ansible.builtin.service:
     name: nut-client
-    enabled: yes
+    enabled: true
     state: started
   when: >
     nut_mode is defined and
