@@ -18,7 +18,7 @@
     repo: "deb [signed-by=/etc/apt/trusted.gpg.d/hashicorp.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
     filename: hashicorp
     state: present
-  register: _hashicorp_repo
+  register: hashicorp_repo
 
 - name: Install Hashicorp Packer
   ansible.builtin.apt:
