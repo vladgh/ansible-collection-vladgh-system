@@ -71,6 +71,7 @@
     - name: Disable DNSStubListener
       ansible.builtin.copy:
         content: |
+          {{ ansible_managed | comment }}
           [Resolve]
           {% if dns_stub_listener is defined and dns_stub_listener -%}
           DNSStubListener={{ dns_stub_listener }}
