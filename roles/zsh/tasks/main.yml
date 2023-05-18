@@ -21,11 +21,11 @@
 - name: Check if Oh My ZSH is installed
   ansible.builtin.stat:
     path: /home/{{ zsh_user }}/.oh-my-zsh
-  register: ohmyzsh_installed
+  register: zsh_ohmyzsh_installed
 - name: Install Oh My ZSH
   become_user: "{{ zsh_user }}"
   ansible.builtin.command: /tmp/install-ohmyzsh.sh --unattended
-  when: not ohmyzsh_installed.stat.exists
+  when: not zsh_ohmyzsh_installed.stat.exists
 
 - name: Install Oh My ZSH plugins and themes
   become_user: "{{ zsh_user }}"

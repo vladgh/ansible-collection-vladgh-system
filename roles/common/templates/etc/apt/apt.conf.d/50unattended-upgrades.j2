@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 Unattended-Upgrade::Automatic-Reboot "{{ unattended_upgrades_autoupdate_reboot }}";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ unattended_upgrades_autoupdate_reboot_time }}";
 

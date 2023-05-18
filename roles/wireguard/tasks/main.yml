@@ -46,7 +46,6 @@
         name: "wg-quick@{{ item.key }}"
         state: started
         enabled: yes
-      no_log: yes
       with_dict: "{{ wireguard_config }}"
 
 - name: Create a resolvconf link

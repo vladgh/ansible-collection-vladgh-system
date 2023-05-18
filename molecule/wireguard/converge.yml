@@ -27,6 +27,6 @@
           PrivateKey: 'ACxT753ig3+ulg5x49Pxr3YE4fZ9HexmfveRtGYoR0U='
           Address: '10.0.0.2/24'
         Peers:
-          - Endpoint: 'myserver.dyndns.org:51820'
+          - Endpoint: 'ipv4.icanhazip.com:51820'
             PublicKey: 'y2DIZQ3oaCYW+bgE9EPxwl6Rd2xTkRRXE9W/VW1ZDg4='
             AllowedIPs: '0.0.0.0/0'
