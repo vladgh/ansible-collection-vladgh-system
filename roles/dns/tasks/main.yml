@@ -73,7 +73,7 @@
         content: |
           [Resolve]
           {% if dns_stub_listener is defined and dns_stub_listener -%}
-          DNSStubListener={{ dns_stub_listener }}
+          DNSStubListener=yes
           DNS={{ dns_resolved | default('127.0.0.1') }}
           {% endif %}
         dest: /etc/systemd/resolved.conf.d/local.conf
