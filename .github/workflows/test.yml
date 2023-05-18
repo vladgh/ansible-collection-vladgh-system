@@ -43,48 +43,19 @@ jobs:
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.5.2
         with:
           path: ansible_collections/vladgh/system
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Molecule test
+        uses: gofrolist/molecule-action@v2.3.19
         with:
-          python-version: '3.x'
-      - name: Install test dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools
-          python3 -m pip install ansible-core molecule molecule-plugins[docker] docker
-      - name: Run Molecule tests
-        run: molecule --base-config molecule/base.yml test --scenario-name ${{ matrix.scenario }}
-        working-directory: ansible_collections/vladgh/system
+          molecule_command: test
+          molecule_args: --base-config molecule/base.yml  --scenario-name ${{ matrix.scenario }}
+          molecule_working_dir: ansible_collections/vladgh/system
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
-
-      # - name: Run Molecule tests
-      #   run: molecule --base-config molecule/base.yml converge --scenario-name ${{ matrix.scenario }}
-      #   working-directory: ansible_collections/vladgh/system
-      #   env:
-      #     PY_COLORS: 1
-      #     ANSIBLE_FORCE_COLOR: 1
-      #     MOLECULE_DISTRO: ${{ matrix.os }}
-      #   continue-on-error: true
-      # - name: Debugging with tmate
-      #   uses: mxschmitt/action-tmate@v3.11
-
-      # # - name: Add Git Safe Directories
-      # #   run: git config --global --add safe.directory /github/workspace/ansible_collections/vladgh/system
-
-      # Cannot use this action until https://github.com/ansible/creator-ee/issues/19 is resolved or a workaround is found
-      # - name: Test scenario
-      #   uses: gofrolist/molecule-action@v2.2.28
-      #   with:
-      #     molecule_options: --debug --base-config molecule/base.yml
-      #     molecule_command: converge
-      #     molecule_args: --scenario-name ${{ matrix.scenario }}
-      #     molecule_working_dir: ansible_collections/vladgh/system
-      #   env:
-      #     PY_COLORS: 1
-      #     ANSIBLE_FORCE_COLOR: 1
-      #     MOLECULE_DISTRO: ${{ matrix.os }}
+          # continue-on-error: true
+        # - name: Debugging with tmate
+        #   uses: mxschmitt/action-tmate@v3.11
