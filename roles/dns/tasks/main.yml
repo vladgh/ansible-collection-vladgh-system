@@ -59,7 +59,7 @@
     ( cloudflare_api_token is defined and cloudflare_api_token ))
 
 - name: Override SystemD Resolve
-  when: dns_stub_listener is defined and not dns_stub_listener
+  when: dns_stub_listener is defined and dns_stub_listener
   block:
     - name: Create a local systemd-resolved configuration directory.
       ansible.builtin.file:
