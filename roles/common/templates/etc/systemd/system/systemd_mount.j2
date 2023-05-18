@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 [Unit]
 Description=Mount {{ item.name }}
 {% if item.before is defined and item.before -%}
