@@ -47,6 +47,8 @@
     group: root
     mode: 0644
     content: |
+      {{ ansible_managed | comment }}
+
       # Datasets
       {% for dataset in sanoid_datasets %}
       {% set _dataset = sanoid_datasets[dataset] %}
@@ -72,6 +74,8 @@
     group: root
     mode: 0644
     content: |
+      {{ ansible_managed | comment }}
+
       [Unit]
       Description=Snapshot ZFS Pool
       Requires=zfs.target
@@ -91,6 +95,8 @@
     group: root
     mode: 0644
     content: |
+      {{ ansible_managed | comment }}
+
       [Unit]
       Description=Cleanup ZFS Pool
       Requires=zfs.target
@@ -111,6 +117,8 @@
     group: root
     mode: 0644
     content: |
+      {{ ansible_managed | comment }}
+
       [Unit]
       Description=Run Sanoid Every 15 Minutes
 
