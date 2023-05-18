@@ -74,8 +74,8 @@
     sysctl_overwrite:
       fs.inotify.max_user_watches: 524288
     unattended_upgrades_autoupdate_enabled: true
-    unattended_upgrades_autoupdate_reboot: "true"
-    unattended_upgrades_autoupdate_mail_to: "root"
+    unattended_upgrades_autoupdate_reboot: true
+    unattended_upgrades_autoupdate_mail_to: root
     unattended_upgrades_autoupdate_mail_on_error: true
     shell_extra_commands:
       - name: Test
