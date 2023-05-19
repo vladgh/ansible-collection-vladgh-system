@@ -59,7 +59,8 @@
     ( cloudflare_api_token is defined and cloudflare_api_token ))
 
 - name: Override SystemD Resolve
-  when: dns_disable_stub_listener is defined and dns_disable_stub_listener|bool
+  when: >
+    dns_disable_stub_listener is defined and dns_disable_stub_listener|bool
   block:
     - name: Create a local systemd-resolved configuration directory.
       ansible.builtin.file:
@@ -79,9 +80,6 @@
         group: root
         mode: 0644
       notify: Restart SystemD Resolved
-    - name: Display all variables/facts known for a host
-      ansible.builtin.debug:
-        var: hostvars[inventory_hostname]
     - name: Change symlink for systemd-resolved
       ansible.builtin.file:
         src: /run/systemd/resolve/resolv.conf
@@ -89,4 +87,5 @@
         state: link
         force: true
         follow: false
+      when: ansible_virtualization_type != 'docker'  # `/etc/resolv.conf` is a special mount in Docker, and should not be changed.
       notify: Restart SystemD Resolved
