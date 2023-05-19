@@ -4,5 +4,5 @@
     name: "wg-quick@{{ item.key }}"
     enabled: true
     state: restarted
-  no_log: true
+  # no_log: true
   loop: "{{ wireguard_config }}"
