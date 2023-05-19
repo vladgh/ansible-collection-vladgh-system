@@ -5,4 +5,4 @@
     enabled: true
     state: restarted
   no_log: true
-  with_dict: "{{ wireguard_config }}"
+  loop: "{{ wireguard_config }}"
