@@ -5,4 +5,4 @@
     enabled: true
     state: restarted
   # no_log: true
-  loop: "{{ wireguard_config }}"
+  loop: "{{ wireguard_config | flatten(levels=1) }}"
