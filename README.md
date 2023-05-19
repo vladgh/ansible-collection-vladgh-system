@@ -43,7 +43,7 @@ ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansi
 ---
 - name: Common
   hosts: all
-  become: yes
+  become: true
   roles:
     - role: vladgh.system.common
 ```

@@ -18,7 +18,7 @@ Vlad's Hashicorp Ansible Role. It installs Packer, Terraform and Vault.
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
       - vladgh.system.hashicorp
 ```

@@ -14,7 +14,7 @@
         dest: /usr/local/bin/cloudflare-ddns-updater
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
-      no_log: yes
+      no_log: true
       loop:
         - {regexp: '^auth_email=', line: "auth_email='{{ cloudflare_ddns_updater_config.auth_email | default('') }}'"}
         - {regexp: '^auth_method=', line: "auth_method='{{ cloudflare_ddns_updater_config.auth_method | default('') }}'"}
@@ -50,7 +50,7 @@
     account_api_key: "{{ cloudflare_account_api_key | default(omit) }}"
     api_token: "{{ cloudflare_api_token | default(omit) }}"
   delegate_to: localhost
-  run_once: yes
+  run_once: true
   loop: "{{ cloudflare_dns_records }}"
   when: >
     ( cloudflare_dns_records is defined and cloudflare_dns_records ) and
@@ -59,7 +59,8 @@
     ( cloudflare_api_token is defined and cloudflare_api_token ))
 
 - name: Override SystemD Resolve
-  when: dns_stub_listener is defined and dns_stub_listener == 'no'
+  when: >
+    dns_disable_stub_listener is defined and dns_disable_stub_listener|bool
   block:
     - name: Create a local systemd-resolved configuration directory.
       ansible.builtin.file:
@@ -71,12 +72,9 @@
     - name: Disable DNSStubListener
       ansible.builtin.copy:
         content: |
-          {{ ansible_managed | comment }}
           [Resolve]
-          {% if dns_stub_listener is defined and dns_stub_listener -%}
-          DNSStubListener={{ dns_stub_listener }}
-          DNS={{ dns_resolved | default('127.0.0.1') }}
-          {% endif %}
+          DNSStubListener=no
+          DNS={{ dns_server_ips | default('127.0.0.1') }}
         dest: /etc/systemd/resolved.conf.d/local.conf
         owner: root
         group: root
@@ -87,6 +85,7 @@
         src: /run/systemd/resolve/resolv.conf
         dest: /etc/resolv.conf
         state: link
-        force: yes
-        follow: no
+        force: true
+        follow: false
+      when: ansible_virtualization_type != 'docker'  # `/etc/resolv.conf` is a special mount in Docker, and should not be changed.
       notify: Restart SystemD Resolved

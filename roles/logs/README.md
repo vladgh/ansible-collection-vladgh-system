@@ -27,7 +27,7 @@ Available variables are listed below, along with default values (see defaults/ma
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   vars:
     logzio_token: '1234'
     remote_logs_server: 'listener.logz.io'

@@ -14,4 +14,4 @@
   ansible.builtin.unarchive:
     src: https://www.privateinternetaccess.com/openvpn/openvpn.zip
     dest: "{{ pia_vpn_folder }}"
-    remote_src: yes
+    remote_src: true

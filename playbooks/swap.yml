@@ -1,6 +1,6 @@
 ---
 - name: Swap
   hosts: swap
-  become: yes
+  become: true
   roles:
     - geerlingguy.swap

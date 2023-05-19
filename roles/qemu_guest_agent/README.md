@@ -33,7 +33,7 @@ sanoid_datasets:
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
       - vladgh.system.qemu_guest_agent
 ```

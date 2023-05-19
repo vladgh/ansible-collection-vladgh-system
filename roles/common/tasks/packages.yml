@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name: "{{ additional_packages }}"
     state: present
-    update_cache: yes
+    update_cache: true
   register: common_apt_task_result
   until: common_apt_task_result is success
   retries: 3

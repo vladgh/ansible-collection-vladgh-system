@@ -125,4 +125,4 @@
   ansible.builtin.service:
     name: sanoid.timer
     state: started
-    enabled: yes
+    enabled: true

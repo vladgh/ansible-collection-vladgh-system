@@ -21,7 +21,7 @@
       ansible.builtin.copy:
         content: ''
         dest: "{{ item }}"
-        force: no
+        force: false
         group: root
         owner: root
         mode: 0664
@@ -29,10 +29,9 @@
         - /etc/default/grub
         - /etc/lvm/lvm.conf
   vars:
-    skip_reboot: yes
-    skip_grub: yes
-    skip_initramfs: yes
-    proxmox_enable_chrony: yes
-    proxmox_gpu_passthrough_enabled: yes
-    proxmox_lvm_thin_pool_autoextend: yes
-    proxmox_zfs_tune: yes
+    skip_reboot: true
+    skip_grub: true
+    skip_initramfs: true
+    proxmox_gpu_passthrough_enabled: true
+    proxmox_lvm_thin_pool_autoextend: true
+    proxmox_zfs_tune: true

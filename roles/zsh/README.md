@@ -18,7 +18,7 @@ See `defaults/main.yml`
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
       - vladgh.system.zsh
 ```

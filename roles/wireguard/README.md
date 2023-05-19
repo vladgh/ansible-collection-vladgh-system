@@ -46,7 +46,7 @@ wireguard_config:
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
       - vladgh.system.wireguard
 ```

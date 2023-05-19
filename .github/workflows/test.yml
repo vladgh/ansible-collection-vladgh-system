@@ -50,13 +50,13 @@ jobs:
         uses: gofrolist/molecule-action@v2.3.19
         with:
           molecule_command: test
-          molecule_options: --base-config molecule/base.yml
+          molecule_options: --debug --base-config molecule/base.yml
           molecule_args: --scenario-name ${{ matrix.scenario }}
           molecule_working_dir: ansible_collections/vladgh/system
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
-          # continue-on-error: true
-        # - name: Debugging with tmate
-        #   uses: mxschmitt/action-tmate@v3.11
+      #   continue-on-error: true
+      # - name: Debugging with tmate
+      #   uses: mxschmitt/action-tmate@v3.16

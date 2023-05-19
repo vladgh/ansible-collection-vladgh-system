@@ -15,7 +15,7 @@
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
         name: gnupg2
-        update_cache: yes
+        update_cache: true
 
     - name: Add an Apt signing key to a specific keyring file
       ansible.builtin.get_url:

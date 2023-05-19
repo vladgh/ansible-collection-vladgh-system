@@ -1,10 +1,10 @@
 ---
 - name: Converge
   hosts: all
-  become: yes
+  become: true
   roles:
     - ./roles/dns
   vars:
-    cloudflare_ddns_updater_enabled: yes
-    dns_stub_listener: no
-    dns_resolved: 8.8.8.8
+    cloudflare_ddns_updater_enabled: true
+    dns_disable_stub_listener: true
+    dns_server_ips: 8.8.8.8

@@ -26,6 +26,6 @@
       ansible.builtin.service:
         name: "{{ nfs_server_daemon }}"
         state: started
-        enabled: yes
+        enabled: true
       tags:
         - molecule-notest

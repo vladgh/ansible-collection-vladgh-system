@@ -10,16 +10,16 @@ Vlad's Common Ansible Role (<https://galaxy.ansible.com/bertvv/samba>)
 
 | Variable                       | Default                  | Comments                                                                                                                     |
 | :---                           | :---                     | :---                                                                                                                         |
-| `samba_apple_extensions`       | no                       | When yes, enables support for Apple specific SMB extensions. Required for Time Machine support to work (see below)       |
+| `samba_apple_extensions`       | no                       | When `true`, enables support for Apple specific SMB extensions. Required for Time Machine support to work (see below)       |
 | `samba_cups_server`            | localhost:631            | Value for the global option `cups server` (only needed when `samba_printer_type` is "cups")                                  |
-| `samba_domain_master`          | true                     | When true, smbd enables WAN-wide browse list collation                                                                       |
+| `samba_domain_master`          | true                     | When `true`, smbd enables WAN-wide browse list collation                                                                       |
 | `samba_global_include`         | -                        | Samba-compatible configuration file with options to be loaded to [global] section (see below)                                |
 | `samba_guest_account`          | -                        | Guest account for unknown users                                                                                              |
 | `samba_homes_include`          | -                        | Samba-compatible configuration file with options to be loaded to [homes] section (see below)                                 |
 | `samba_interfaces`             | []                       | List of network interfaces used for browsing, name registration, etc.                                                        |
-| `samba_load_homes`             | false                    | When true, user home directories are accessible.                                                                             |
-| `samba_load_printers`          | false                    | When true, printers attached to the host are shared                                                                          |
-| `samba_local_master`           | true                     | When true, nmbd will try & become local master of the subnet                                                                 |
+| `samba_load_homes`             | false                    | When `true`, user home directories are accessible.                                                                             |
+| `samba_load_printers`          | false                    | When `true`, printers attached to the host are shared                                                                          |
+| `samba_local_master`           | true                     | When `true`, nmbd will try & become local master of the subnet                                                                 |
 | `samba_log`                    | -                        | Set the log file. If left undefined, logging is done through syslog.                                                         |
 | `samba_log_size`               | 5000                     | Set the maximum size of the log file.                                                                                        |
 | `samba_log_level`              | 0                        | Set Samba log level, 0 is least verbose and 10 is a flood of debug output.                                                   |
@@ -43,7 +43,7 @@ Vlad's Common Ansible Role (<https://galaxy.ansible.com/bertvv/samba>)
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
     - vladgh.system.samba
 ```
@@ -92,7 +92,7 @@ samba_shares:
     write_list: +pirates
 ```
 
-Guests have no access to this share, registered users can read. You can further tweak access control. Read access can be extended to guests (add `public: yes`) or restricted to specified users or groups (add `valid_users: +pirates`). Write access can be restricted to individual pirates (e.g. `write_list: jack`). Files added to the share will be added to the specified group and group write access will be granted by default.
+Guests have no access to this share, registered users can read. You can further tweak access control. Read access can be extended to guests (add `public: true`) or restricted to specified users or groups (add `valid_users: +pirates`). Write access can be restricted to individual pirates (e.g. `write_list: jack`). Files added to the share will be added to the specified group and group write access will be granted by default.
 
 This is an example of configuring multiple vfs object modules to share a glusterfs volume. VFS object options are optional. The necessary VFS object modules must be present/installed outside this role. In this case samba-glusterfs was installed on centos. See samba documentation for how to install or what the default VFS object modules are.
 
@@ -117,7 +117,7 @@ samba_shares:
             value: 7
     path: /
     read_only: no
-    guest_ok: yes
+    guest_ok: true
     write_list: tomcat
     group: tomcat
 ```

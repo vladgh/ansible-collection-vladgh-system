@@ -30,7 +30,7 @@ local_users:
     comment: My User Name
     uid: 8888
     groups: mygroup
-    append: yes
+    append: true
     shell: /bin/bash
     password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
     authorized_keys: |
@@ -41,7 +41,7 @@ local_users:
       ssh-ed25519 1234 MyKey
       ssh-ed25519 5678 MyOtherKey
     authorized_key_path: /etc/pve/priv/authorized_keys
-    exclusive: yes
+    exclusive: true
 ```
 
 ### Groups
@@ -52,8 +52,8 @@ Check <https://docs.ansible.com/ansible/latest/modules/group_module.html> for a 
 local_groups:
   - name: mygroup
     gid: 1234
-    system: yes
-    sudo: yes
+    system: true
+    sudo: true
 ```
 
 ### Extra APT repositories on Debian systems
@@ -100,10 +100,10 @@ pip_user_install_packages:
 
 ### CA Certificates
 
-Set to `yes` to install all certificates from `files/ca`
+Set to `true` to install all certificates from `files/ca`
 
 ```yaml
-install_ca_certificates: yes
+install_ca_certificates: true
 ```
 
 ### BASH Extra Aliases
@@ -172,7 +172,7 @@ systemd_mounts:
 Install Fail2ban
 
 ```yaml
-fail2ban_enabled: yes
+fail2ban_enabled: true
 ```
 
 ### Extra shell commands
@@ -188,8 +188,8 @@ shell_extra_commands:
 ### Unattended-upgrades
 
 ```yaml
-unattended_upgrades_autoupdate_enabled: yes
-unattended_upgrades_autoupdate_reboot: "false"
+unattended_upgrades_autoupdate_enabled: true
+unattended_upgrades_autoupdate_reboot: false
 unattended_upgrades_autoupdate_reboot_time: "03:33"
 unattended_upgrades_autoupdate_mail_to: ""
 unattended_upgrades_autoupdate_mail_on_error: no
@@ -197,7 +197,7 @@ unattended_upgrades_autoupdate_mail_on_error: no
 
 ### Miscellaneous
 
-- `disable_lid_switch`: Set to yes to disable lid switch on laptops (defaults to `no`)
+- `disable_lid_switch`: Set to `true` to disable lid switch on laptops (defaults to `false`)
 
 ## Dependencies
 
@@ -207,7 +207,7 @@ unattended_upgrades_autoupdate_mail_on_error: no
 
 ```yaml
 - hosts: all
-  become: yes
+  become: true
   roles:
     - vladgh.system.common
 ```

@@ -1,6 +1,6 @@
 ---
 - name: RClone
   hosts: rclone
-  become: yes
+  become: true
   roles:
     - stefangweichinger.ansible_rclone

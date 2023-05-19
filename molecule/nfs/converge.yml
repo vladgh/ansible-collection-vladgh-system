@@ -1,10 +1,10 @@
 ---
 - name: Converge
   hosts: all
-  become: yes
+  become: true
   roles:
     - ./roles/nfs
   vars:
-    skip_handlers: yes
+    skip_handlers: true
     nfs_exports:
       - '/home/public  *(rw,async,no_root_squash)'

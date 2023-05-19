@@ -23,7 +23,7 @@
   when: pip_install_packages is defined and pip_install_packages
 
 - name: Ensure Pip user packages are installed
-  become: yes
+  become: true
   become_user: "{{ item.user }}"
   ansible.builtin.pip:
     name: "{{ item.packages }}"
