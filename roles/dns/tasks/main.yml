@@ -79,6 +79,9 @@
         group: root
         mode: 0644
       notify: Restart SystemD Resolved
+    - name: Display all variables/facts known for a host
+      ansible.builtin.debug:
+        var: hostvars[inventory_hostname]
     - name: Change symlink for systemd-resolved
       ansible.builtin.file:
         src: /run/systemd/resolve/resolv.conf
