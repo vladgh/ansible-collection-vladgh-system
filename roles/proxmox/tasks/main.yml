@@ -6,9 +6,15 @@
       ansible.builtin.package:
         name: chrony
         state: present
-    - name: Make sure service is running
-      ansible.builtin.service:
-        name: chrony
+    - name: Mask NTP service
+      ansible.builtin.systemd:
+        name: ntpd
+        enabled: no
+        masked: yes
+        state: stopped
+    - name: Make sure Chrony service is running
+      ansible.builtin.systemd:
+        name: chronyd
         state: restarted
         enabled: true
         daemon_reload: true
