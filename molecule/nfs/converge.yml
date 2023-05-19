@@ -2,9 +2,11 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/nfs
-  vars:
-    skip_handlers: true
-    nfs_exports:
-      - '/home/public  *(rw,async,no_root_squash)'
+  tasks:
+    - name: Include nfs role
+      ansible.builtin.include_role:
+        name: vladgh.system.nfs
+      vars:
+        skip_handlers: true
+        nfs_exports:
+          - '/home/public  *(rw,async,no_root_squash)'

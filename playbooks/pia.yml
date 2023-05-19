@@ -2,5 +2,7 @@
 - name: Upgrades
   hosts: pia
   become: true
-  roles:
-    - vladgh.system.pia
+  tasks:
+    - name: Include pia role
+      ansible.builtin.include_role:
+        name: vladgh.system.pia

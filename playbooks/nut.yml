@@ -2,5 +2,7 @@
 - name: Network UPS Tools
   hosts: nut_servers, nut_clients
   become: true
-  roles:
-    - vladgh.system.nut
+  tasks:
+    - name: Include nut role
+      ansible.builtin.include_role:
+        name: vladgh.system.nut

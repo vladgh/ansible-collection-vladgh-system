@@ -2,83 +2,86 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/common
-  vars:
-    timezone: US/Central
-    local_groups:
-      - name: admins
-        system: true
-        sudo: true
-    local_users:
-      - name: test
-        comment: Testing User
-        groups: admins
-        append: true
-        password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string ) }}"
-        authorized_keys: |
-          ssh-ed25519 1234 MyKey
-          ssh-ed25519 5678 MyOtherKey
-      - name: root
-        authorized_keys: |
-          ssh-ed25519 1234 MyKey
-          ssh-ed25519 5678 MyOtherKey
-        exclusive: true
-    additional_packages:
-      - rolldice
-    apt_extra_repositories:
-      - name: Add test Docker repository
-        repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
-        key_url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
-        key_filename: docker.asc
-    pip_install_packages: [pip-install-test]
-    pip_user_install_packages:
-      - user: test
-        packages: [colorama]
-        state: latest
-    bash_extra_aliases:
-      - alias: ll
-        command: ls -lahpF
-        dest: /root/.bashrc
-        owner: root
-        group: root
-    cron_jobs:
-      - name: Testing
-        minute: '0'
-        job: ls -lah > /dev/null
-    mounts:
-      - name: Test
-        path: /mnt/boot
-        src: /boot
-        opts: bind
-        fstype: none
-    systemd_mounts:
-      - name: SystemD Mount Test
-        automount: false
-        what: /srv
-        where: /mnt/srv
-        options: bind
-        type: none
-        service_state: started
-        service_enabled: true
-      - name: SystemD Auto Mount Test
-        automount: true
-        what: localhost:/media
-        where: /mnt/media
-        options: _netdev,auto
-        type: nfs
-        service_state: started
-        service_enabled: true
-    install_ca_certificates: true
-    fail2ban_enabled: true
-    sysctl_overwrite:
-      fs.inotify.max_user_watches: 524288
-    unattended_upgrades_autoupdate_enabled: true
-    unattended_upgrades_autoupdate_reboot: true
-    unattended_upgrades_autoupdate_mail_to: root
-    unattended_upgrades_autoupdate_mail_on_error: true
-    shell_extra_commands:
-      - name: Test
-        cmd: touch test.txt
-        chdir: /tmp
-        creates: test.txt
+  tasks:
+    - name: Include common role
+      ansible.builtin.include_role:
+        name: vladgh.system.common
+      vars:
+        timezone: US/Central
+        local_groups:
+          - name: admins
+            system: true
+            sudo: true
+        local_users:
+          - name: test
+            comment: Testing User
+            groups: admins
+            append: true
+            password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+            authorized_keys: |
+              ssh-ed25519 1234 MyKey
+              ssh-ed25519 5678 MyOtherKey
+          - name: root
+            authorized_keys: |
+              ssh-ed25519 1234 MyKey
+              ssh-ed25519 5678 MyOtherKey
+            exclusive: true
+        additional_packages:
+          - rolldice
+        apt_extra_repositories:
+          - name: Add test Docker repository
+            repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+            key_url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+            key_filename: docker.asc
+        pip_install_packages: [pip-install-test]
+        pip_user_install_packages:
+          - user: test
+            packages: [colorama]
+            state: latest
+        bash_extra_aliases:
+          - alias: ll
+            command: ls -lahpF
+            dest: /root/.bashrc
+            owner: root
+            group: root
+        cron_jobs:
+          - name: Testing
+            minute: '0'
+            job: ls -lah > /dev/null
+        mounts:
+          - name: Test
+            path: /mnt/boot
+            src: /boot
+            opts: bind
+            fstype: none
+        systemd_mounts:
+          - name: SystemD Mount Test
+            automount: false
+            what: /srv
+            where: /mnt/srv
+            options: bind
+            type: none
+            service_state: started
+            service_enabled: true
+          - name: SystemD Auto Mount Test
+            automount: true
+            what: localhost:/media
+            where: /mnt/media
+            options: _netdev,auto
+            type: nfs
+            service_state: started
+            service_enabled: true
+        install_ca_certificates: true
+        fail2ban_enabled: true
+        sysctl_overwrite:
+          fs.inotify.max_user_watches: 524288
+        unattended_upgrades_autoupdate_enabled: true
+        unattended_upgrades_autoupdate_reboot: true
+        unattended_upgrades_autoupdate_mail_to: root
+        unattended_upgrades_autoupdate_mail_on_error: true
+        shell_extra_commands:
+          - name: Test
+            cmd: touch test.txt
+            chdir: /tmp
+            creates: test.txt
+        shell_extra_commands_cron:

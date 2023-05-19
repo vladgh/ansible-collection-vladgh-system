@@ -2,5 +2,7 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/hashicorp
+  tasks:
+    - name: Include hashicorp role
+      ansible.builtin.include_role:
+        name: vladgh.system.hashicorp

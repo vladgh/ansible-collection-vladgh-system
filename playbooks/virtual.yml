@@ -2,9 +2,10 @@
 - name: Virtual Machine
   hosts: virtual
   become: true
-  roles:
-    - vladgh.system.qemu_guest_agent
   tasks:
+    - name: Include hashicorp role
+      ansible.builtin.include_role:
+        name: vladgh.system.qemu_guest_agent
     # The timesyncd service provided by systemd conflicts with the ntp service (which we need for timezone) on Ubuntu 18 VMs
     - name: Disable systemd-timesyncd.service - Network Time Synchronization
       ansible.builtin.systemd:

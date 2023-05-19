@@ -2,21 +2,14 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/proxmox
   pre_tasks:
     - name: Ensure required directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        mode: 0755
       loop:
         - /etc/lvm
-        - /var/log/chrony
-    - name: Ensure required directories
-      ansible.builtin.file:
-        path: /run/chrony
-        state: directory
-        mode: 0777
     - name: Ensure required files
       ansible.builtin.copy:
         content: ''
@@ -28,10 +21,14 @@
       loop:
         - /etc/default/grub
         - /etc/lvm/lvm.conf
-  vars:
-    skip_reboot: true
-    skip_grub: true
-    skip_initramfs: true
-    proxmox_gpu_passthrough_enabled: true
-    proxmox_lvm_thin_pool_autoextend: true
-    proxmox_zfs_tune: true
+  tasks:
+    - name: Include proxmox role
+      ansible.builtin.include_role:
+        name: vladgh.system.proxmox
+      vars:
+        skip_reboot: true
+        skip_grub: true
+        skip_initramfs: true
+        proxmox_gpu_passthrough_enabled: true
+        proxmox_lvm_thin_pool_autoextend: true
+        proxmox_zfs_tune: true

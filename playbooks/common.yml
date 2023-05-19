@@ -2,5 +2,7 @@
 - name: Common
   hosts: common
   become: true
-  roles:
-    - vladgh.system.common
+  tasks:
+    - name: Include common role
+      ansible.builtin.include_role:
+        name: vladgh.system.common

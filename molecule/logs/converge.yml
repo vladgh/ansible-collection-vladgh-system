@@ -2,7 +2,9 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/logs
-  vars:
-    remote_logs_server: example.com
+  tasks:
+    - name: Include logs role
+      ansible.builtin.include_role:
+        name: vladgh.system.logs
+      vars:
+        remote_logs_server: example.com
