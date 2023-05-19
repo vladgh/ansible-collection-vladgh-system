@@ -60,4 +60,4 @@ jobs:
         continue-on-error: true
       - name: Debugging with tmate
         uses: mxschmitt/action-tmate@v3.16
-        if: ${{ matrix.scenario == 'proxmox' }}
+        if: ${{ matrix.scenario == 'dns' }}

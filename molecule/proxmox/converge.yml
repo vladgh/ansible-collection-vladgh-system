@@ -32,7 +32,6 @@
     skip_reboot: true
     skip_grub: true
     skip_initramfs: true
-    proxmox_enable_chrony: true
     proxmox_gpu_passthrough_enabled: true
     proxmox_lvm_thin_pool_autoextend: true
     proxmox_zfs_tune: true

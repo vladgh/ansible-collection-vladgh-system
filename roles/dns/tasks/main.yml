@@ -59,7 +59,7 @@
     ( cloudflare_api_token is defined and cloudflare_api_token ))
 
 - name: Override SystemD Resolve
-  when: dns_stub_listener is defined and dns_stub_listener
+  when: dns_disable_stub_listener is defined and dns_disable_stub_listener|bool
   block:
     - name: Create a local systemd-resolved configuration directory.
       ansible.builtin.file:
@@ -71,12 +71,9 @@
     - name: Disable DNSStubListener
       ansible.builtin.copy:
         content: |
-          {{ ansible_managed | comment }}
           [Resolve]
-          {% if dns_stub_listener is defined and dns_stub_listener -%}
-          DNSStubListener=yes
-          DNS={{ dns_resolved | default('127.0.0.1') }}
-          {% endif %}
+          DNSStubListener=no
+          DNS={{ dns_server_ips | default('127.0.0.1') }}
         dest: /etc/systemd/resolved.conf.d/local.conf
         owner: root
         group: root

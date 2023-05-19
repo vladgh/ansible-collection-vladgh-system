@@ -1,27 +1,4 @@
 ---
-- name: Replace SystemD Timesyncd with Chrony
-  when: proxmox_enable_chrony is defined and proxmox_enable_chrony|bool
-  block:
-    - name: Install Chrony as the default NTP daemon
-      ansible.builtin.package:
-        name: chrony
-        state: present
-    - name: Mask NTP service
-      ansible.builtin.systemd:
-        name: ntpd
-        enabled: no
-        masked: yes
-        state: stopped
-    - name: Pause for 15 seconds
-      ansible.builtin.pause:
-        seconds: 5
-    - name: Make sure Chrony service is running
-      ansible.builtin.systemd:
-        name: chrony
-        state: started
-        enabled: true
-        daemon_reload: true
-
 - name: Stop HA Cluster Services
   ansible.builtin.service:
     name: "{{ item }}"
