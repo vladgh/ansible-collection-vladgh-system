@@ -6,5 +6,5 @@
     sysctl_set: true
     state: present
     reload: true
-  with_dict: "{{ sysctl_overwrite }}"
+  loop: "{{ sysctl_overwrite | dict2items }}"
   when: ansible_virtualization_type not in ['docker', 'lxc', 'openvz']

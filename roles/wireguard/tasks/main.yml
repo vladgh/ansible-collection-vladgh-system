@@ -37,17 +37,17 @@
         owner: root
         group: root
         mode: 0600
-      no_log: true
-      with_dict: "{{ wireguard_config }}"
+      # no_log: true
+      loop: "{{ wireguard_config | dict2items }}"
       notify: Restart WireGuard
 
     - name: Start and Enable WireGuard Service
       ansible.builtin.service:
-        name: "wg-quick@{{ item.key }}"
+        name: "wg-quick@{{ item }}"
         state: started
         enabled: true
-      no_log: true
-      with_dict: "{{ wireguard_config }}"
+      # no_log: true
+      loop: "{{ wireguard_config | flatten(levels=1) }}"
 
 - name: Create a resolvconf link
   ansible.builtin.file:
