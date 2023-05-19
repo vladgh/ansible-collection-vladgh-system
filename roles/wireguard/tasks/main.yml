@@ -38,7 +38,7 @@
         group: root
         mode: 0600
       no_log: true
-      loop: "{{ wireguard_config }}"
+      loop: "{{ wireguard_config | dict2items }}"
       notify: Restart WireGuard
 
     - name: Start and Enable WireGuard Service
@@ -47,7 +47,7 @@
         state: started
         enabled: true
       no_log: true
-      loop: "{{ wireguard_config }}"
+      loop: "{{ wireguard_config | dict2items }}"
 
 - name: Create a resolvconf link
   ansible.builtin.file:
