@@ -1,6 +1,0 @@
----
-- name: Samba Servers
-  hosts: samba
-  become: true
-  roles:
-    - vladgh.system.samba
