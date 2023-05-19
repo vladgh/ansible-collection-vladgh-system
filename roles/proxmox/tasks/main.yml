@@ -11,6 +11,7 @@
         name: chrony
         state: started
         enabled: true
+        daemon_reload: true
 
 - name: Stop HA Cluster Services
   ansible.builtin.service:

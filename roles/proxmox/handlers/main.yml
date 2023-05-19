@@ -9,10 +9,14 @@
   delay: 2
 - name: Regenerate initramfs
   ansible.builtin.command: bash update-initramfs -u
+  register: proxmox_initramfs_output
+  changed_when: proxmox_initramfs_output.rc != 0
   when:
     - not skip_initramfs | default(false)
 - name: Update Grub
   ansible.builtin.command: bash update-grub
+  register: proxmox_grub_output
+  changed_when: proxmox_grub_output.rc != 0
   when:
     - not skip_grub | default(false)
 - name: Reboot
