@@ -37,7 +37,7 @@
         owner: root
         group: root
         mode: 0600
-      no_log: true
+      # no_log: true
       loop: "{{ wireguard_config | dict2items }}"
       notify: Restart WireGuard
 
@@ -46,7 +46,7 @@
         name: "wg-quick@{{ item.key }}"
         state: started
         enabled: true
-      no_log: true
+      # no_log: true
       loop: "{{ wireguard_config | dict2items }}"
 
 - name: Create a resolvconf link
