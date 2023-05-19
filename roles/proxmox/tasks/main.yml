@@ -7,7 +7,7 @@
         name: chrony
         state: present
     - name: Make sure service is running
-      ansible.builtin.systemd:
+      ansible.builtin.service:
         name: chrony
         state: started
         enabled: true
