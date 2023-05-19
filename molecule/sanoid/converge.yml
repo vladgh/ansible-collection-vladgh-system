@@ -2,18 +2,20 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/sanoid
-  vars:
-    sanoid_templates:
-      default:
-        frequently: 4
-        hourly: 24
-        daily: 7
-        monthly: 12
-        yearly: 1
-        autosnap: 'yes'
-        autoprune: 'yes'
-    sanoid_datasets:
-      tank/dataset:
-        use_template: default
+  tasks:
+    - name: Include sanoid role
+      ansible.builtin.include_role:
+        name: vladgh.system.sanoid
+      vars:
+        sanoid_templates:
+          default:
+            frequently: 4
+            hourly: 24
+            daily: 7
+            monthly: 12
+            yearly: 1
+            autosnap: 'yes'
+            autoprune: 'yes'
+        sanoid_datasets:
+          tank/dataset:
+            use_template: default

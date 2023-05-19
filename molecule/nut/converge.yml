@@ -2,7 +2,9 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/nut
-  vars:
-    nut_mode: netserver
+  tasks:
+    - name: Include nut role
+      ansible.builtin.include_role:
+        name: vladgh.system.nut
+      vars:
+        nut_mode: netserver

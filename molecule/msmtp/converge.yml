@@ -2,7 +2,9 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/msmtp
-  vars:
-    msmtp_enabled: true
+  tasks:
+    - name: Include msmtp role
+      ansible.builtin.include_role:
+        name: vladgh.system.msmtp
+      vars:
+        msmtp_enabled: true

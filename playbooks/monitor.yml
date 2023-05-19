@@ -2,6 +2,7 @@
 - name: Monitor
   hosts: monitor
   become: true
-  roles:
-    # - vladgh.system.logs
-    - prometheus.prometheus.node_exporter
+  tasks:
+    - name: Include node exporter role
+      ansible.builtin.include_role:
+        name: prometheus.prometheus.node_exporter

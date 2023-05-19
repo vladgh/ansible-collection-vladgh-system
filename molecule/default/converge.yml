@@ -4,5 +4,5 @@
   become: true
   tasks:
     - name: Don't do much here
-      debug:
+      ansible.builtin.debug:
         msg: Use individual scenario

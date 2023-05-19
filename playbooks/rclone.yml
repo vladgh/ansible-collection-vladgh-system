@@ -2,5 +2,7 @@
 - name: RClone
   hosts: rclone
   become: true
-  roles:
-    - stefangweichinger.ansible_rclone
+  tasks:
+    - name: Include rclone role
+      ansible.builtin.include_role:
+        name: stefangweichinger.ansible_rclone

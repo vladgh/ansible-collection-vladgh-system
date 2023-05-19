@@ -2,11 +2,13 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/zsh
-  pre_tasks:
-    - name: Add the user 'johnd'
-      ansible.builtin.user:
-        name: johnd
   vars:
     zsh_user: johnd
+  pre_tasks:
+    - name: "Add the user {{ zsh_user }}"
+      ansible.builtin.user:
+        name: "{{ zsh_user }}"
+  tasks:
+    - name: Include zsh role
+      ansible.builtin.include_role:
+        name: vladgh.system.zsh

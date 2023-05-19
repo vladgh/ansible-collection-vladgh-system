@@ -2,5 +2,7 @@
 - name: Sanoid
   hosts: sanoid
   become: true
-  roles:
-    - vladgh.system.sanoid
+  tasks:
+    - name: Include sanoid role
+      ansible.builtin.include_role:
+        name: vladgh.system.sanoid

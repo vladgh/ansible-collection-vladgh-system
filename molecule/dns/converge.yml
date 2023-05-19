@@ -2,9 +2,11 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/dns
-  vars:
-    cloudflare_ddns_updater_enabled: true
-    dns_disable_stub_listener: true
-    dns_server_ips: 8.8.8.8
+  tasks:
+    - name: Include dns role
+      ansible.builtin.include_role:
+        name: vladgh.system.dns
+      vars:
+        cloudflare_ddns_updater_enabled: true
+        dns_disable_stub_listener: true
+        dns_server_ips: 8.8.8.8

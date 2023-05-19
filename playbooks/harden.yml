@@ -3,6 +3,10 @@
 - name: Harden
   hosts: harden
   become: true
-  roles:
-    - devsec.hardening.os_hardening
-    - devsec.hardening.ssh_hardening
+  tasks:
+    - name: Include hardening roles
+      ansible.builtin.include_role:
+        name: "{{ item }}"
+      loop:
+        - devsec.hardening.os_hardening
+        - devsec.hardening.ssh_hardening

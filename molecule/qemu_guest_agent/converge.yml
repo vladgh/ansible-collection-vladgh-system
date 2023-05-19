@@ -2,5 +2,7 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/qemu_guest_agent
+  tasks:
+    - name: Include qemu_guest_agent role
+      ansible.builtin.include_role:
+        name: vladgh.system.qemu_guest_agent

@@ -2,5 +2,7 @@
 - name: Converge
   hosts: all
   become: true
-  roles:
-    - ./roles/shellcheck
+  tasks:
+    - name: Include shellcheck role
+      ansible.builtin.include_role:
+        name: vladgh.system.shellcheck
