@@ -9,7 +9,7 @@
     - name: Make sure service is running
       ansible.builtin.service:
         name: chrony
-        state: started
+        state: restarted
         enabled: true
         daemon_reload: true
 
