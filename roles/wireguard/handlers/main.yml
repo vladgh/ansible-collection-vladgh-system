@@ -1,7 +1,7 @@
 ---
 - name: Restart WireGuard
   ansible.builtin.service:
-    name: "wg-quick@{{ item.key }}"
+    name: "wg-quick@{{ item }}"
     enabled: true
     state: restarted
   # no_log: true
