@@ -1,7 +1,7 @@
 ---
 - name: QEMU Guest Agent
   when: ansible_system_vendor == 'QEMU' and
-        ( qemu_guest_agent_enabled is defined and qemu_guest_agent_enabled|bool )
+        ( qemu_guest_agent_enabled is defined and qemu_guest_agent_enabled | bool )
   block:
     - name: QEMU Guest Agent
       ansible.builtin.package:

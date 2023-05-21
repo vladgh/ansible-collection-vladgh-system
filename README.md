@@ -44,8 +44,10 @@ ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansi
 - name: Common
   hosts: all
   become: true
-  roles:
-    - role: vladgh.system.common
+  tasks:
+    - name: Include common role
+      ansible.builtin.include_role:
+        name: vladgh.system.common
 ```
 
 ### Playbooks

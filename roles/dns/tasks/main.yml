@@ -60,7 +60,7 @@
 
 - name: Override SystemD Resolve
   when: >
-    dns_disable_stub_listener is defined and dns_disable_stub_listener|bool
+    dns_disable_stub_listener is defined and dns_disable_stub_listener | bool
   block:
     - name: Create a local systemd-resolved configuration directory.
       ansible.builtin.file:

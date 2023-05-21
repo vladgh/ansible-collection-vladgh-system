@@ -10,7 +10,7 @@
     - pve-ha-crm
     - corosync
     - pvesr.timer
-  when: proxmox_cluster_disabled is defined and proxmox_cluster_disabled|bool
+  when: proxmox_cluster_disabled is defined and proxmox_cluster_disabled | bool
 
 - name: Tune ZFS
   ansible.builtin.blockinfile:
@@ -27,12 +27,12 @@
     - Regenerate initramfs
     - Reboot
   when: >
-    ( proxmox_zfs_tune is defined and proxmox_zfs_tune|bool ) and
+    ( proxmox_zfs_tune is defined and proxmox_zfs_tune | bool ) and
     ( proxmox_zfs_arc_min is defined and proxmox_zfs_arc_min ) and
     ( proxmox_zfs_arc_max is defined and proxmox_zfs_arc_max )
 
 - name: GPU Passthrough
-  when: proxmox_gpu_passthrough_enabled is defined and proxmox_gpu_passthrough_enabled|bool
+  when: proxmox_gpu_passthrough_enabled is defined and proxmox_gpu_passthrough_enabled | bool
   block:
     - name: Add VFIO modules
       ansible.builtin.blockinfile:
@@ -86,7 +86,7 @@
         state: present
 
 - name: LVM thinpool auto extend
-  when: proxmox_lvm_thin_pool_autoextend is defined and proxmox_lvm_thin_pool_autoextend|bool
+  when: proxmox_lvm_thin_pool_autoextend is defined and proxmox_lvm_thin_pool_autoextend | bool
   block:
     - name: Configure lvm thinpool extend threshold
       ansible.builtin.lineinfile:

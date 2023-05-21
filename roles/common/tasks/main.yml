@@ -18,7 +18,7 @@
 
 - name: Unattended upgrades
   ansible.builtin.import_tasks: unattended.yml
-  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled|bool
+  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled | bool
 
 - name: Additional packages
   ansible.builtin.import_tasks: packages.yml
@@ -40,7 +40,7 @@
 
 - name: Certificate Authority
   ansible.builtin.import_tasks: ca.yml
-  when: install_ca_certificates is defined and install_ca_certificates|bool
+  when: install_ca_certificates is defined and install_ca_certificates | bool
 
 - name: Extra BASH aliases
   ansible.builtin.import_tasks: aliases.yml
@@ -58,7 +58,7 @@
 
 - name: Fail2Ban
   ansible.builtin.import_tasks: fail2ban.yml
-  when: fail2ban_enabled is defined and fail2ban_enabled|bool
+  when: fail2ban_enabled is defined and fail2ban_enabled | bool
 
 - name: Extra shell commands
   ansible.builtin.import_tasks: shell.yml
