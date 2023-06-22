@@ -24,7 +24,7 @@ roles:
   - name: geerlingguy.firewall
     version: 2.5.1
   - name: geerlingguy.kubernetes
-    version: 7.1.2
+    version: 7.1.3
   - name: geerlingguy.swap
     version: 1.0.2
   - name: oefenweb.postfix
