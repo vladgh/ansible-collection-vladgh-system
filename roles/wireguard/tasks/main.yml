@@ -1,12 +1,4 @@
 ---
-- name: Enable backports on Debian
-  ansible.builtin.apt_repository:
-    repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
-    state: present
-    filename: backports
-    update_cache: true
-  when: ansible_distribution_release == 'buster'
-
 - name: Ensure WireGuard Packages
   ansible.builtin.package:
     name:
@@ -48,9 +40,3 @@
         enabled: true
       # no_log: true
       loop: "{{ wireguard_config | flatten(levels=1) }}"
-
-- name: Create a resolvconf link
-  ansible.builtin.file:
-    src: /usr/bin/resolvectl
-    dest: /usr/local/bin/resolvconf
-    state: link

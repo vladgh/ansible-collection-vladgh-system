@@ -1,0 +1,39 @@
+---
+- name: Install script
+  ansible.builtin.get_url:
+    url: https://github.com/K0p1-Git/cloudflare-ddns-updater/raw/main/cloudflare-template.sh
+    dest: /usr/local/bin/cloudflare-ddns-updater
+    owner: root
+    group: root
+    mode: 0700
+
+- name: Configure script
+  ansible.builtin.lineinfile:
+    dest: /usr/local/bin/cloudflare-ddns-updater
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  no_log: true
+  loop:
+    - {regexp: '^auth_email=', line: "auth_email='{{ cloudflare_ddns_updater_config.auth_email | default('') }}'"}
+    - {regexp: '^auth_method=', line: "auth_method='{{ cloudflare_ddns_updater_config.auth_method | default('') }}'"}
+    - {regexp: '^auth_key=', line: "auth_key='{{ cloudflare_ddns_updater_config.auth_key | default('') }}'"}
+    - {regexp: '^zone_identifier=', line: "zone_identifier='{{ cloudflare_ddns_updater_config.zone_identifier | default('') }}'"}
+    - {regexp: '^record_name=', line: "record_name='{{ cloudflare_ddns_updater_config.record_name | default('') }}'"}
+    - {regexp: '^ttl=', line: "ttl='{{ cloudflare_ddns_updater_config.ttl | default('3600') }}'"}
+    - {regexp: '^proxy=', line: "proxy={{ cloudflare_ddns_updater_config.proxy | default('false') }}"}
+    - {regexp: '^slacksitename=', line: "slacksitename='{{ cloudflare_ddns_updater_config.slacksitename | default('') }}'"}
+    - {regexp: '^slackchannel=', line: "slackchannel='{{ cloudflare_ddns_updater_config.slackchannel | default('') }}'"}
+    - {regexp: '^slackuri=', line: "slackuri='{{ cloudflare_ddns_updater_config.slackuri | default('') }}'"}
+  when: cloudflare_ddns_updater_config is defined and cloudflare_ddns_updater_config
+
+- name: Ensure Cron package is installed
+  ansible.builtin.package:
+    name: cron
+
+- name: Configure cron job
+  ansible.builtin.cron:
+    name: cloudflare_ddns_updater-cron
+    job: /usr/local/bin/cloudflare-ddns-updater
+    minute: "*/10"
+    user: root
+    state: present

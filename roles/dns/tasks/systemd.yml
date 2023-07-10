@@ -1,0 +1,28 @@
+---
+- name: Create a local systemd-resolved configuration directory.
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+- name: Disable DNSStubListener
+  ansible.builtin.copy:
+    content: |
+      [Resolve]
+      DNSStubListener=no
+      DNS={{ dns_server_ips | default('127.0.0.1') }}
+    dest: /etc/systemd/resolved.conf.d/local.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart SystemD Resolved
+- name: Change symlink for systemd-resolved
+  ansible.builtin.file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: true
+    follow: false
+  when: ansible_virtualization_type != 'docker'  # `/etc/resolv.conf` is a special mount in Docker, and should not be changed.
+  notify: Restart SystemD Resolved

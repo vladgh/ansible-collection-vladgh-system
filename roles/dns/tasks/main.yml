@@ -1,91 +1,14 @@
 ---
 - name: CloudFlare Dynamic DNS Updater
+  ansible.builtin.import_tasks: ddns.yml
   when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled|bool
-  block:
-    - name: Install script
-      ansible.builtin.get_url:
-        url: https://github.com/K0p1-Git/cloudflare-ddns-updater/raw/main/cloudflare-template.sh
-        dest: /usr/local/bin/cloudflare-ddns-updater
-        owner: root
-        group: root
-        mode: 0700
-    - name: Configure script
-      ansible.builtin.lineinfile:
-        dest: /usr/local/bin/cloudflare-ddns-updater
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-      no_log: true
-      loop:
-        - {regexp: '^auth_email=', line: "auth_email='{{ cloudflare_ddns_updater_config.auth_email | default('') }}'"}
-        - {regexp: '^auth_method=', line: "auth_method='{{ cloudflare_ddns_updater_config.auth_method | default('') }}'"}
-        - {regexp: '^auth_key=', line: "auth_key='{{ cloudflare_ddns_updater_config.auth_key | default('') }}'"}
-        - {regexp: '^zone_identifier=', line: "zone_identifier='{{ cloudflare_ddns_updater_config.zone_identifier | default('') }}'"}
-        - {regexp: '^record_name=', line: "record_name='{{ cloudflare_ddns_updater_config.record_name | default('') }}'"}
-        - {regexp: '^ttl=', line: "ttl='{{ cloudflare_ddns_updater_config.ttl | default('3600') }}'"}
-        - {regexp: '^proxy=', line: "proxy={{ cloudflare_ddns_updater_config.proxy | default('false') }}"}
-        - {regexp: '^slacksitename=', line: "slacksitename='{{ cloudflare_ddns_updater_config.slacksitename | default('') }}'"}
-        - {regexp: '^slackchannel=', line: "slackchannel='{{ cloudflare_ddns_updater_config.slackchannel | default('') }}'"}
-        - {regexp: '^slackuri=', line: "slackuri='{{ cloudflare_ddns_updater_config.slackuri | default('') }}'"}
-      when: cloudflare_ddns_updater_config is defined and cloudflare_ddns_updater_config
-    - name: Ensure Cron package is installed
-      ansible.builtin.package:
-        name: cron
-    - name: Configure cron job
-      ansible.builtin.cron:
-        name: cloudflare_ddns_updater-cron
-        job: /usr/local/bin/cloudflare-ddns-updater
-        minute: "*/10"
-        user: root
-        state: present
 
 - name: Provision DNS records
-  community.general.cloudflare_dns:
-    state: "{{ item.state | default('present') }}"
-    zone: "{{ item.zone }}"
-    type: "{{ item.type }}"
-    record: "{{ item.record }}"
-    value: "{{ item.value }}"
-    proxied: "{{ item.proxied | default(omit) }}"
-    account_email: "{{ cloudflare_account_email | default(omit) }}"
-    account_api_key: "{{ cloudflare_account_api_key | default(omit) }}"
-    api_token: "{{ cloudflare_api_token | default(omit) }}"
-  delegate_to: localhost
-  run_once: true
-  loop: "{{ cloudflare_dns_records }}"
-  when: >
-    ( cloudflare_dns_records is defined and cloudflare_dns_records ) and
-    ((( cloudflare_account_email is defined and cloudflare_account_email ) and
-    ( cloudflare_account_api_key is defined and cloudflare_account_api_key )) or
-    ( cloudflare_api_token is defined and cloudflare_api_token ))
+  ansible.builtin.import_tasks: dns-records.yml
+  when: cloudflare_dns_records is defined and cloudflare_dns_records
 
 - name: Override SystemD Resolve
+  ansible.builtin.import_tasks: systemd.yml
   when: >
-    dns_disable_stub_listener is defined and dns_disable_stub_listener | bool
-  block:
-    - name: Create a local systemd-resolved configuration directory.
-      ansible.builtin.file:
-        path: /etc/systemd/resolved.conf.d
-        state: directory
-        owner: root
-        group: root
-        mode: 0755
-    - name: Disable DNSStubListener
-      ansible.builtin.copy:
-        content: |
-          [Resolve]
-          DNSStubListener=no
-          DNS={{ dns_server_ips | default('127.0.0.1') }}
-        dest: /etc/systemd/resolved.conf.d/local.conf
-        owner: root
-        group: root
-        mode: 0644
-      notify: Restart SystemD Resolved
-    - name: Change symlink for systemd-resolved
-      ansible.builtin.file:
-        src: /run/systemd/resolve/resolv.conf
-        dest: /etc/resolv.conf
-        state: link
-        force: true
-        follow: false
-      when: ansible_virtualization_type != 'docker'  # `/etc/resolv.conf` is a special mount in Docker, and should not be changed.
-      notify: Restart SystemD Resolved
+    ( dns_disable_stub_listener is defined and dns_disable_stub_listener | bool ) and
+    ( ansible_distribution == 'Ubuntu' )
