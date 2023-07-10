@@ -8,25 +8,3 @@ collections:
     version: 7.1.0
   - name: community.docker
     version: 3.4.8
-  - name: kubernetes.core
-    version: 2.4.0
-  - name: devsec.hardening
-    version: 8.7.0
-  - name: https://github.com/prometheus-community/ansible
-    version: main
-    type: git
-
-roles:
-  - name: geerlingguy.docker
-    version: 6.1.0
-  - name: geerlingguy.docker_arm
-    version: 5.0.0
-  - name: geerlingguy.firewall
-    version: 2.5.1
-  - name: geerlingguy.kubernetes
-    version: 7.1.3
-  - name: geerlingguy.swap
-    version: 1.0.2
-  - name: oefenweb.postfix
-    version: v3.6.3
-  - name: stefangweichinger.ansible_rclone

@@ -1,8 +1,0 @@
----
-- name: Monitor
-  hosts: monitor
-  become: true
-  tasks:
-    - name: Include node exporter role
-      ansible.builtin.include_role:
-        name: prometheus.prometheus.node_exporter

@@ -1,8 +1,0 @@
----
-- name: Firewall
-  hosts: firewall
-  become: true
-  tasks:
-    - name: Include firewall role
-      ansible.builtin.include_role:
-        name: geerlingguy.firewall
