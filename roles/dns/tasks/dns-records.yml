@@ -1,0 +1,20 @@
+---
+- name: Provision DNS records
+  community.general.cloudflare_dns:
+    state: "{{ item.state | default('present') }}"
+    zone: "{{ item.zone }}"
+    type: "{{ item.type }}"
+    record: "{{ item.record }}"
+    value: "{{ item.value }}"
+    proxied: "{{ item.proxied | default(omit) }}"
+    account_email: "{{ cloudflare_account_email | default(omit) }}"
+    account_api_key: "{{ cloudflare_account_api_key | default(omit) }}"
+    api_token: "{{ cloudflare_api_token | default(omit) }}"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ cloudflare_dns_records }}"
+  when: >
+    ( cloudflare_dns_records is defined and cloudflare_dns_records ) and
+    ((( cloudflare_account_email is defined and cloudflare_account_email ) and
+    ( cloudflare_account_api_key is defined and cloudflare_account_api_key )) or
+    ( cloudflare_api_token is defined and cloudflare_api_token ))
