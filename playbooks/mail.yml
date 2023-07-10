@@ -1,8 +1,0 @@
----
-- name: Mail Services
-  hosts: mail
-  become: true
-  tasks:
-    - name: Include postfix role
-      ansible.builtin.include_role:
-        name: oefenweb.postfix

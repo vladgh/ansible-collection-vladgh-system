@@ -1,8 +1,0 @@
----
-- name: Swap
-  hosts: swap
-  become: true
-  tasks:
-    - name: Include swap role
-      ansible.builtin.include_role:
-        name: geerlingguy.swap
