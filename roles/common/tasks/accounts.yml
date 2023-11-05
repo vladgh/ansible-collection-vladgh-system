@@ -15,9 +15,9 @@
         path: "/etc/sudoers.d/10_{{ item.name }}"
         line: "%{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
         state: "{{ item.state | default(omit) }}"
-        mode: 0440
+        mode: '0440'
         create: true
-        validate: 'visudo -cf %s'
+        validate: '/usr/sbin/visudo -cf %s'
       when: item.sudo is defined and item.sudo
       loop: "{{ local_groups }}"
 

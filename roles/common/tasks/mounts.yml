@@ -3,9 +3,7 @@
 - name: Ensure NFS package is installed
   ansible.builtin.package:
     name: "{{ nfs_client_package_name }}"
-  loop:
-    - "{{ mounts }}"
-    - "{{ systemd_mounts }}"
+  loop: "{{ [mounts, systemd_mounts] | flatten | unique }}"
   when: >
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
@@ -16,9 +14,7 @@
     name: rpcbind
     state: started
     enabled: true
-  loop:
-    - "{{ mounts }}"
-    - "{{ systemd_mounts }}"
+  loop: "{{ [mounts, systemd_mounts] | flatten | unique }}"
   when: >
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
@@ -53,7 +49,7 @@
     dest: /etc/systemd/system/{{ item.where[1:] | replace('/', "-") }}.mount
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart SystemD mount
   loop: "{{ systemd_mounts }}"
 
@@ -72,7 +68,7 @@
     dest: /etc/systemd/system/{{ item.where[1:] | replace('/', "-") }}.automount
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart SystemD auto mount
   loop: "{{ systemd_mounts }}"
   when: item.automount is defined and item.automount
