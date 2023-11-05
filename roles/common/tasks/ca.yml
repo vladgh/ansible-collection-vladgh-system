@@ -17,7 +17,7 @@
     dest: "{{ ca_path }}/"
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   with_fileglob:
     - ca/*
   notify:

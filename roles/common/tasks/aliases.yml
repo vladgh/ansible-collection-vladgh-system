@@ -4,7 +4,7 @@
     dest: "{{ item.dest | default('~/.bashrc') }}"
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
-    mode: 0644
+    mode: '0644'
     create: true
     line: "alias {{ item.alias }}='{{ item.command }}'"
     regexp: "alias {{ item.alias }}="

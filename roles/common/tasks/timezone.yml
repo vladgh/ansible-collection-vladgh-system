@@ -10,7 +10,7 @@
     dest: /etc/timezone
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
 
 - name: Set /etc/localtime
   ansible.builtin.file:
@@ -19,5 +19,5 @@
     state: link
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
     force: true
