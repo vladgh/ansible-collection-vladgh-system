@@ -5,7 +5,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: '0755'
 - name: Disable DNSStubListener
   ansible.builtin.copy:
     content: |
@@ -15,9 +15,9 @@
     dest: /etc/systemd/resolved.conf.d/local.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart SystemD Resolved
-- name: Change symlink for systemd-resolved
+- name: Change symlink for systemd-resolved  # Default ubuntu is symlink to /run/systemd/resolve/stub-resolv.conf
   ansible.builtin.file:
     src: /run/systemd/resolve/resolv.conf
     dest: /etc/resolv.conf
