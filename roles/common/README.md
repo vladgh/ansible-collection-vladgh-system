@@ -65,18 +65,18 @@ Check <https://docs.ansible.com/ansible/latest/modules/apt_repository_module.htm
 apt_extra_keys:
   - name: docker key
     url: "https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg"
-    filename: docker
+    repo_filename: docker
 # Disable PBS Enterprise Repository
 apt_disable_repositories:
   - name: PBS Enterprise
     repo: "deb https://enterprise.proxmox.com/debian/pbs {{ ansible_distribution_release }} pbs-enterprise"
-    filename: pbs-enterprise
+    repo_filename: pbs-enterprise
     state: absent
 # Enable PBS Community Repository
 apt_extra_repositories:
   - name: PBS Community
     repo: "deb http://download.proxmox.com/debian/pbs {{ ansible_distribution_release }} pbs-no-subscription"
-    filename: pbs-no-subscription
+    repo_filename: pbs-no-subscription
     state: present
 ```
 

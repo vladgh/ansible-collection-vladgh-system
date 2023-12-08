@@ -1,13 +1,18 @@
 ---
 - name: Disable APT repositories
-  ansible.builtin.apt_repository:
-    repo: "{{ item.repo }}"
-    codename: "{{ ansible_distribution_release | default(omit) }}"
-    filename: "{{ item.filename | default(omit) }}"
-    update_cache: "{{ item.update_cache | default(true) }}"
-    state: "{{ item.state | default('absent') }}"
-  loop: "{{ apt_disable_repositories }}"
   when: apt_disable_repositories is defined and apt_disable_repositories
+  block:
+    - name: Disable APT repositories
+      ansible.builtin.apt_repository:
+        repo: "{{ item.repo }}"
+        codename: "{{ ansible_distribution_release | default(omit) }}"
+        filename: "{{ item.repo_filename | default(omit) }}"
+        update_cache: "{{ item.update_cache | default(false) }}"
+        state: "{{ item.state | default('absent') }}"
+      loop: "{{ apt_disable_repositories }}"
+    - name: Update APT cache
+      ansible.builtin.apt:
+        update_cache: yes
 
 - name: Add extra APT repositories
   when: apt_extra_repositories is defined and apt_extra_repositories
