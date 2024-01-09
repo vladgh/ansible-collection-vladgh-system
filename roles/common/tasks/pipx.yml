@@ -1,7 +1,7 @@
 ---
 - name: Ensure PipX is installed
   ansible.builtin.package:
-    name: "{{ pip_package | default('pipx') }}"
+    name: pipx
     state: present
 
 - name: Ensure PipX packages are installed
