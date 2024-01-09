@@ -39,6 +39,11 @@
           - user: test
             packages: [colorama]
             state: latest
+        pipx_packages:
+          - pip-install-test
+          - name: xkcdpass
+            user: test
+            install_deps: true
         bash_extra_aliases:
           - alias: ll
             command: ls -lahpF

@@ -10,19 +10,15 @@
       paths:
         - vars
 
-- name: Users and groups
-  ansible.builtin.import_tasks: accounts.yml
-
 - name: APT
   ansible.builtin.import_tasks: apt.yml
-
-- name: Unattended upgrades
-  ansible.builtin.import_tasks: unattended.yml
-  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled | bool
 
 - name: Additional packages
   ansible.builtin.import_tasks: packages.yml
   when: additional_packages is defined and additional_packages
+
+- name: Users and groups
+  ansible.builtin.import_tasks: accounts.yml
 
 - name: Python PIP
   ansible.builtin.import_tasks: pip.yml
@@ -30,9 +26,17 @@
     ( pip_install_packages is defined and pip_install_packages ) or
     ( pip_user_install_packages is defined and pip_user_install_packages )
 
+- name: Python PIPX
+  ansible.builtin.import_tasks: pipx.yml
+  when: pipx_packages is defined and pipx_packages
+
 - name: Timezone
   ansible.builtin.import_tasks: timezone.yml
   when: timezone is defined and timezone
+
+- name: Unattended upgrades
+  ansible.builtin.import_tasks: unattended.yml
+  when: unattended_upgrades_autoupdate_enabled is defined and unattended_upgrades_autoupdate_enabled | bool
 
 - name: SysCtl overrides
   ansible.builtin.import_tasks: sysctl.yml
