@@ -96,6 +96,12 @@ pip_user_install_packages:
   - user: test
     packages: [colorama]
     state: latest
+# Install using PIPX
+pipx_packages:
+  - name: boto3
+    user: myuser
+    install_deps: true
+  - yamllint
 ```
 
 ### CA Certificates
