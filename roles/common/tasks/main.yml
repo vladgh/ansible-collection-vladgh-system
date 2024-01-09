@@ -28,8 +28,10 @@
 
 - name: Python PIPX
   ansible.builtin.import_tasks: pipx.yml
-  when: pipx_packages is defined and pipx_packages
-
+  when: >
+    ( pipx_packages is defined and pipx_packages ) and
+    ( ( ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('22.04', '<=') ) or
+    ( ansible_distribution == 'Debian' and ansible_distribution_version is version('12', '<=') ) )
 - name: Timezone
   ansible.builtin.import_tasks: timezone.yml
   when: timezone is defined and timezone
