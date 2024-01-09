@@ -40,7 +40,7 @@
             packages: [colorama]
             state: latest
         pipx_packages:
-          - pip-install-test
+          - dummy_test
           - name: xkcdpass
             user: test
             install_deps: true
