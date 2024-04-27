@@ -98,10 +98,16 @@ pip_user_install_packages:
     state: latest
 # Install using PIPX
 pipx_packages:
-  - name: boto3
+  - yamllint
+  - name: ansible
     user: myuser
     install_deps: true
-  - yamllint
+  - name: ansible
+    user: myuser
+    inject_packages:
+      - ansible-lint
+    install_apps: true
+    state: inject
 ```
 
 ### CA Certificates
