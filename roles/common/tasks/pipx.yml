@@ -14,4 +14,7 @@
     executable: "{{ item.executable | default('pipx') }}"
     install_deps: "{{ item.install_deps | default(false) }}"
     inject_packages: "{{ item.inject_packages | default(omit) }}"
+    include_injected: "{{ item.include_injected | default(omit) }}"
+    install_apps: "{{ item.install_apps | default(omit) }}"
+    system_site_packages: "{{ item.system_site_packages | default(omit) }}"
   loop: "{{ pipx_packages | default([]) }}"
