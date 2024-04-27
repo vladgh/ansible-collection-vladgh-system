@@ -9,10 +9,10 @@
   become_user: "{{ item.user | default(omit) }}"
   community.general.pipx:
     name: "{{ item.name | default(item) }}"
-    state: "{{ item.state | default('present') }}"
+    state: "{{ item.state | default(omit) }}"
     version: "{{ item.version | default(omit) }}"
-    executable: "{{ item.executable | default('pipx') }}"
-    install_deps: "{{ item.install_deps | default(false) }}"
+    executable: "{{ item.executable | default(omit) }}"
+    install_deps: "{{ item.install_deps | default(omit) }}"
     inject_packages: "{{ item.inject_packages | default(omit) }}"
     include_injected: "{{ item.include_injected | default(omit) }}"
     install_apps: "{{ item.install_apps | default(omit) }}"
