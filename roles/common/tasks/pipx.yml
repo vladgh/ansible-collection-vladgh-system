@@ -13,4 +13,5 @@
     version: "{{ item.version | default(omit) }}"
     executable: "{{ item.executable | default('pipx') }}"
     install_deps: "{{ item.install_deps | default(false) }}"
+    inject_packages: "{{ item.inject_packages | default(omit) }}"
   loop: "{{ pipx_packages | default([]) }}"
