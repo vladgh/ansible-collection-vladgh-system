@@ -20,7 +20,7 @@
       options zfs zfs_arc_min={{ proxmox_zfs_arc_min }}
     owner: root
     group: root
-    mode: 0664
+    mode: '0664'
     create: true
   become: true
   notify:
@@ -44,7 +44,7 @@
           vfio_virqfd
         owner: root
         group: root
-        mode: 0664
+        mode: '0664'
         create: true
       become: true
       notify:
@@ -60,7 +60,7 @@
           vfio-mdev
         owner: root
         group: root
-        mode: 0664
+        mode: '0664'
         create: true
       become: true
       notify:
