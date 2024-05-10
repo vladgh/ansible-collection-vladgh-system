@@ -36,8 +36,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
+          - ubuntu2404
           - ubuntu2204
-          - ubuntu2004
           - debian12
           - debian11
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
