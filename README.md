@@ -65,7 +65,7 @@ Import playbooks
 - import_playbook: vladgh.system.ansible
 ```
 
-See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
+See [Ansible using collections in a playbook](https://docs.ansible.com/ansible/latest/collections_guide/collections_using_playbooks.html) for more details.
 
 ## Changelog & Releases
 
