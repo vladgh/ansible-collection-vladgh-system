@@ -1,5 +1,6 @@
 ---
 - name: Reload NFS
   ansible.builtin.command: exportfs -ra
+  changed_when: false
   when:
     - not skip_handlers | default(false)

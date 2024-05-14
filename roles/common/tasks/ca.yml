@@ -9,7 +9,7 @@
   ansible.builtin.file:
     path: "{{ ca_path }}/"
     state: directory
-    mode: 0755
+    mode: '0755'
 
 - name: Install CA Certificates
   ansible.builtin.copy:

@@ -10,7 +10,6 @@ license_file: LICENSE
 tags:
   - common
   - dns
-  - hashicorp
   - linux
   - logs
   - msmtp
@@ -19,11 +18,9 @@ tags:
   - proxmox
   - qemu
   - sanoid
-  - shellcheck
   - system
   - ubuntu
   - wireguard
-  - zsh
 dependencies:
   ansible.posix: "*"
   community.general: "*"

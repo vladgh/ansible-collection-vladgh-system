@@ -35,12 +35,7 @@ sysctl_overwrite: {}
 mounts: []
 systemd_mounts: []
 
-# Security
-## Set to `true` to install and configure Fail2ban
-fail2ban_enabled: false
-## SSH port for the fail2ban configuration
-fail2ban_ssh_port: 22
-## Set to `true` to enable unattended upgrades
+# Unattended upgrades
 unattended_upgrades_autoupdate_enabled: false
 unattended_upgrades_autoupdate_reboot: false
 unattended_upgrades_autoupdate_reboot_time: "03:33"

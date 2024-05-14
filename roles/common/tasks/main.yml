@@ -63,10 +63,6 @@
     ( mounts is defined and mounts ) or
     ( systemd_mounts is defined and systemd_mounts )
 
-- name: Fail2Ban
-  ansible.builtin.import_tasks: fail2ban.yml
-  when: fail2ban_enabled is defined and fail2ban_enabled | bool
-
 - name: Extra shell commands
   ansible.builtin.import_tasks: shell.yml
   when: shell_extra_commands is defined and shell_extra_commands

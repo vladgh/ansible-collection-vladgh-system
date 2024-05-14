@@ -10,7 +10,7 @@
     dest: "/etc/nut/{{ item }}"
     owner: root
     group: nut
-    mode: 0644
+    mode: '0644'
   notify:
     - Restart NUT Server
   loop:

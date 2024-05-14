@@ -78,7 +78,6 @@
             service_state: started
             service_enabled: true
         install_ca_certificates: true
-        fail2ban_enabled: true
         sysctl_overwrite:
           fs.inotify.max_user_watches: 524288
         unattended_upgrades_autoupdate_enabled: true

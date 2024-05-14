@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: /etc/nut
     state: directory
-    mode: 0755
+    mode: '0755'
 
 - name: Generate Server Configuration
   ansible.builtin.import_tasks: server.yml
@@ -30,7 +30,7 @@
     dest: /etc/nut/nut.conf
     owner: root
     group: nut
-    mode: 0640
+    mode: '0640'
   notify:
     - Restart NUT Server
     - Restart NUT Client

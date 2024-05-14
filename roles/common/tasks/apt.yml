@@ -12,7 +12,7 @@
       loop: "{{ apt_disable_repositories }}"
     - name: Update APT cache
       ansible.builtin.apt:
-        update_cache: yes
+        update_cache: true
 
 - name: Add extra APT repositories
   when: apt_extra_repositories is defined and apt_extra_repositories

@@ -19,7 +19,7 @@
         dest: /etc/exports
         owner: root
         group: root
-        mode: 0644
+        mode: '0644'
       notify: Reload NFS
 
     - name: Ensure NFS is running

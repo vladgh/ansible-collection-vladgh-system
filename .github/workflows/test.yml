@@ -59,4 +59,4 @@ jobs:
           MOLECULE_DISTRO: ${{ matrix.os }}
       #   continue-on-error: true
       # - name: Debugging with tmate
-      #   uses: mxschmitt/action-tmate@v3.16
+      #   uses: mxschmitt/action-tmate@v3.18

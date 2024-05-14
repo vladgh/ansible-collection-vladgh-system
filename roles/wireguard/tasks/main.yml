@@ -14,7 +14,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: '0755'
 
 - name: WireGuard Configuration
   when: wireguard_config is defined and wireguard_config
@@ -28,7 +28,7 @@
         dest: "/etc/wireguard/{{ item.key }}.conf"
         owner: root
         group: root
-        mode: 0600
+        mode: '0600'
       # no_log: true
       loop: "{{ wireguard_config | dict2items }}"
       notify: Restart WireGuard
