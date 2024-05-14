@@ -9,7 +9,7 @@
   ansible.builtin.file:
     path: "{{ ca_path }}/"
     state: directory
-    mode: 0755
+    mode: '0755'
 
 - name: Install CA Certificates
   ansible.builtin.copy:
@@ -17,7 +17,7 @@
     dest: "{{ ca_path }}/"
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   with_fileglob:
     - ca/*
   notify:
@@ -38,6 +38,6 @@
     dest: "/etc/rsyslog.d/00_{{ remote_logs_server }}.conf"
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify:
     - Restart RSysLog

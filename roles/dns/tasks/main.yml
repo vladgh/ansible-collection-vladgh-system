@@ -6,9 +6,3 @@
 - name: Provision DNS records
   ansible.builtin.import_tasks: dns-records.yml
   when: cloudflare_dns_records is defined and cloudflare_dns_records
-
-- name: Override SystemD Resolve
-  ansible.builtin.import_tasks: systemd.yml
-  when: >
-    ( dns_disable_stub_listener is defined and dns_disable_stub_listener | bool ) and
-    ( ansible_distribution == 'Ubuntu' )

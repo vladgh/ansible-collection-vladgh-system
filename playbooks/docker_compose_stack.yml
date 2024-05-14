@@ -1,0 +1,8 @@
+---
+- name: Docker Compose Stack
+  hosts: docker_compose_stack
+  become: true
+  tasks:
+    - name: Include stack role
+      ansible.builtin.include_role:
+        name: vladgh.system.docker_compose_stack

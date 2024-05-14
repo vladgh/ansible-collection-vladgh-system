@@ -16,16 +16,17 @@ Installs this script  used to update Dynamic DNS (DDNS) service based on Cloudfl
 ```yml
 cloudflare_ddns_updater_enabled: true  # Set to `true` to install ddns updater script
 cloudflare_ddns_updater_config:
-  auth_email: ""           # The email used to login 'https://dash.cloudflare.com'
-  auth_method: "token"     # Set to "global" for Global API Key or "token" for Scoped API Token
-  auth_key: ""             # Your API Token or Global API Key
-  zone_identifier: ""      # Can be found in the "Overview" tab of your domain
-  record_name: ""          # Which record you want to be synced
-  ttl: "3600"              # Set the DNS TTL (seconds)
-  proxy: false             # Set the proxy to true or false
-  slacksitename: ""        # Title of site "Example Site"
-  slackchannel: ""         # Slack Channel #example
-  slackuri: ""             # URI for Slack WebHook "https://hooks.slack.com/services/xxxxx"
+  auth_email: ""        # The email used to login 'https://dash.cloudflare.com'
+  auth_method: "token"  # Set to "global" for Global API Key or "token" for Scoped API Token
+  auth_key: ""          # Your API Token or Global API Key
+  zone_identifier: ""   # Can be found in the "Overview" tab of your domain
+  record_name: ""       # Which record you want to be synced
+  ttl: "3600"           # Set the DNS TTL (seconds)
+  proxy: false          # Set the proxy to true or false
+  sitename: ""          # Title of site "Example Site"
+  slackchannel: ""      # Slack Channel #example
+  slackuri: ""          # URI for Slack WebHook "https://hooks.slack.com/services/xxxxx"
+  discorduri: ""        # URI for Discord WebHook "https://discordapp.com/api/webhooks/xxxxx"
 ```
 
 ### Cloudflare DNS records
@@ -39,13 +40,6 @@ cloudflare_dns_records:
     record: www
     value: example.com
     state: absent
-```
-
-### Local DNS resolver
-
-```yaml
-dns_stub_listener: false  # Set to `false` to remove local stub listener and use the DNS below
-dns_resolved: 127.0.0.1  # Space separated list (Ex: 8.8.8.8 8.8.4.4)
 ```
 
 ## Dependencies

@@ -26,7 +26,7 @@
     dest: "/usr/local/bin/{{ item }}"
     owner: root
     group: root
-    mode: 0755
+    mode: 's'
   loop:
     - sanoid
     - syncoid
@@ -38,14 +38,14 @@
     dest: /etc/sanoid/sanoid.defaults.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
 
 - name: Generate Sanoid Configuration
   ansible.builtin.copy:
     dest: /etc/sanoid/sanoid.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
     content: |
       # Datasets
       {% for dataset in sanoid_datasets %}
@@ -70,7 +70,7 @@
     dest: /etc/systemd/system/sanoid.service
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
     content: |
       [Unit]
       Description=Snapshot ZFS Pool
@@ -89,7 +89,7 @@
     dest: /etc/systemd/system/sanoid-prune.service
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
     content: |
       [Unit]
       Description=Cleanup ZFS Pool
@@ -109,7 +109,7 @@
     dest: /etc/systemd/system/sanoid.timer
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
     content: |
       [Unit]
       Description=Run Sanoid Every 15 Minutes
