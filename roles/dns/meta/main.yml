@@ -15,5 +15,4 @@ galaxy_info:
       versions:
         - bookworm
         - bullseye
-dependencies:
-  - role: community.general
+dependencies: []

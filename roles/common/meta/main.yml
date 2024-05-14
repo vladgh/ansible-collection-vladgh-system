@@ -15,6 +15,4 @@ galaxy_info:
       versions:
         - bookworm
         - bullseye
-dependencies:
-  - role: ansible.posix
-  - role: community.general
+dependencies: []
