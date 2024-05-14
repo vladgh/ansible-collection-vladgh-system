@@ -26,7 +26,7 @@
     dest: "/usr/local/bin/{{ item }}"
     owner: root
     group: root
-    mode: 's'
+    mode: '0755'
   loop:
     - sanoid
     - syncoid

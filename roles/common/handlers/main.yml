@@ -11,6 +11,7 @@
 
 - name: Update trusted CA certificates
   ansible.builtin.command: /usr/sbin/update-ca-certificates --fresh
+  changed_when: false
 
 - name: Restart SystemD mount
   ansible.builtin.systemd:
