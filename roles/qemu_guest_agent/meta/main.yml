@@ -6,13 +6,5 @@ galaxy_info:
   license: Apache v2
   min_ansible_version: '2.14'
   galaxy_tags: []
-  platforms:
-    - name: Ubuntu
-      versions:
-        - jammy
-        - focal
-    - name: Debian
-      versions:
-        - bookworm
-        - bullseye
+  platforms: []
 dependencies: []
