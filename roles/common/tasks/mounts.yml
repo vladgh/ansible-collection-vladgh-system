@@ -1,5 +1,4 @@
 ---
-# Make sure the NFS package is installed if any mount point is of 'nfs' type
 - name: Ensure NFS package is installed
   ansible.builtin.package:
     name: "{{ nfs_client_package_name }}"
@@ -8,7 +7,6 @@
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
 
-# Make sure the RPCBind service is enabled and running if any mount point is of 'nfs' type
 - name: Ensure RPCBind service is enabled and running
   ansible.builtin.service:
     name: rpcbind
@@ -19,7 +17,6 @@
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
 
-# FSTAB Mounts
 - name: Create the local directories
   ansible.builtin.file:
     path: "{{ item.path }}"

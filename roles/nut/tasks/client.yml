@@ -1,5 +1,4 @@
 ---
-# Client
 - name: Ensure NUT Client Package
   ansible.builtin.package:
     name: nut-client
