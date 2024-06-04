@@ -1,5 +1,4 @@
 ---
-# Adds  extra CA Certificates
 - name: Install ca-certificates package
   ansible.builtin.package:
     name: ca-certificates
