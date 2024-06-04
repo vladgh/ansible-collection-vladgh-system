@@ -19,9 +19,9 @@ sanoid_templates:
     daily: 7
     monthly: 12
     yearly: 1
-    autosnap: 'yes'
-    autoprune: 'yes'
-# The datasetys you want to configure
+    autosnap: true
+    autoprune: true
+# The datasets you want to configure
 sanoid_datasets: {}
 ```
 
