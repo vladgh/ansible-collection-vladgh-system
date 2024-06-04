@@ -14,8 +14,8 @@
             daily: 7
             monthly: 12
             yearly: 1
-            autosnap: 'yes'
-            autoprune: 'yes'
+            autosnap: true
+            autoprune: true
         sanoid_datasets:
           tank/dataset:
             use_template: default
