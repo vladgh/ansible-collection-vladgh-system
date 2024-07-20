@@ -22,7 +22,7 @@
     # for the first run the default ipv4 interface is eth0 but for subsequent runs is wgX
     - molecule-idempotence-notest
   block:
-    - name: Generate Configuration
+    - name: Generate WireGuard Configuration
       ansible.builtin.template:
         src: wg.conf.j2
         dest: "/etc/wireguard/{{ item.key }}.conf"
