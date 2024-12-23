@@ -10,7 +10,7 @@
     dest: /etc/nut/upsmon.conf
     owner: root
     group: nut
-    mode: '0644'
+    mode: "0640"
   notify: Restart NUT Client
 
 - name: Generate NUT Notification Script
@@ -19,5 +19,5 @@
     dest: /etc/nut/notifycmd
     owner: root
     group: nut
-    mode: '0775'
+    mode: "0775"
   notify: Restart NUT Client
