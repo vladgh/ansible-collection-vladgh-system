@@ -21,7 +21,7 @@
               {{
                 'mypassword' | password_hash(
                   'sha512',
-                  65534 | random(seed=inventory_hostname) | string
+                  inventory_hostname | default('localhost')
                 )
               }}
             authorized_keys: |
