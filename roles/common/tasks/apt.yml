@@ -5,7 +5,7 @@
     - name: Disable APT repositories
       ansible.builtin.apt_repository:
         repo: "{{ item.repo }}"
-        codename: "{{ ansible_distribution_release | default(omit) }}"
+        codename: "{{ ansible_facts['distribution_release'] | default(omit) }}"
         filename: "{{ item.repo_filename | default(omit) }}"
         update_cache: "{{ item.update_cache | default(false) }}"
         state: "{{ item.state | default('absent') }}"
@@ -33,7 +33,7 @@
     - name: Add extra APT repositories
       ansible.builtin.apt_repository:
         repo: "{{ item.repo }}"
-        codename: "{{ ansible_distribution_release | default(omit) }}"
+        codename: "{{ ansible_facts['distribution_release'] | default(omit) }}"
         filename: "{{ item.repo_filename | default(omit) }}"
         mode: "{{ item.repo_filemode | default('0644') }}"
         update_cache: "{{ item.update_cache | default(true) }}"

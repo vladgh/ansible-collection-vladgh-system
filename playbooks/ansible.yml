@@ -10,7 +10,7 @@
         update_cache: true
         force_apt_get: true
         cache_valid_time: 21600  # Update the apt cache if its older than 6 hours
-      when: ansible_os_family is defined and ansible_os_family == 'Debian'
+      when: ansible_facts['os_family'] is defined and ansible_facts['os_family'] == 'Debian'
     - name: Install required packages
       ansible.builtin.package:
         name: [sudo, python3]

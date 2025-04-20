@@ -12,7 +12,7 @@
         name: systemd-timesyncd
         state: stopped
         enabled: false
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('18.04', '<=')
+      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] is version('18.04', '<=')
     # Fix for "A start job is running for wait for network to be configured" 2 minute delay on Ubuntu 18 VMs
     - name: Disable and mask systemd-networkd-wait-online
       ansible.builtin.systemd:
@@ -20,4 +20,4 @@
         state: stopped
         enabled: false
         masked: true
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('18.04', '<=')
+      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] is version('18.04', '<=')
