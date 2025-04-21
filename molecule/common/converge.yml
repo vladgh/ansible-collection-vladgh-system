@@ -17,7 +17,7 @@
             comment: Testing User
             groups: admins
             append: true
-            password: "{{ 'mypassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+            password: 'test'
             authorized_keys: |
               ssh-ed25519 1234 MyKey
               ssh-ed25519 5678 MyOtherKey
@@ -30,9 +30,12 @@
           - rolldice
         apt_extra_repositories:
           - name: Add test Docker repository
-            repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+            repo: >-
+              deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc]
+              https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}
+              {{ ansible_facts['distribution_release'] }} stable
             repo_filename: test_repo
-            key_url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+            key_url: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg"
             key_filename: docker.asc
         pip_install_packages: [pip-install-test]
         pip_user_install_packages:

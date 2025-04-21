@@ -18,8 +18,8 @@ wireguard_config:
       PrivateKey: 'WCZYl1008fS5mXwYVNnWWYyF5F1/UWOQ50/Av1WfZEY='
       Address: '10.0.0.1/24'
       ListenPort: '51820'
-      PostUp: "iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE"
-      PostDown: "iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE"
+      PostUp: "iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_facts['default_ipv4']['interface'] }} -j MASQUERADE"
+      PostDown: "iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_facts['default_ipv4']['interface'] }} -j MASQUERADE"
     Peers:
       # Client 1
       - PublicKey: 'ALRxvsVybYyj4CBEIpXWeaUKFuPILoT58oFvVDj3KSQ='

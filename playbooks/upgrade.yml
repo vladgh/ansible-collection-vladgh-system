@@ -4,7 +4,7 @@
   become: true
   tasks:
     - name: Upgrade Debian Systems
-      when: ansible_os_family is defined and ansible_os_family == 'Debian'
+      when: ansible_facts['os_family'] is defined and ansible_facts['os_family'] == 'Debian'
       block:
         - name: Update apt-get repo and cache
           ansible.builtin.apt:
