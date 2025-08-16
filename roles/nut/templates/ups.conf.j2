@@ -6,6 +6,8 @@
   driver = {{ nut_driver }}
   port = {{ nut_port }}
   desc = "{{ nut_ups_description }}"
+  {% if nut_ups_ignorelb  is defined and nut_ups_ignorelb %}
   ignorelb
   override.battery.charge.low = "{{ nut_ups_override_battery_charge_low }}"
   override.battery.runtime.low = "{{ nut_ups_override_battery_runtime_low }}"
+  {% endif %}

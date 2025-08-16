@@ -5,9 +5,14 @@ nut_mode: none  # none, standalone, netserver or netclient
 # Server
 nut_driver: usbhid-ups
 nut_port: auto
-nut_ups_description: APC Back-UPS Pro
+nut_ups_description: UPS
+nut_ups_ignorelb: false
 nut_ups_override_battery_charge_low: 25
 nut_ups_override_battery_runtime_low: 300
+nut_ups_extra: |
+  maxretry = 3
+nut_upsd_extra: |
+  LISTEN 0.0.0.0 3493
 nut_upsd_users:
   admin:
     password: changeme
@@ -16,13 +21,9 @@ nut_upsd_users:
   monitor:
     password: changeme
     upsmon: master
-  monuser:
-    password: secret
+  client:
+    password: changeme
     upsmon: slave
-nut_ups_extra: |
-  maxretry = 3
-nut_upsd_extra: |
-  LISTEN 0.0.0.0 3493
 
 # Client
 nut_notification_email: root@localhost
