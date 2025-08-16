@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 {{ ansible_managed | comment }}
 
+# Notify script for NUT (Network UPS Tools)
 EMAIL='{{ nut_notification_email }}'
 echo -e "UPS: $UPSNAME\r\nALERT TYPE: $NOTIFYTYPE\r\nTIME: $(date)\r\n\r\nADDITIONAL INFO:\r\n$(upsc $UPSNAME)" | mail -s "UPS: $NOTIFYTYPE" "$EMAIL"
