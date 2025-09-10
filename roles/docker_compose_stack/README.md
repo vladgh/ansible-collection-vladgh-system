@@ -11,7 +11,7 @@ Vlad's Ansible Role for creating Docker Compose stacks.
 Available variables are listed below, along with default values (see defaults/main.yml)
 
 - `docker_networks`: A list of networks that need to be created before the stacks
-- `docker_compose_stack`: A list of stacks and their environment variables
+- `docker_compose_stack`: A list of stacks and their environment variables. It looks for a file with the same name in the `appstack` directory, relative to the directory where the playbook file is located.
 
 ## Dependencies
 
