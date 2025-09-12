@@ -30,7 +30,7 @@ nut_notification_email: root@localhost
 nut_host: ups@localhost
 nut_user: monitor
 nut_password: changeme
-nut_role: master
+nut_role: slave
 nut_powervalue: 1
 nut_upsmon_extra: |
   MINSUPPLIES 1
