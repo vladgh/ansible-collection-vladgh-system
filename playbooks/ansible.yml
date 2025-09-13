@@ -28,7 +28,7 @@
         key: "{{ authorized_deploy_keys }}"
         state: present
         exclusive: true
-      when: authorized_deploy_keys is defined and authorized_deploy_keys
+      when: authorized_deploy_keys is defined and authorized_deploy_keys | length > 0
     - name: Add Ansible user to Sudoers
       ansible.builtin.lineinfile:
         path: /etc/sudoers.d/00_ansible

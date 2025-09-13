@@ -2,26 +2,26 @@
 
 [Unit]
 Description=Mount {{ item.name }}
-{% if item.before is defined and item.before -%}
+{% if item.before is defined and item.before | length > 0 -%}
 Before={{ item.before }}
 {% endif %}
-{% if item.after is defined and item.after -%}
+{% if item.after is defined and item.after | length > 0 -%}
 After={{ item.after }}
 {% endif %}
-{% if item.wants is defined and item.wants -%}
+{% if item.wants is defined and item.wants | length > 0 -%}
 Wants={{ item.wants }}
 {% endif %}
-{% if item.requires is defined and item.requires -%}
+{% if item.requires is defined and item.requires | length > 0 -%}
 Requires={{ item.requires }}
 {% endif %}
 
 [Mount]
 What={{ item.what }}
 Where={{ item.where }}
-{% if item.type is defined and item.type -%}
+{% if item.type is defined and item.type | length > 0 -%}
 Type={{ item.type }}
 {% endif %}
-{% if item.options is defined and item.options -%}
+{% if item.options is defined and item.options | length > 0 -%}
 Options={{ item.options }}
 {% endif %}
 
