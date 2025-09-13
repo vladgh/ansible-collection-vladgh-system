@@ -24,7 +24,6 @@ provisioner:
     defaults:
       interpreter_python: auto
   playbooks:
-    converge: ../converge.yml
     prepare: ../prepare.yml
   env:
     ANSIBLE_RUNNER_IMAGE: ansible-ee:ubuntu2404
