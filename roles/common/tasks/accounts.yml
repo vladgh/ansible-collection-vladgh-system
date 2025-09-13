@@ -49,5 +49,5 @@
         exclusive: "{{ item.exclusive | default(omit) }}"
         path: "{{ item.authorized_key_path | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
-      when: item.authorized_keys is defined and item.authorized_keys
+      when: item.authorized_keys is defined and item.authorized_keys | length > 0
       loop: "{{ local_users }}"

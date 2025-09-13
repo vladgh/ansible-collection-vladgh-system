@@ -15,7 +15,7 @@
 
 - name: Additional packages
   ansible.builtin.import_tasks: packages.yml
-  when: additional_packages is defined and additional_packages
+  when: additional_packages is defined and additional_packages | length > 0
 
 - name: Users and groups
   ansible.builtin.import_tasks: accounts.yml
@@ -23,19 +23,19 @@
 - name: Python PIP
   ansible.builtin.import_tasks: pip.yml
   when: >
-    ( pip_install_packages is defined and pip_install_packages ) or
-    ( pip_user_install_packages is defined and pip_user_install_packages )
+    ( pip_install_packages is defined and pip_install_packages | length > 0) or
+    ( pip_user_install_packages is defined and pip_user_install_packages | length > 0)
 
 - name: Python PIPX
   ansible.builtin.import_tasks: pipx.yml
   when: >
-    ( pipx_packages is defined and pipx_packages ) and
+    ( pipx_packages is defined and pipx_packages | length > 0) and
     ( ( ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] is version('22.04', '>=') ) or
     ( ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_version'] is version('12', '>=') ) )
 
 - name: Timezone
   ansible.builtin.import_tasks: timezone.yml
-  when: timezone is defined and timezone
+  when: timezone is defined and timezone | length > 0
 
 - name: Unattended upgrades
   ansible.builtin.import_tasks: unattended.yml
@@ -43,7 +43,7 @@
 
 - name: SysCtl overrides
   ansible.builtin.import_tasks: sysctl.yml
-  when: sysctl_overwrite is defined and sysctl_overwrite
+  when: sysctl_overwrite is defined and sysctl_overwrite | length > 0
 
 - name: Certificate Authority
   ansible.builtin.import_tasks: ca.yml
@@ -51,21 +51,21 @@
 
 - name: Extra BASH aliases
   ansible.builtin.import_tasks: aliases.yml
-  when: bash_extra_aliases is defined and bash_extra_aliases
+  when: bash_extra_aliases is defined and bash_extra_aliases | length > 0
 
 - name: Cron jobs
   ansible.builtin.import_tasks: cron.yml
-  when: cron_jobs is defined and cron_jobs
+  when: cron_jobs is defined and cron_jobs | length > 0
 
 - name: Mount points
   ansible.builtin.import_tasks: mounts.yml
   when: >
-    ( mounts is defined and mounts ) or
-    ( systemd_mounts is defined and systemd_mounts )
+    ( mounts is defined and mounts | length > 0) or
+    ( systemd_mounts is defined and systemd_mounts | length > 0)
 
 - name: Extra shell commands
   ansible.builtin.import_tasks: shell.yml
-  when: shell_extra_commands is defined and shell_extra_commands
+  when: shell_extra_commands is defined and shell_extra_commands | length > 0
 
 - name: Miscelaneous
   ansible.builtin.import_tasks: misc.yml
