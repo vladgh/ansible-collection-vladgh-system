@@ -34,4 +34,4 @@
     executable: "{{ pip_executable | default('pip3') }}"
   loop: "{{ pip_user_install_packages }}"
   when: pip_user_install_packages is defined and pip_user_install_packages | length > 0
-  register: pip_user_install_packages_result
+  register: common_pip_user_install_packages_result
