@@ -30,8 +30,8 @@
   ansible.builtin.import_tasks: pipx.yml
   when: >
     ( pipx_packages is defined and pipx_packages | length > 0) and
-    ( ( ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] is version('22.04', '>=') ) or
-    ( ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_version'] is version('12', '>=') ) )
+    ( ( ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] is version('25.04', '>=') ) or
+    ( ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_version'] is version('13', '>=') ) )
 
 - name: Timezone
   ansible.builtin.import_tasks: timezone.yml
