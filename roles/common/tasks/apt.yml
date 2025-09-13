@@ -1,6 +1,6 @@
 ---
 - name: Disable APT repositories
-  when: apt_disable_repositories is defined and apt_disable_repositories
+  when: apt_disable_repositories is defined and apt_disable_repositories | length > 0
   block:
     - name: Disable APT repositories
       ansible.builtin.apt_repository:
@@ -15,7 +15,7 @@
         update_cache: true
 
 - name: Add extra APT repositories
-  when: apt_extra_repositories is defined and apt_extra_repositories
+  when: apt_extra_repositories is defined and apt_extra_repositories | length > 0
   block:
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
@@ -28,7 +28,7 @@
         dest: "/etc/apt/trusted.gpg.d/{{ item.key_filename | default(item.name) }}"
         mode: "{{ item.key_filemode | default('0644') }}"
       loop: "{{ apt_extra_repositories }}"
-      when: item.key_url is defined and item.key_url
+      when: item.key_url is defined and item.key_url | length > 0
 
     - name: Add extra APT repositories
       ansible.builtin.apt_repository:

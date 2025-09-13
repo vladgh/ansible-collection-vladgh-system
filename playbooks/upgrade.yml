@@ -40,7 +40,7 @@
             name: "{{ pip_install_packages }}"
             state: "{{ item.state | default('present') }}"
             executable: "{{ pip_executable | default('pip3') }}"
-          when: pip_install_packages is defined and pip_install_packages
+          when: pip_install_packages is defined and pip_install_packages | length > 0
         - name: Update Pip user packages
           become: true
           become_user: "{{ item.user }}"
@@ -50,4 +50,4 @@
             extra_args: --user
             executable: "{{ pip_executable | default('pip3') }}"
           loop: "{{ pip_user_install_packages }}"
-          when: pip_user_install_packages is defined and pip_user_install_packages
+          when: pip_user_install_packages is defined and pip_user_install_packages | length > 0
