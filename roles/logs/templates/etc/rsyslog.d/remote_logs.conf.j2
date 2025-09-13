@@ -15,10 +15,10 @@ $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
 $DefaultNetstreamDriver gtls
 $ActionSendStreamDriverMode 1
 $ActionSendStreamDriverAuthMode x509/name
-{% if remote_logs_permitted_peer is defined and remote_logs_permitted_peer %}
+{% if remote_logs_permitted_peer is defined and remote_logs_permitted_peer | length > 0 %}
 $ActionSendStreamDriverPermittedPeer {{ remote_logs_permitted_peer }}
 {% endif %}
-{% if remote_logs_ca_file is defined and remote_logs_ca_file %}
+{% if remote_logs_ca_file is defined and remote_logs_ca_file | length > 0 %}
 $DefaultNetStreamDriverCAFile {{ remote_logs_ca_file }}
 {% endif %}
 
