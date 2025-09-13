@@ -6,19 +6,30 @@ dependency:
     ignore-errors: true
     role-file: requirements.yml
     requirements-file: requirements.yml
+
 driver:
   name: docker
+
 platforms:
   - name: instance
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2404}-ansible:latest"
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
+    image: "${MOLECULE_DISTRO:-ubuntu:24.04}"
     privileged: true
-    pre_build_image: true
+    command: /sbin/init
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
 provisioner:
   name: ansible
-  log: true
+  config_options:
+    defaults:
+      interpreter_python: auto
   playbooks:
+    converge: ../converge.yml
     prepare: ../prepare.yml
+  env:
+    ANSIBLE_RUNNER_IMAGE: ansible-ee:ubuntu2404
+    ANSIBLE_RUNNER_BIND_MOUNTS: "${MOLECULE_PROJECT_DIRECTORY}:${MOLECULE_PROJECT_DIRECTORY}"
+    ANSIBLE_RUNNER_INVENTORY: "${MOLECULE_SCENARIO_DIRECTORY}/inventory.yml"
+
+verifier:
+  name: ansible

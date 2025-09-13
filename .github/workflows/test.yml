@@ -36,10 +36,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu2404
-          - ubuntu2204
-          - debian12
-          - debian11
+          - ubuntu:24.04
+          - debian:12
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
