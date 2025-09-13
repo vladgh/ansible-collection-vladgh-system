@@ -1,4 +1,7 @@
 ---
+
+# Common Role
+
 - name: Gather variables for each operating system
   ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', params) }}"
   vars:
