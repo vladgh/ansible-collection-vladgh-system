@@ -4,6 +4,22 @@
     name: "pipx>=1.7.0"
     state: present
 
+- name: Debug Python version
+  ansible.builtin.command: python3 --version
+  register: common_python_version
+  changed_when: false
+- name: Show Python version
+  ansible.builtin.debug:
+    msg: "Python version: {{ common_python_version.stdout }}"
+
+- name: Debug PipX version
+  ansible.builtin.command: pipx --version
+  register: common_pipx_version
+  changed_when: false
+- name: Show PipX version
+  ansible.builtin.debug:
+    msg: "PipX version: {{ common_pipx_version.stdout }}"
+
 - name: Ensure PipX packages are installed
   become: true
   become_user: "{{ item.user | default(omit) }}"
