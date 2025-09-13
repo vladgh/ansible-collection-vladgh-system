@@ -17,7 +17,7 @@
     mode: '0755'
 
 - name: WireGuard Configuration
-  when: wireguard_config is defined and wireguard_config
+  when: wireguard_config is defined and wireguard_config | length > 0
   tags:
     # for the first run the default ipv4 interface is eth0 but for subsequent runs is wgX
     - molecule-idempotence-notest

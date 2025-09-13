@@ -1,8 +1,8 @@
 ---
 - name: CloudFlare Dynamic DNS Updater
   ansible.builtin.import_tasks: ddns.yml
-  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled|bool
+  when: cloudflare_ddns_updater_enabled is defined and cloudflare_ddns_updater_enabled | bool
 
 - name: Provision DNS records
   ansible.builtin.import_tasks: dns-records.yml
-  when: cloudflare_dns_records is defined and cloudflare_dns_records
+  when: cloudflare_dns_records is defined and cloudflare_dns_records | length > 0

@@ -28,8 +28,8 @@
     - Reboot
   when: >
     ( proxmox_zfs_tune is defined and proxmox_zfs_tune | bool ) and
-    ( proxmox_zfs_arc_min is defined and proxmox_zfs_arc_min ) and
-    ( proxmox_zfs_arc_max is defined and proxmox_zfs_arc_max )
+    ( proxmox_zfs_arc_min is defined and proxmox_zfs_arc_min | int > 0 ) and
+    ( proxmox_zfs_arc_max is defined and proxmox_zfs_arc_max | int > 0 )
 
 - name: GPU Passthrough
   when: proxmox_gpu_passthrough_enabled is defined and proxmox_gpu_passthrough_enabled | bool
@@ -94,7 +94,7 @@
         regex: "thin_pool_autoextend_threshold"
         backrefs: true
         line: "  thin_pool_autoextend_threshold = {{ proxmox_lvm_thin_pool_autoextend_threshold }}"
-      when: proxmox_lvm_thin_pool_autoextend_threshold is defined and proxmox_lvm_thin_pool_autoextend_threshold
+      when: proxmox_lvm_thin_pool_autoextend_threshold is defined and proxmox_lvm_thin_pool_autoextend_threshold | int > 0
 
     - name: Configure lvm thinpool extend percentage
       ansible.builtin.lineinfile:
@@ -102,4 +102,4 @@
         regex: "thin_pool_autoextend_percent"
         backrefs: true
         line: "  thin_pool_autoextend_percent = {{ proxmox_lvm_thin_pool_autoextend_percent }}"
-      when: proxmox_lvm_thin_pool_autoextend_percent is defined and proxmox_lvm_thin_pool_autoextend_percent
+      when: proxmox_lvm_thin_pool_autoextend_percent is defined and proxmox_lvm_thin_pool_autoextend_percent | int > 0

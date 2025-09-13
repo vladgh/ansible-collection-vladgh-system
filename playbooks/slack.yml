@@ -7,4 +7,4 @@
       community.general.slack:
         token: "{{ slack_token }}"
         msg: "Ansible run completed on `{{ inventory_hostname }}`"
-      when: slack_token is defined and slack_token
+      when: slack_token is defined and slack_token | length > 0

@@ -5,7 +5,7 @@
     state: present
 
 - name: Generate NFS shares
-  when: nfs_exports is defined and nfs_exports | length
+  when: nfs_exports is defined and nfs_exports | length > 0
   block:
     - name: Ensure directories to export exist
       ansible.builtin.file:  # noqa risky-file-permissions

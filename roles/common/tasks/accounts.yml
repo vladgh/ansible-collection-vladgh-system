@@ -1,6 +1,6 @@
 ---
 - name: Configure groups
-  when: local_groups is defined and local_groups
+  when: local_groups is defined and local_groups | length > 0
   block:
     - name: Create groups
       ansible.builtin.group:
@@ -18,11 +18,11 @@
         mode: '0440'
         create: true
         validate: '/usr/sbin/visudo -cf %s'
-      when: item.sudo is defined and item.sudo
+      when: item.sudo is defined and item.sudo | bool
       loop: "{{ local_groups }}"
 
 - name: Configure users
-  when: local_users is defined and local_users
+  when: local_users is defined and local_users | length > 0
   no_log: false
   block:
     - name: Create users
@@ -49,5 +49,5 @@
         exclusive: "{{ item.exclusive | default(omit) }}"
         path: "{{ item.authorized_key_path | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
-      when: item.authorized_keys is defined and item.authorized_keys
+      when: item.authorized_keys is defined and item.authorized_keys | length > 0
       loop: "{{ local_users }}"
