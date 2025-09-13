@@ -2,7 +2,7 @@
 - name: Ensure PipX is installed
   ansible.builtin.package:
     name: "pipx>=1.7.0"
-    state: presents
+    state: present
 
 - name: Ensure PipX packages are installed
   become: true
