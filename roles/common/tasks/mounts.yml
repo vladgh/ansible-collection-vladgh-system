@@ -25,7 +25,7 @@
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.group | default(omit) }}"
   loop: "{{ mounts }}"
-  when: item is defined and item
+  when: item is defined and item | length > 0
 
 - name: Create mount points
   ansible.posix.mount:
@@ -37,7 +37,7 @@
     passno: "{{ item.passno | default(omit) }}"
     state: "{{ item.state | default('mounted') }}"
   loop: "{{ mounts }}"
-  when: item is defined and item
+  when: item is defined and item | length > 0
 
 # SystemD Mounts
 - name: Setup SystemD service for mount points
@@ -68,7 +68,7 @@
     mode: '0644'
   notify: Restart SystemD auto mount
   loop: "{{ systemd_mounts }}"
-  when: item.automount is defined and item.automount
+  when: item.automount is defined and item.automount | bool
 
 - name: Enable and start SystemD auto mount
   ansible.builtin.systemd:
@@ -77,4 +77,4 @@
     enabled: "{{ item.service_enabled | default(true) }}"
     daemon_reload: true
   loop: "{{ systemd_mounts }}"
-  when: item.automount is defined and item.automount
+  when: item.automount is defined and item.automount | bool

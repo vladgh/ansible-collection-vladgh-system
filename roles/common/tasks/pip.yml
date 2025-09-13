@@ -14,7 +14,7 @@
     name: "{{ pip_install_packages }}"
     state: "{{ item.state | default('present') }}"
     executable: "{{ pip_executable | default('pip3') }}"
-  when: pip_install_packages is defined and pip_install_packages
+  when: pip_install_packages is defined and pip_install_packages | length > 0
 
 - name: Upgrade Pip user
   ansible.builtin.pip:
@@ -22,7 +22,7 @@
     state: latest  # noqa package-latest
     executable: "{{ pip_executable | default('pip3') }}"
     extra_args: --user
-  when: pip_user_install_packages is defined and pip_user_install_packages
+  when: pip_user_install_packages is defined and pip_user_install_packages | length > 0
 
 - name: Ensure Pip user packages are installed
   become: true
@@ -33,5 +33,5 @@
     extra_args: --user
     executable: "{{ pip_executable | default('pip3') }}"
   loop: "{{ pip_user_install_packages }}"
-  when: pip_user_install_packages is defined and pip_user_install_packages
+  when: pip_user_install_packages is defined and pip_user_install_packages | length > 0
   register: pip_user_install_packages_result
