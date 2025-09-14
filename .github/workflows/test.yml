@@ -49,7 +49,7 @@ jobs:
       - name: Molecule test
         uses: gofrolist/molecule-action@5bc52cad3b588b44b4497d04e27ac7a7cb4dd43a # v2.7.72
         with:
-          molecule_command: converge
+          molecule_command: test
           molecule_options: --debug --base-config molecule/base.yml
           molecule_args: --scenario-name ${{ matrix.scenario }}
           molecule_working_dir: ansible_collections/vladgh/system
@@ -57,8 +57,6 @@ jobs:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
           MOLECULE_DISTRO: ${{ matrix.os }}
-        continue-on-error: true
-      - name: Debugging with tmate
-        uses: mxschmitt/action-tmate@v3.18
-        with:
-          detached: true
+      #   continue-on-error: true
+      # - name: Debugging with tmate
+      #   uses: mxschmitt/action-tmate@v3.18

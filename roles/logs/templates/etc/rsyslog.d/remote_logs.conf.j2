@@ -20,7 +20,7 @@ action(
 
   # TLS settings
   streamDriver="gtls"
-  streamDriverMode="1"              # TLS-only
+  streamDriverMode="1"
   streamDriverAuthMode="x509/name"
 {% if remote_logs_permitted_peer is defined and remote_logs_permitted_peer | length > 0 %}
   streamDriverPermittedPeers="{{ remote_logs_permitted_peer }}"
