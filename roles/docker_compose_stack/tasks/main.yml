@@ -1,19 +1,131 @@
 ---
-- name: Display playbook directory
-  ansible.builtin.debug:
-    msg: "Play book dir is {{ playbook_dir }}"
+- name: Ensure stack directory exists
+  ansible.builtin.file:
+    path: "{{ docker_compose_stack_path }}/{{ item.name }}"
+    state: directory
+    mode: '0755'
+  when: item.name is defined and item.name | length > 0
+  loop: "{{ docker_compose_stack }}"
+  loop_control:
+    label: "{{ item.name }}"
 
-- name: Test file
+- name: Configure DotEnv
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/files/appstack/{{ item.name }}"
-    dest: "/tmp/{{ item.name }}"
+    content: |
+      # DO NOT USE QUOTES TO ENCLOSE THE VALUES
+      # https://docs.docker.com/compose/env-file/#syntax-rules
+      {% for env_item in all_vars | dict2items %}
+      {{ env_item.key }}={{ env_item.value }}
+      {% endfor %}
+    dest: "{{ docker_compose_stack_path }}/{{ item.name }}/.env"
+    owner: root
+    group: root
+    mode: '0644'
+  vars:
+    all_vars: "{{ item.env | default({}) }}"
+  when: >
+    ( item.name is defined and item.name | length > 0 ) and
+    ( item.env is defined and item.env | length > 0 )
+  loop: "{{ docker_compose_stack }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: docker_compose_stack_env_result
+  notify: Restart SystemD Service for Modified Stack
+
+- name: Copy files
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/files/appstack/{{ item.name }}/"
+    dest: "{{ docker_compose_stack_path }}/{{ item.name }}/"
     decrypt: true
     owner: root
     group: root
     mode: '0644'
   when: item.name is defined and item.name | length > 0
-  loop:
-    - { name: test_stack }
-    - { name: another_stack }
+  loop: "{{ docker_compose_stack }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: docker_compose_stack_file_result
+  notify: Restart SystemD Service for Modified Stack
+
+# Create a docker network if it does not exist without community.docker
+- name: Create docker network
+  ansible.builtin.shell:
+    cmd: /usr/bin/docker network create {{ item.name }}
+  register: docker_compose_stack_network_create
+  changed_when: "'Error' not in docker_compose_stack_network_create.stderr"
+  failed_when: "'already exists' in docker_compose_stack_network_create.stderr"
+  when: docker_compose_stack_networks is defined and docker_compose_stack_networks | length > 0
+  loop: "{{ docker_compose_stack_networks }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+# - name: Create external networks using community.docker
+#   community.docker.docker_network:
+#     name: "{{ item.name }}"
+#     state: "{{ item.state | default('present') }}"
+#   when: docker_compose_stack_networks is defined and docker_compose_stack_networks | length > 0
+#   loop: "{{ docker_compose_stack_networks }}"
+
+# - name: Pull docker images  # noqa command-instead-of-shell
+#   ansible.builtin.shell:
+#     cmd: /usr/bin/docker compose pull
+#     chdir: "{{ docker_compose_stack_path }}/{{ item.name }}"
+#   register: docker_compose_stack_pull
+#   changed_when: ('Extracting' in docker_compose_stack_pull.stderr)
+#   when: item.name is defined and item.name | length > 0
+#   loop: "{{ docker_compose_stack }}"
+#   loop_control:
+#     label: "{{ item.name }}"
+
+# - name: Start stack  # noqa command-instead-of-shell
+#   ansible.builtin.shell:
+#     cmd: /usr/bin/docker compose up --detach --remove-orphans
+#     chdir: "{{ docker_compose_stack_path }}/{{ item.name }}"
+#   register: docker_compose_stack_up
+#   changed_when: ('Created' in docker_compose_stack_up.stderr or 'Recreated' in docker_compose_stack_up.stderr)
+#   when: item.name is defined and item.name | length > 0
+#   loop: "{{ docker_compose_stack }}"
+#   loop_control:
+#     label: "{{ item.name }}"
+
+- name: Create systemd service file for stack
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Docker Compose Application Service - %I
+      Documentation=https://docs.docker.com/compose/
+      Requires=docker.service network.target
+      After=network.target docker.service
+      StartLimitIntervalSec=0
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      WorkingDirectory={{ docker_compose_stack_path }}/%I
+      ExecStartPre=/usr/bin/docker compose pull
+      ExecStart=/usr/bin/docker compose up --detach --remove-orphans
+      ExecStop=/usr/bin/docker compose down
+      TimeoutStartSec=0
+      Restart=on-failure
+      RestartSec=5s
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/docker-compose@.service"
+    owner: root
+    group: root
+    mode: '0644'
+  when: docker_compose_stack | length > 0
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: docker_compose_stack | length > 0
+
+- name: Enable and start systemd service for stack
+  ansible.builtin.systemd:
+    name: "docker-compose@{{ item.name }}.service"
+    enabled: true
+    state: started
+  when: item.name is defined and item.name | length > 0
+  loop: "{{ docker_compose_stack }}"
   loop_control:
     label: "{{ item.name }}"

@@ -1,0 +1,14 @@
+---
+- name: Restart SystemD Service for Modified Stack
+  ansible.builtin.systemd:
+    name: "docker-compose@{{ item.item.name }}.service"
+    state: restarted
+  when: item.item.name is defined and item.item.name | length > 0
+  loop: >-
+    {{
+      (docker_compose_stack_env_result.results | selectattr('changed', 'equalto', true) | list)
+      +
+      (docker_compose_stack_file_result.results | selectattr('changed', 'equalto', true) | list)
+    }}
+  loop_control:
+    label: "{{ item.item.name }}"
