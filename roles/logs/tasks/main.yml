@@ -44,8 +44,8 @@
 - name: Check RSysLog configuration
   ansible.builtin.command: rsyslogd -N1
   register: logs_rsyslog_config_check
-  changed_when: logs_rsyslog_config_check.rc != 0
-  ignore_errors: true
+  changed_when: false
+  failed_when: rsyslog_config_check.rc != 0
 
 - name: Fail if RSysLog config is invalid
   ansible.builtin.fail:

@@ -1,31 +1,49 @@
 {{ ansible_managed | comment }}
 
-# An "In-Memory Queue" is created for remote logging.
-$WorkDirectory /var/spool/rsyslog  # where to place spool files
-$ActionQueueFileName queue         # unique name prefix for spool files
-$ActionQueueMaxDiskSpace 1g        # spool space limit (use as much as possible)
-$ActionQueueSaveOnShutdown on      # save messages to disk on shutdown
-$ActionQueueType LinkedList        # run asynchronously
-$ActionResumeRetryCount -1         # infinety retries if host is down
+# Rsyslog modern config (RainerScript)
+# Queue for remote logging
+module(load="imuxsock")    # systemd journal/syslog socket
+module(load="imklog")      # kernel log support
+module(load="omfwd")       # forward module
+module(load="gtls")        # TLS support
 
-# Use default format
-$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+global(
+  workDirectory="/var/spool/rsyslog"
+)
 
-# Setup SSL connection
-$DefaultNetstreamDriver gtls
-$ActionSendStreamDriverMode 1
-$ActionSendStreamDriverAuthMode x509/name
+# Action queue parameters
+action(
+  type="omfwd"
+  target="{{ remote_logs_server }}"
+  port="{{ remote_logs_port }}"
+  protocol="{{ remote_logs_protocol | default('tcp') }}"
+  action.resumeRetryCount="-1"
+  queue.type="LinkedList"
+  queue.filename="fwdRule1"
+  queue.maxDiskSpace="1g"
+  queue.saveOnShutdown="on"
+  streamDriver="gtls"
+  streamDriverMode="1"    # run in TLS-only mode
+  streamDriverAuthMode="x509/name"
 {% if remote_logs_permitted_peer is defined and remote_logs_permitted_peer | length > 0 %}
-$ActionSendStreamDriverPermittedPeer {{ remote_logs_permitted_peer }}
+  streamDriverPermittedPeers="{{ remote_logs_permitted_peer }}"
 {% endif %}
 {% if remote_logs_ca_file is defined and remote_logs_ca_file | length > 0 %}
-$DefaultNetStreamDriverCAFile {{ remote_logs_ca_file }}
+  streamDriverCAFile="{{ remote_logs_ca_file }}"
 {% endif %}
+{% if remote_logs_template is defined and remote_logs_template['name'] != '' and remote_logs_template['string'] != '' %}
+  template="{{ remote_logs_template['name'] }}"
+{% endif %}
+)
 
 {% if remote_logs_template is defined and remote_logs_template['name'] != '' and remote_logs_template['string'] != '' %}
-# Use a template
-$template {{ remote_logs_template['name'] }},"{{ remote_logs_template['string'] }}"
+# Define custom template
+template(
+  name="{{ remote_logs_template['name'] }}"
+  type="string"
+  string="{{ remote_logs_template['string'] }}"
+)
 {% endif %}
 
-# Sending all logs to remote
-*.* {% if remote_logs_protocol == 'tcp' %}@@{% elif remote_logs_protocol == 'udp' %}@{% else %}@@{% endif %}{{ remote_logs_server }}:{{ remote_logs_port }}{% if remote_logs_template is defined and remote_logs_template['name'] != '' %};{{ remote_logs_template['name'] }}{% endif %}
+# Forward all logs
+*.* action(type="omfwd")
