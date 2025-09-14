@@ -7,3 +7,4 @@
   ansible.builtin.service:
     name: rsyslog
     state: restarted
+  when: logs_rsyslog_config_check.rc == 0

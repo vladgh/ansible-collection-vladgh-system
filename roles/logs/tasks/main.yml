@@ -40,3 +40,14 @@
     mode: '0644'
   notify:
     - Restart RSysLog
+
+- name: Check RSysLog configuration
+  ansible.builtin.command: rsyslogd -N1
+  register: logs_rsyslog_config_check
+  changed_when: logs_rsyslog_config_check.rc != 0
+  ignore_errors: true
+
+- name: Fail if RSysLog config is invalid
+  ansible.builtin.fail:
+    msg: "RSysLog configuration is invalid: {{ logs_rsyslog_config_check.stderr }}"
+  when: logs_rsyslog_config_check.rc != 0
