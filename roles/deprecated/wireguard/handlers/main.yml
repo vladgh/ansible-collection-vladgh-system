@@ -1,0 +1,8 @@
+---
+- name: Restart WireGuard
+  ansible.builtin.service:
+    name: "wg-quick@{{ item }}"
+    enabled: true
+    state: restarted
+  # no_log: true
+  loop: "{{ wireguard_config | flatten(levels=1) }}"

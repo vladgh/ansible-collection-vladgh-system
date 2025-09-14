@@ -1,0 +1,9 @@
+---
+remote_logs_server: ''
+remote_logs_port: 10514
+remote_logs_protocol: tcp
+remote_logs_permitted_peer: "{{ remote_logs_server }}"
+remote_logs_ca_file: "{{ ca_bundle_cert_path }}"
+remote_logs_template:
+  name: ''
+  string: ''

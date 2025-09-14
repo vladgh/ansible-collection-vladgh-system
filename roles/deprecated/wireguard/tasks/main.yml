@@ -1,0 +1,42 @@
+---
+- name: Ensure WireGuard Packages
+  ansible.builtin.package:
+    name:
+      - wireguard
+      - wireguard-tools
+      - qrencode
+      - iptables
+    state: present
+
+- name: Ensure Wireguard Directory
+  ansible.builtin.file:
+    path: /etc/wireguard
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: WireGuard Configuration
+  when: wireguard_config is defined and wireguard_config | length > 0
+  tags:
+    # for the first run the default ipv4 interface is eth0 but for subsequent runs is wgX
+    - molecule-idempotence-notest
+  block:
+    - name: Generate WireGuard Configuration
+      ansible.builtin.template:
+        src: wg.conf.j2
+        dest: "/etc/wireguard/{{ item.key }}.conf"
+        owner: root
+        group: root
+        mode: '0600'
+      # no_log: true
+      loop: "{{ wireguard_config | dict2items }}"
+      notify: Restart WireGuard
+
+    - name: Start and Enable WireGuard Service
+      ansible.builtin.service:
+        name: "wg-quick@{{ item }}"
+        state: started
+        enabled: true
+      # no_log: true
+      loop: "{{ wireguard_config | flatten(levels=1) }}"

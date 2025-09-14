@@ -1,0 +1,11 @@
+---
+sanoid_templates:
+  default:
+    frequently: 4
+    hourly: 24
+    daily: 7
+    monthly: 12
+    yearly: 1
+    autosnap: true
+    autoprune: true
+sanoid_datasets: {}

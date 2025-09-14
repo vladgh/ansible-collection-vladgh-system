@@ -1,0 +1,128 @@
+---
+- name: Install Sanoid dependencies
+  ansible.builtin.apt:
+    name:
+      - libconfig-inifiles-perl
+      - libcapture-tiny-perl
+      - mbuffer
+      - lzop
+      - pv
+    state: present
+
+- name: Create Sanoid Directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    recurse: true
+  loop:
+    - /usr/local/bin
+    - /etc/sanoid
+
+- name: Install binaries
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/jimsalterjrs/sanoid/master/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - sanoid
+    - syncoid
+    - findoid
+
+- name: Install Sanoid Default Configuration
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/jimsalterjrs/sanoid/master/sanoid.defaults.conf
+    dest: /etc/sanoid/sanoid.defaults.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Generate Sanoid Configuration
+  ansible.builtin.copy:
+    dest: /etc/sanoid/sanoid.conf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      # Datasets
+      {% for dataset in sanoid_datasets %}
+      {% set _dataset = sanoid_datasets[dataset] %}
+      [{{ dataset }}]
+          {% for key, value in _dataset.items() %}
+          {{ key }} = {{ value }}
+          {% endfor %}
+      {% endfor %}
+
+      # Templates
+      {% for template in sanoid_templates %}
+      {% set _template = sanoid_templates[template] %}
+      [template_{{ template }}]
+          {% for key, value in _template.items() %}
+          {{ key }} = {{ value }}
+          {% endfor %}
+      {% endfor %}
+
+- name: Generate Sanoid Service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/sanoid.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Snapshot ZFS Pool
+      Requires=zfs.target
+      After=zfs.target
+      Wants=sanoid-prune.service
+      Before=sanoid-prune.service
+      ConditionFileNotEmpty=/etc/sanoid/sanoid.conf
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/sanoid --take-snapshots --verbose
+
+- name: Generate Sanoid Prune Service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/sanoid-prune.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Cleanup ZFS Pool
+      Requires=zfs.target
+      After=zfs.target sanoid.service
+      ConditionFileNotEmpty=/etc/sanoid/sanoid.conf
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/sanoid --prune-snapshots --verbose
+
+      [Install]
+      WantedBy=sanoid.service
+
+- name: Generate Sanoid Timer
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/sanoid.timer
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Run Sanoid Every 15 Minutes
+
+      [Timer]
+      OnCalendar=*:0/15
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+
+- name: Start and enable Sanoid timer
+  ansible.builtin.service:
+    name: sanoid.timer
+    state: started
+    enabled: true

@@ -1,0 +1,10 @@
+---
+proxmox_zfs_tune: false
+proxmox_zfs_arc_min: 4294967296
+proxmox_zfs_arc_max: 8589934592
+proxmox_enable_chrony: false
+proxmox_cluster_disabled: false
+proxmox_gpu_passthrough_enabled: false
+proxmox_lvm_thin_pool_autoextend: false
+proxmox_lvm_thin_pool_autoextend_threshold: 80
+proxmox_lvm_thin_pool_autoextend_percent: 20
