@@ -1,9 +1,7 @@
 ---
-
-# Debug {{ playbook_dir }}
 - name: Display playbook directory
   ansible.builtin.debug:
-    msg: "{{ playbook_dir }}"
+    msg: "Play book dir is {{ playbook_dir }}"
 
 - name: Test file
   ansible.builtin.copy:
