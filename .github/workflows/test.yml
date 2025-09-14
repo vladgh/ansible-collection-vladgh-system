@@ -38,8 +38,8 @@ jobs:
         os:
           - ubuntu2404
           - ubuntu2204
+          - debian13
           - debian12
-          - debian11
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
