@@ -7,8 +7,8 @@
 
 - name: Test file
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/appstack/{{ item.name }}/"
-    dest: "/tmp/{{ item.name }}/"
+    src: "{{ playbook_dir }}/files/appstack/{{ item.name }}"
+    dest: "/tmp/{{ item.name }}"
     decrypt: true
     owner: root
     group: root
