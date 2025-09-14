@@ -47,13 +47,12 @@
   register: docker_compose_stack_file_result
   notify: Restart SystemD Service for Modified Stack
 
-# Create a docker network if it does not exist without community.docker
-- name: Create docker network
+- name: Create docker networks
   ansible.builtin.shell:
     cmd: /usr/bin/docker network create {{ item.name }}
   register: docker_compose_stack_network_create
   changed_when: "'Error' not in docker_compose_stack_network_create.stderr"
-  failed_when: "'already exists' in docker_compose_stack_network_create.stderr"
+  failed_when: "'already exists' not in docker_compose_stack_network_create.stderr and docker_compose_stack_network_create.rc != 0"
   when: docker_compose_stack_networks is defined and docker_compose_stack_networks | length > 0
   loop: "{{ docker_compose_stack_networks }}"
   loop_control:
