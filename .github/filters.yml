@@ -8,9 +8,6 @@ common:
 dns:
   - roles/dns/**/!(**.md)
   - molecule/dns/**
-# logs:
-#   - roles/logs/**/!(**.md)
-#   - molecule/logs/**
 msmtp:
   - roles/msmtp/**/!(**.md)
   - molecule/msmtp/**
@@ -20,15 +17,6 @@ nfs:
 nut:
   - roles/nut/**/!(**.md)
   - molecule/nut/**
-# proxmox:
-#   - roles/proxmox/**/!(**.md)
-#   - molecule/proxmox/**
 qemu_guest_agent:
   - roles/qemu_guest_agent/**/!(**.md)
   - molecule/qemu_guest_agent/**
-sanoid:
-  - roles/sanoid/**/!(**.md)
-  - molecule/sanoid/**
-# wireguard:
-#   - roles/wireguard/**/!(**.md)
-#   - molecule/wireguard/**
