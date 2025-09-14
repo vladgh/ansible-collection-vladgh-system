@@ -1,37 +1,34 @@
 {{ ansible_managed | comment }}
 
-# Rsyslog modern config (RainerScript)
-# Queue for remote logging
-module(load="imuxsock")    # systemd journal/syslog socket
-module(load="imklog")      # kernel log support
-module(load="omfwd")       # forward module
-module(load="gtls")        # TLS support
-
 global(
   workDirectory="/var/spool/rsyslog"
 )
 
-# Action queue parameters
+# Forward all logs to remote
 action(
   type="omfwd"
   target="{{ remote_logs_server }}"
   port="{{ remote_logs_port }}"
   protocol="{{ remote_logs_protocol | default('tcp') }}"
   action.resumeRetryCount="-1"
+
+  # Queue settings
   queue.type="LinkedList"
   queue.filename="fwdRule1"
   queue.maxDiskSpace="1g"
   queue.saveOnShutdown="on"
+
+  # TLS settings
   streamDriver="gtls"
-  streamDriverMode="1"    # run in TLS-only mode
+  streamDriverMode="1"              # TLS-only
   streamDriverAuthMode="x509/name"
 {% if remote_logs_permitted_peer is defined and remote_logs_permitted_peer | length > 0 %}
   streamDriverPermittedPeers="{{ remote_logs_permitted_peer }}"
 {% endif %}
 {% if remote_logs_ca_file is defined and remote_logs_ca_file | length > 0 %}
-  streamDriverCAFile="{{ remote_logs_ca_file }}"
+  streamDriver.CAFile="{{ remote_logs_ca_file }}"
 {% endif %}
-{% if remote_logs_template is defined and remote_logs_template['name'] != '' and remote_logs_template['string'] != '' %}
+{% if remote_logs_template is defined and remote_logs_template['name'] != '' %}
   template="{{ remote_logs_template['name'] }}"
 {% endif %}
 )
@@ -44,6 +41,3 @@ template(
   string="{{ remote_logs_template['string'] }}"
 )
 {% endif %}
-
-# Forward all logs
-*.* action(type="omfwd")
