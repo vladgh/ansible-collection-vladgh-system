@@ -7,4 +7,8 @@
   ansible.builtin.service:
     name: rsyslog
     state: restarted
+  register: logs_rsyslog_restart
+  until: logs_rsyslog_restart is succeeded
+  retries: 3
+  delay: 10
   when: logs_rsyslog_config_check.rc == 0
