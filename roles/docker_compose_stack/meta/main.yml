@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: docker_compose_stack
+  author: vladgh
+  description: Vlad's Docker Compose Stack Role
+  license: Apache v2
+  min_ansible_version: '2.18'
+  galaxy_tags: []
+  platforms: []
+dependencies: []
