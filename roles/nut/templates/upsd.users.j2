@@ -1,5 +1,3 @@
-{{ ansible_managed | comment }}
-
 {% for user in nut_upsd_users %}
 [{{ user }}]
 {% for option in nut_upsd_users[user] %}
