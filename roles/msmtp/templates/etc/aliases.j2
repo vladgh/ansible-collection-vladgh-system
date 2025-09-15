@@ -1,5 +1,3 @@
-{{ ansible_managed | comment }}
-
 {% if msmtp_alias_default is defined %}
 root: {{ msmtp_alias_root if msmtp_alias_root is defined else msmtp_alias_default | length > 0 }}
 cron: {{ msmtp_alias_cron if msmtp_alias_root is defined else msmtp_alias_default | length > 0 }}
