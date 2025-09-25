@@ -1,4 +1,5 @@
 {% for user, options in nut_upsd_users.items() %}
+{% for user, options in nut_upsd_users.items() %}
 [{{ user }}]
 {% for option, value in options.items() %}
 {% if option == 'upsmon' %}
@@ -11,5 +12,6 @@
 {{ option }}{% if value != '' %} = {{ value }}{% endif %}
 {% endif %}
 {% endfor %}
+
 
 {% endfor %}
