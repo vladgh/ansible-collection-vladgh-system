@@ -119,12 +119,12 @@
     daemon_reload: true
   when: docker_compose_stack | length > 0
 
-- name: Enable and start systemd service for stack
+- name: Enable systemd service for stack
   ansible.builtin.systemd:
     name: "docker-compose@{{ item.name }}.service"
     enabled: true
-    state: started
   when: item.name is defined and item.name | length > 0
   loop: "{{ docker_compose_stack }}"
   loop_control:
     label: "{{ item.name }}"
+  notify: Restart SystemD Service for Modified Stack
