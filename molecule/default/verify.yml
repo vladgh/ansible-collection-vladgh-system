@@ -5,5 +5,5 @@
 
   tasks:
     - name: Don't do much here
-      debug:
+      ansible.builtin.debug:
         msg: Not implemented at this time
