@@ -121,6 +121,8 @@
     group: root
     mode: '0755'
   loop: "{{ docker_compose_stack }}"
+  loop_control:
+    label: "{{ item.name }}"
   when: item.require_mount_units is defined and item.require_mount_units | length > 0
 
 - name: Create systemd mount dependency override for stacks
@@ -137,6 +139,8 @@
     group: root
     mode: '0644'
   loop: "{{ docker_compose_stack }}"
+  loop_control:
+    label: "{{ item.name }}"
   when: item.require_mount_units is defined and item.require_mount_units | length > 0
   register: docker_compose_stack_mount_result
   notify: Restart SystemD Service for Modified Stack
