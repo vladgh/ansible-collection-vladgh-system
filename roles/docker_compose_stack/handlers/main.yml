@@ -10,6 +10,8 @@
         (docker_compose_stack_env_result.results | default([]) | selectattr('changed', 'equalto', true) | map(attribute='item.name') | list)
         +
         (docker_compose_stack_file_result.results | default([]) | selectattr('changed', 'equalto', true) | map(attribute='item.name') | list)
+        +
+        (docker_compose_stack_mount_result.results | default([]) | selectattr('changed', 'equalto', true) | map(attribute='item.name') | list)
       ) | unique
     }}
   loop_control:

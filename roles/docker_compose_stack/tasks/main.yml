@@ -138,6 +138,7 @@
     mode: '0644'
   loop: "{{ docker_compose_stack }}"
   when: item.require_mount_units is defined and item.require_mount_units | length > 0
+  register: docker_compose_stack_mount_result
   notify: Restart SystemD Service for Modified Stack
 
 - name: Reload systemd
