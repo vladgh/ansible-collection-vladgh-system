@@ -93,8 +93,8 @@
       [Unit]
       Description=Docker Compose Application Service - %I
       Documentation=https://docs.docker.com/compose/
-      Requires=docker.service network.target
-      After=network.target docker.service
+      Requires=docker.service network-online.target
+      After=network-online.target docker.service
       StartLimitIntervalSec=0
       [Service]
       Type=oneshot
@@ -112,6 +112,23 @@
     group: root
     mode: '0644'
   when: docker_compose_stack | length > 0
+
+- name: Create systemd mount dependency override for stacks
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/docker-compose@{{ item.name }}.service.d/override.conf"
+    content: |
+      [Unit]
+      {% for unit in item.require_mount_units | default([]) %}
+      Requires={{ unit }}
+      After={{ unit }}
+      BindsTo={{ unit }}
+      {% endfor %}
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ docker_compose_stack }}"
+  when: item.require_mount_units is defined and item.require_mount_units | length > 0
+  notify: Restart SystemD Service for Modified Stack
 
 - name: Reload systemd
   ansible.builtin.systemd:
