@@ -95,6 +95,7 @@
       Documentation=https://docs.docker.com/compose/
       Requires=docker.service network-online.target
       After=network-online.target docker.service
+      PartOf=docker-compose.target
       StartLimitIntervalSec=0
       [Service]
       Type=oneshot
@@ -108,6 +109,26 @@
       [Install]
       WantedBy=multi-user.target
     dest: "/etc/systemd/system/docker-compose@.service"
+    owner: root
+    group: root
+    mode: '0644'
+  when: docker_compose_stack is defined and docker_compose_stack | length > 0
+
+- name: Create systemd target file for all stacks
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Docker Compose Stacks Target
+      Documentation=https://docs.docker.com/compose/
+      {% for stack in docker_compose_stack %}
+      {% if stack.name is defined and stack.name | length > 0 %}
+      Wants=docker-compose@{{ stack.name }}.service
+      After=docker-compose@{{ stack.name }}.service
+      {% endif %}
+      {% endfor %}
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/docker-compose.target"
     owner: root
     group: root
     mode: '0644'
