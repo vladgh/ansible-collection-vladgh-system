@@ -87,20 +87,6 @@
 #   loop_control:
 #     label: "{{ item.name }}"
 
-- name: Collect valid stack names
-  ansible.builtin.set_fact:
-    docker_compose_stack_valid_names: >-
-      {{
-        docker_compose_stack
-        | default([])
-        | selectattr('name', 'defined')
-        | map(attribute='name')
-        | map('trim')
-        | reject('equalto', '')
-        | list
-      }}
-  changed_when: false
-
 - name: Create systemd service file for stack
   ansible.builtin.copy:
     content: |
@@ -109,9 +95,7 @@
       Documentation=https://docs.docker.com/compose/
       Requires=docker.service network-online.target
       After=network-online.target docker.service
-      {% if docker_compose_stack_valid_names | length > 0 %}
       PartOf={{ docker_compose_stack_systemd_target }}
-      {% endif %}
       StartLimitIntervalSec=0
       [Service]
       Type=oneshot
@@ -136,9 +120,11 @@
       [Unit]
       Description=Docker Compose Stacks Target
       Documentation=https://docs.docker.com/compose/
-      {% for stack_name in docker_compose_stack_valid_names %}
-      Wants=docker-compose@{{ stack_name }}.service
-      After=docker-compose@{{ stack_name }}.service
+      {% for stack in docker_compose_stack %}
+      {% if stack.name is defined and stack.name | length > 0 %}
+      Wants=docker-compose@{{ stack.name }}.service
+      After=docker-compose@{{ stack.name }}.service
+      {% endif %}
       {% endfor %}
       [Install]
       WantedBy=multi-user.target
@@ -146,7 +132,7 @@
     owner: root
     group: root
     mode: '0644'
-  when: docker_compose_stack_valid_names | length > 0
+  when: docker_compose_stack is defined and docker_compose_stack | length > 0
 
 - name: Ensure systemd drop-in directory exists for compose stacks
   ansible.builtin.file:
