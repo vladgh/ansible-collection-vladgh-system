@@ -12,9 +12,8 @@ Available variables are listed below, along with default values (see defaults/ma
 
 - `docker_compose_stack`: A list of stacks and their environment variables. It looks for a file with the same name in the `files/appstack` directory, relative to the directory where the playbook file is located
 - `docker_compose_stack_networks`: A list of networks that need to be created before the stacks
-- `docker_compose_stack_systemd_target`: Systemd target unit used to control all stack services together (default: `docker-compose.target`)
 
-After applying the role, use `systemctl start|stop|restart docker-compose.target` (or the custom target name) to control all configured stacks at once.
+After applying the role, use `systemctl start|stop|restart docker-compose.target` to control all configured stacks at once.
 
 ## Dependencies
 

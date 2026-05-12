@@ -95,7 +95,7 @@
       Documentation=https://docs.docker.com/compose/
       Requires=docker.service network-online.target
       After=network-online.target docker.service
-      PartOf={{ docker_compose_stack_systemd_target }}
+      PartOf=docker-compose.target
       StartLimitIntervalSec=0
       [Service]
       Type=oneshot
@@ -128,7 +128,7 @@
       {% endfor %}
       [Install]
       WantedBy=multi-user.target
-    dest: "/etc/systemd/system/{{ docker_compose_stack_systemd_target }}"
+    dest: "/etc/systemd/system/docker-compose.target"
     owner: root
     group: root
     mode: '0644'
