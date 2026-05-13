@@ -4,7 +4,6 @@
     daemon_reload: true
 
 - name: Restart SystemD Service for Modified Stack
-  listen: Restart SystemD Service for Modified Stack
   ansible.builtin.systemd:
     name: "docker-compose@{{ stack_name }}.service"
     state: restarted
@@ -24,13 +23,3 @@
   loop_control:
     loop_var: stack_name
     label: "{{ stack_name }}"
-
-- name: Show failed compose restarts
-  ansible.builtin.debug:
-    msg: >-
-      Stack {{ item.item }} failed to restart:
-      {{ item.msg | default(item.stderr, true) }}
-  when: item.failed
-  loop: "{{ docker_compose_restart_result.results | default([]) }}"
-  loop_control:
-    label: "{{ item.item }}"

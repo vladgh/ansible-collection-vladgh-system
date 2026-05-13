@@ -48,8 +48,7 @@
   notify: Restart SystemD Service for Modified Stack
 
 - name: Create docker networks
-  ansible.builtin.shell:
-    cmd: /usr/bin/docker network create {{ item.name }}
+  ansible.builtin.command: /usr/bin/docker network create {{ item.name }}
   register: docker_compose_stack_network_create
   changed_when: "'Error' not in docker_compose_stack_network_create.stderr"
   failed_when: "'already exists' not in docker_compose_stack_network_create.stderr and docker_compose_stack_network_create.rc != 0"
@@ -144,7 +143,8 @@
     - Reload SystemD
     - Restart SystemD Service for Modified Stack
 
-- meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Enable systemd service for stack
   ansible.builtin.systemd:
@@ -154,3 +154,11 @@
   loop: "{{ docker_compose_stack }}"
   loop_control:
     label: "{{ item.name }}"
+
+- name: Report failed compose restarts
+  ansible.builtin.debug:
+    msg: >-
+      Stack {{ item.stack_name | default(item.item) }} failed:
+      {{ item.msg | default(item.stderr, true) }}
+  loop: "{{ docker_compose_restart_result.results | default([]) }}"
+  when: docker_compose_restart_result is defined
