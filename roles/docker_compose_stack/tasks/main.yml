@@ -160,5 +160,12 @@
     msg: >-
       Stack {{ item.stack_name | default(item.item) }} failed:
       {{ item.msg | default(item.stderr, true) }}
-  loop: "{{ docker_compose_restart_result.results | default([]) }}"
+  loop: >-
+    {{
+      docker_compose_restart_result.results
+      | default([])
+      | selectattr('failed', 'defined')
+      | selectattr('failed', 'equalto', true)
+      | list
+    }}
   when: docker_compose_restart_result is defined
