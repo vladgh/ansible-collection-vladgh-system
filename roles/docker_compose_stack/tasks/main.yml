@@ -155,6 +155,30 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: Record failed compose restarts
+  ansible.builtin.set_fact:
+    vladgh_system_runtime_failures: >-
+      {{
+        (vladgh_system_runtime_failures | default([]))
+        +
+        [
+          {
+            'host': inventory_hostname,
+            'role': 'docker_compose_stack',
+            'service': item.stack_name | default(item.item),
+            'message': item.msg | default(item.stderr, true)
+          }
+        ]
+      }}
+  loop: >-
+    {{
+      docker_compose_restart_result.results
+      | default([])
+      | selectattr('failed', 'defined')
+      | selectattr('failed', 'equalto', true)
+      | list
+    }}
+
 - name: Report failed compose restarts
   ansible.builtin.debug:
     msg: >-
@@ -168,4 +192,3 @@
       | selectattr('failed', 'equalto', true)
       | list
     }}
-  when: docker_compose_restart_result is defined
