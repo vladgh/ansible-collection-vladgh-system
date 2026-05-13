@@ -1,4 +1,8 @@
 ---
+- name: Reload SystemD
+  ansible.builtin.systemd:
+    daemon_reload: true
+
 - name: Restart SystemD Service for Modified Stack
   listen: Restart SystemD Service for Modified Stack
   ansible.builtin.systemd:
@@ -6,6 +10,7 @@
     state: restarted
   register: docker_compose_restart_result
   failed_when: false
+  # Below we use a custom loop to only restart services for stacks that had changes in their configuration or dependencies
   loop: >-
     {{
       (
