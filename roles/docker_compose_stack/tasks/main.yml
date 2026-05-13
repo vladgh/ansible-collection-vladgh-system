@@ -58,35 +58,6 @@
   loop_control:
     label: "{{ item.name }}"
 
-# - name: Create external networks using community.docker
-#   community.docker.docker_network:
-#     name: "{{ item.name }}"
-#     state: "{{ item.state | default('present') }}"
-#   when: docker_compose_stack_networks is defined and docker_compose_stack_networks | length > 0
-#   loop: "{{ docker_compose_stack_networks }}"
-
-# - name: Pull docker images  # noqa command-instead-of-shell
-#   ansible.builtin.shell:
-#     cmd: /usr/bin/docker compose pull
-#     chdir: "{{ docker_compose_stack_path }}/{{ item.name }}"
-#   register: docker_compose_stack_pull
-#   changed_when: ('Extracting' in docker_compose_stack_pull.stderr)
-#   when: item.name is defined and item.name | length > 0
-#   loop: "{{ docker_compose_stack }}"
-#   loop_control:
-#     label: "{{ item.name }}"
-
-# - name: Start stack  # noqa command-instead-of-shell
-#   ansible.builtin.shell:
-#     cmd: /usr/bin/docker compose up --detach --remove-orphans
-#     chdir: "{{ docker_compose_stack_path }}/{{ item.name }}"
-#   register: docker_compose_stack_up
-#   changed_when: ('Created' in docker_compose_stack_up.stderr or 'Recreated' in docker_compose_stack_up.stderr)
-#   when: item.name is defined and item.name | length > 0
-#   loop: "{{ docker_compose_stack }}"
-#   loop_control:
-#     label: "{{ item.name }}"
-
 - name: Create systemd service file for stack
   ansible.builtin.copy:
     content: |
@@ -113,6 +84,9 @@
     group: root
     mode: '0644'
   when: docker_compose_stack is defined and docker_compose_stack | length > 0
+  notify:
+    - Reload SystemD
+    - Restart SystemD Service for Modified Stack
 
 - name: Create systemd target file for all stacks
   ansible.builtin.copy:
@@ -133,6 +107,8 @@
     group: root
     mode: '0644'
   when: docker_compose_stack is defined and docker_compose_stack | length > 0
+  notify:
+    - Reload SystemD
 
 - name: Ensure systemd drop-in directory exists for compose stacks
   ansible.builtin.file:
@@ -164,12 +140,11 @@
   loop_control:
     label: "{{ item.name }}"
   register: docker_compose_stack_mount_result
-  notify: Restart SystemD Service for Modified Stack
+  notify:
+    - Reload SystemD
+    - Restart SystemD Service for Modified Stack
 
-- name: Reload systemd
-  ansible.builtin.systemd:
-    daemon_reload: true
-  when: docker_compose_stack is defined and docker_compose_stack | length > 0
+- meta: flush_handlers
 
 - name: Enable systemd service for stack
   ansible.builtin.systemd:
@@ -179,4 +154,3 @@
   loop: "{{ docker_compose_stack }}"
   loop_control:
     label: "{{ item.name }}"
-  notify: Restart SystemD Service for Modified Stack
