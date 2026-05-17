@@ -34,7 +34,7 @@
 
 - name: Copy files
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/files/appstack/{{ item.name }}/"
+    src: "{{ playbook_dir }}/files/appstack/{{ inventory_hostname }}/{{ item.name }}/"
     dest: "{{ docker_compose_stack_path }}/{{ item.name }}/"
     decrypt: true
     owner: root
@@ -157,14 +157,13 @@
 
 - name: Record failed compose restarts
   ansible.builtin.set_fact:
-    vladgh_system_runtime_failures: >-
+    docker_compose_stack_runtime_failures: >-
       {{
-        (vladgh_system_runtime_failures | default([]))
+        (docker_compose_stack_runtime_failures | default([]))
         +
         [
           {
             'host': inventory_hostname,
-            'role': 'docker_compose_stack',
             'service': item.stack_name | default(item.item),
             'message': item.msg | default(item.stderr, true)
           }
