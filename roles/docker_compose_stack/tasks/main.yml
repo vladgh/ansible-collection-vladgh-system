@@ -34,8 +34,8 @@
 
 - name: Copy files
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/files/appstack/{{ inventory_hostname }}/{{ item.name }}/"
-    dest: "{{ docker_compose_stack_path }}/{{ item.name }}/"
+    src: "{{ playbook_dir }}/files/appstack/{{ inventory_hostname }}/{{ item.name }}.yml"
+    dest: "{{ docker_compose_stack_path }}/{{ item.name }}/compose.yml"
     decrypt: true
     owner: root
     group: root

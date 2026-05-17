@@ -12,7 +12,7 @@ or manage them individually.
 - Docker and Docker Compose must already be installed on the target host
   (e.g. via `geerlingguy.docker`).
 - The Compose file for each stack must exist at
-  `{{ playbook_dir }}/files/appstack/<inventory_hostname>/<stack_name>/` relative to your
+  `{{ playbook_dir }}/files/appstack/<inventory_hostname>/<stack_name>.yml` relative to your
   playbook. This directory is copied verbatim to the host.
 
 ## Role Variables
@@ -30,7 +30,7 @@ Each entry in `docker_compose_stack` supports:
 
 | Key                   | Required | Description                                                                                              |
 | :-------------------- | :------- | :------------------------------------------------------------------------------------------------------- |
-| `name`                | Yes      | Stack name. Must match the subdirectory under `files/appstack/<inventory_hostname>`.                                         |
+| `name`                | Yes      | Stack name. Must match the .yml file under `files/appstack/<inventory_hostname>`.                                         |
 | `env`                 | No       | Dict of environment variables written to `.env` in the stack directory.                                  |
 | `require_mount_units` | No       | List of SystemD mount units this stack depends on (e.g. `mnt-media.mount`). Adds `BindsTo=` overrides.  |
 
