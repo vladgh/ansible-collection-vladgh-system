@@ -10,7 +10,7 @@ Vlad's Ansible Role for creating Docker Compose stacks.
 
 Available variables are listed below, along with default values (see defaults/main.yml)
 
-- `docker_compose_stack`: A list of stacks and their environment variables. It looks for a file with the same name in the `files/appstack` directory, relative to the directory where the playbook file is located
+- `docker_compose_stack`: A list of stacks and their environment variables. It looks for a file with the same name in the `files/appstack/{{ inventory_hostname }}/` directory, relative to the directory where the playbook file is located
 - `docker_compose_stack_networks`: A list of networks that need to be created before the stacks
 
 After applying the role, use `systemctl start|stop|restart docker-compose.target` to control all configured stacks at once.
