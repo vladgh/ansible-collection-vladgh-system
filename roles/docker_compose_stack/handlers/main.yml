@@ -7,7 +7,7 @@
   ansible.builtin.systemd:
     name: "docker-compose@{{ stack_name }}.service"
     state: restarted
-  register: docker_compose_restart_result
+  register: docker_compose_stack_restart_result
   failed_when: false
   # Below we use a custom loop to only restart services for stacks that had changes in their configuration or dependencies
   loop: >-
