@@ -29,17 +29,14 @@
         additional_packages:
           - rolldice
         apt_extra_repositories:
-          - name: docker
-            key_url: https://download.docker.com/linux/debian/gpg
-            key_filename: docker.asc
-            uris:
-              - https://download.docker.com/linux/debian
-            suites:
-              - "{{ ansible_distribution_release }}"
-            components:
-              - stable
-            architectures:
-              - amd64
+          name: debian
+          types: deb
+          uris: http://deb.debian.org/debian
+          suites: stretch
+          components:
+            - main
+            - contrib
+            - non-free
         pip_install_packages: [pip-install-test]
         pip_user_install_packages:
           - user: test
