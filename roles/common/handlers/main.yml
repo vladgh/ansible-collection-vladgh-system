@@ -1,4 +1,8 @@
 ---
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+
 - name: Restart SSH Daemon
   ansible.builtin.service:
     name: sshd
