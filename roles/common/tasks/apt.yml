@@ -13,12 +13,15 @@
 
 - name: Add extra APT repositories
   when:
+    - ansible_os_family == 'Debian'
     - apt_extra_repositories is defined
     - apt_extra_repositories | length > 0
   block:
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
-        name: gnupg2
+        pkg:
+          - gnupg2
+          - python3-debian
         state: present
         update_cache: true
 
