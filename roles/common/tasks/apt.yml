@@ -1,41 +1,59 @@
 ---
 - name: Disable APT repositories
-  when: apt_disable_repositories is defined and apt_disable_repositories | length > 0
+  when:
+    - apt_disable_repositories is defined
+    - apt_disable_repositories | length > 0
   block:
     - name: Disable APT repositories
-      ansible.builtin.apt_repository:
-        repo: "{{ item.repo }}"
-        codename: "{{ ansible_facts['distribution_release'] | default(omit) }}"
-        filename: "{{ item.repo_filename | default(omit) }}"
-        update_cache: "{{ item.update_cache | default(false) }}"
-        state: "{{ item.state | default('absent') }}"
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        state: absent
       loop: "{{ apt_disable_repositories }}"
-    - name: Update APT cache
-      ansible.builtin.apt:
-        update_cache: true
+      notify: Update APT cache
 
 - name: Add extra APT repositories
-  when: apt_extra_repositories is defined and apt_extra_repositories | length > 0
+  when:
+    - apt_extra_repositories is defined
+    - apt_extra_repositories | length > 0
   block:
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
         name: gnupg2
+        state: present
         update_cache: true
 
-    - name: Add an Apt signing key to a specific keyring file
+    - name: Create APT keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Download repository signing keys
       ansible.builtin.get_url:
         url: "{{ item.key_url }}"
-        dest: "/etc/apt/trusted.gpg.d/{{ item.key_filename | default(item.name) }}"
+        dest: "/etc/apt/keyrings/{{ item.key_filename | default(item.name ~ '.asc') }}"
         mode: "{{ item.key_filemode | default('0644') }}"
       loop: "{{ apt_extra_repositories }}"
-      when: item.key_url is defined and item.key_url | length > 0
+      when:
+        - item.key_url is defined
+        - item.key_url | length > 0
 
     - name: Add extra APT repositories
-      ansible.builtin.apt_repository:
-        repo: "{{ item.repo }}"
-        codename: "{{ ansible_facts['distribution_release'] | default(omit) }}"
-        filename: "{{ item.repo_filename | default(omit) }}"
-        mode: "{{ item.repo_filemode | default('0644') }}"
-        update_cache: "{{ item.update_cache | default(true) }}"
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        types: "{{ item.types | default(['deb']) }}"
+        uris: "{{ item.uris }}"
+        suites: "{{ item.suites }}"
+        components: "{{ item.components }}"
+        architectures: "{{ item.architectures | default(omit) }}"
+        signed_by: >-
+          {{
+            item.signed_by
+            | default('/etc/apt/keyrings/' ~ (item.key_filename | default(item.name ~ '.asc')))
+          }}
         state: "{{ item.state | default('present') }}"
+        enabled: "{{ item.enabled | default(true) }}"
       loop: "{{ apt_extra_repositories }}"
+      notify: Update APT cache

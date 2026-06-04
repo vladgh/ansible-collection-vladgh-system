@@ -58,21 +58,21 @@ local_groups:
 
 ### Extra APT repositories on Debian systems
 
-Check <https://docs.ansible.com/ansible/latest/modules/apt_repository_module.html> for a complete list of parameters
+Check <https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/deb822_repository_module.html> for a complete list of parameters
 
 ```yaml
-# Add Docker signing key
-apt_extra_keys:
-  - name: docker key
-    url: "https://download.docker.com/linux/{{ ansible_facts['distribution']|lower }}/gpg"
-    repo_filename: docker
-# Disable PBS Enterprise Repository
-apt_disable_repositories:
-  - name: PBS Enterprise
-    repo: "deb https://enterprise.proxmox.com/debian/pbs {{ ansible_facts['distribution_release'] }} pbs-enterprise"
-    repo_filename: pbs-enterprise
-    state: absent
-# Enable PBS Community Repository
+apt_extra_repositories:
+  - name: docker
+    key_url: https://download.docker.com/linux/debian/gpg
+    key_filename: docker.asc
+    uris:
+      - https://download.docker.com/linux/debian
+    suites:
+      - "{{ ansible_distribution_release }}"
+    components:
+      - stable
+    architectures:
+      - amd64
 apt_extra_repositories:
   - name: PBS Community
     repo: "deb http://download.proxmox.com/debian/pbs {{ ansible_facts['distribution_release'] }} pbs-no-subscription"

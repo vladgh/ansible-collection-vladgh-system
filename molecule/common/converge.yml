@@ -29,14 +29,17 @@
         additional_packages:
           - rolldice
         apt_extra_repositories:
-          - name: Add test Docker repository
-            repo: >-
-              deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc]
-              https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}
-              {{ ansible_facts['distribution_release'] }} stable
-            repo_filename: test_repo
-            key_url: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg"
+          - name: docker
+            key_url: https://download.docker.com/linux/debian/gpg
             key_filename: docker.asc
+            uris:
+              - https://download.docker.com/linux/debian
+            suites:
+              - "{{ ansible_distribution_release }}"
+            components:
+              - stable
+            architectures:
+              - amd64
         pip_install_packages: [pip-install-test]
         pip_user_install_packages:
           - user: test
