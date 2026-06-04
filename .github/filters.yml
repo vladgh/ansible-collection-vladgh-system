@@ -1,4 +1,6 @@
 ---
+default:
+  - .github/workflows/test.yml
 playbooks:
   - playbooks/**/!(**.md)
   - molecule/playbooks/**
