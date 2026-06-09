@@ -1,6 +1,7 @@
 ---
 - name: Disable APT repositories
   when:
+    - ansible_facts['os_family'] == 'Debian'
     - apt_disable_repositories is defined
     - apt_disable_repositories | length > 0
   block:
@@ -13,7 +14,7 @@
 
 - name: Add extra APT repositories
   when:
-    - ansible_os_family == 'Debian'
+    - ansible_facts['os_family'] == 'Debian'
     - apt_extra_repositories is defined
     - apt_extra_repositories | length > 0
   block:
