@@ -1,0 +1,19 @@
+---
+
+- name: Restart SystemD mount
+  ansible.builtin.systemd:
+    name: "{{ item.where[1:] | replace('/', '-') }}.mount"
+    state: "{{ item.service_state | default('started') }}"
+    enabled: "{{ item.service_enabled | default(true) }}"
+    daemon_reload: true
+  loop: "{{ mounts_systemd }}"
+  when: not (item.automount | default(false) | bool)
+
+- name: Restart SystemD auto mount
+  ansible.builtin.systemd:
+    name: "{{ item.where[1:] | replace('/', '-') }}.automount"
+    state: "{{ item.service_state | default('started') }}"
+    enabled: "{{ item.service_enabled | default(true) }}"
+    daemon_reload: true
+  loop: "{{ mounts_systemd }}"
+  when: item.automount | default(false) | bool

@@ -1,0 +1,6 @@
+---
+
+- name: Restart LoginD
+  ansible.builtin.service:
+    name: systemd-logind
+    state: restarted

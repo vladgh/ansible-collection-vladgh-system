@@ -6,7 +6,7 @@
 
 - name: Set /etc/timezone
   ansible.builtin.copy:
-    content: "{{ timezone }}\n"
+    content: "{{ common_timezone }}\n"
     dest: /etc/timezone
     owner: root
     group: root
@@ -14,7 +14,7 @@
 
 - name: Set /etc/localtime
   ansible.builtin.file:
-    src: /usr/share/zoneinfo/{{ timezone }}
+    src: /usr/share/zoneinfo/{{ common_timezone }}
     dest: /etc/localtime
     state: link
     owner: root

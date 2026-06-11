@@ -1,0 +1,15 @@
+---
+# APT
+packages_apt_extra_repositories: []
+packages_apt_disable_repositories: []
+
+# APT Packages
+packages_extra: []
+
+# Unattended upgrades
+packages_unattended_upgrades_autoupdate_enabled: false
+packages_unattended_upgrades_autoupdate_reboot: false
+packages_unattended_upgrades_autoupdate_reboot_time: "03:33"
+packages_unattended_upgrades_autoupdate_mail_to: ""
+packages_unattended_upgrades_autoupdate_mail_on_error: false
+packages_unattended_upgrades_autoupdate_blacklist: []

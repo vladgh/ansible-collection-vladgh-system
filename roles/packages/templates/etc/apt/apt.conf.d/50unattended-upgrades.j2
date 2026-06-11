@@ -1,0 +1,22 @@
+Unattended-Upgrade::Automatic-Reboot "{{ (packages_unattended_upgrades_autoupdate_reboot | bool) | ternary('true', 'false') }}";
+{% if packages_unattended_upgrades_autoupdate_reboot | bool %}
+Unattended-Upgrade::Automatic-Reboot-Time "{{ packages_unattended_upgrades_autoupdate_reboot_time }}";
+{% endif %}
+
+{% if packages_unattended_upgrades_autoupdate_mail_to %}
+Unattended-Upgrade::Mail "{{ packages_unattended_upgrades_autoupdate_mail_to }}";
+{% if packages_unattended_upgrades_autoupdate_mail_on_error | bool %}
+Unattended-Upgrade::MailOnlyOnError "true";
+{% endif %}
+{% endif %}
+
+Unattended-Upgrade::Allowed-Origins {
+        "${distro_id} ${distro_codename}-security";
+//      "${distro_id} ${distro_codename}-updates";
+};
+
+Unattended-Upgrade::Package-Blacklist{
+{% for package in packages_unattended_upgrades_autoupdate_blacklist %}
+      "{{ package }}";
+{% endfor %}
+};

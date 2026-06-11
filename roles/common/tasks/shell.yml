@@ -5,4 +5,4 @@
     cmd: "{{ item.cmd }}"
     chdir: "{{ item.chdir | default(omit) }}"
     creates: "{{ item.creates | default(omit) }}"
-  loop: "{{ shell_extra_commands }}"
+  loop: "{{ common_shell_extra_commands }}"

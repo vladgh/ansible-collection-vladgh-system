@@ -1,0 +1,97 @@
+---
+- name: Disable APT repositories
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - packages_apt_disable_repositories is defined
+    - packages_apt_disable_repositories | length > 0
+  block:
+    - name: Disable APT repositories
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        state: absent
+      loop: "{{ packages_apt_disable_repositories }}"
+      notify: Update APT cache
+
+- name: Add extra APT repositories
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - packages_apt_extra_repositories is defined
+    - packages_apt_extra_repositories | length > 0
+  block:
+    - name: Ensure GnuPG package is installed
+      ansible.builtin.apt:
+        pkg:
+          - gnupg2
+          - python3-debian
+        state: present
+        update_cache: true
+
+    - name: Create APT keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Download repository signing keys
+      ansible.builtin.get_url:
+        url: "{{ item.key_url }}"
+        dest: "/etc/apt/keyrings/{{ item.key_filename | default(item.name ~ '.asc') }}"
+        mode: "{{ item.key_filemode | default('0644') }}"
+      loop: "{{ packages_apt_extra_repositories }}"
+      when:
+        - item.key_url is defined
+        - item.key_url | length > 0
+
+    - name: Add extra APT repositories
+      ansible.builtin.deb822_repository:
+        name: "{{ item.name }}"
+        types: "{{ item.types | default(['deb']) }}"
+        uris: "{{ item.uris }}"
+        suites: "{{ item.suites }}"
+        components: "{{ item.components }}"
+        architectures: "{{ item.architectures | default(omit) }}"
+        signed_by: >-
+          {{
+            item.signed_by
+            | default('/etc/apt/keyrings/' ~ (item.key_filename | default(item.name ~ '.asc')))
+          }}
+        state: "{{ item.state | default('present') }}"
+        enabled: "{{ item.enabled | default(true) }}"
+      loop: "{{ packages_apt_extra_repositories }}"
+      notify: Update APT cache
+
+- name: Install additional packages (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name: "{{ packages_extra }}"
+    state: present
+    update_cache: true
+  register: packages_apt_task_result
+  until: packages_apt_task_result is success
+  retries: 3
+  delay: 2
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - packages_extra is defined
+    - packages_extra | length > 0
+
+- name: Unattended upgrades
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - packages_unattended_upgrades_autoupdate_enabled | bool
+  block:
+    - name: Install unattended upgrades package
+      ansible.builtin.package:
+        name: unattended-upgrades
+        state: present
+    - name: Copy unattended-upgrades configuration files in place
+      ansible.builtin.template:
+        src: "etc/apt/apt.conf.d/{{ item }}.j2"
+        dest: "/etc/apt/apt.conf.d/{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop:
+        - 10periodic
+        - 50unattended-upgrades

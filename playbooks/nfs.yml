@@ -1,8 +1,0 @@
----
-- name: NFS Servers
-  hosts: nfs_servers
-  become: true
-  tasks:
-    - name: Include nfs role
-      ansible.builtin.include_role:
-        name: vladgh.system.nfs

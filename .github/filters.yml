@@ -4,6 +4,9 @@ default:
 playbooks:
   - playbooks/**/!(**.md)
   - molecule/playbooks/**
+access:
+  - roles/access/**/!(**.md)
+  - molecule/access/**
 common:
   - roles/common/**/!(**.md)
   - molecule/common/**
@@ -13,6 +16,12 @@ dns:
 logs:
   - roles/logs/**/!(**.md)
   - molecule/logs/**
+misc:
+  - roles/misc/**/!(**.md)
+  - molecule/misc/**
+mounts:
+  - roles/mounts/**/!(**.md)
+  - molecule/mounts/**
 msmtp:
   - roles/msmtp/**/!(**.md)
   - molecule/msmtp/**
@@ -22,6 +31,9 @@ nfs:
 nut:
   - roles/nut/**/!(**.md)
   - molecule/nut/**
+packages:
+  - roles/packages/**/!(**.md)
+  - molecule/packages/**
 proxmox:
   - roles/proxmox/**/!(**.md)
   - molecule/proxmox/**

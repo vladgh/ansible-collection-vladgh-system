@@ -1,6 +1,3 @@
 ---
-# The rest of the playbooks call roles outside this collection and they should have their own tests.
-- name: Ansible
-  import_playbook: ../../playbooks/ansible.yml
 - name: Upgrade
   import_playbook: ../../playbooks/upgrade.yml

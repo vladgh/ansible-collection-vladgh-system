@@ -1,7 +1,8 @@
 ---
-- name: Ensure Crontab is installed
+- name: Ensure cron package is installed
   ansible.builtin.package:
-    name: "{{ crontab_package_name }}"
+    name: "{{ 'cronie' if ansible_facts['os_family'] == 'RedHat' else 'cron' }}"
+    state: present
 
 - name: Cron jobs
   ansible.builtin.cron:
@@ -15,4 +16,4 @@
     special_time: "{{ item.special_time | default(omit) }}"
     job: "{{ item.job }}"
     state: "{{ item.state | default(omit) }}"
-  loop: "{{ cron_jobs }}"
+  loop: "{{ common_cron_jobs }}"

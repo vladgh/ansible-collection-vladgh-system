@@ -1,0 +1,29 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include packages role
+      ansible.builtin.include_role:
+        name: vladgh.system.packages
+      vars:
+        packages_extra:
+          - rolldice
+        packages_apt_extra_repositories:
+          - name: docker
+            key_url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+            key_filename: docker.asc
+            types:
+              - deb
+            uris:
+              - "https://download.docker.com/linux/{{ ansible_distribution | lower }}"
+            suites:
+              - "{{ ansible_distribution_release }}"
+            components:
+              - stable
+            architectures:
+              - "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+        packages_unattended_upgrades_autoupdate_enabled: true
+        packages_unattended_upgrades_autoupdate_reboot: true
+        packages_unattended_upgrades_autoupdate_mail_to: root
+        packages_unattended_upgrades_autoupdate_mail_on_error: true

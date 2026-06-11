@@ -1,0 +1,53 @@
+---
+- name: Configure groups
+  when: access_groups is defined and access_groups | length > 0
+  block:
+    - name: Create groups
+      ansible.builtin.group:
+        name: "{{ item.name }}"
+        gid: "{{ item.gid | default(omit) }}"
+        system: "{{ item.system | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+      loop: "{{ access_groups }}"
+
+    - name: Add Groups to Sudoers
+      ansible.builtin.lineinfile:
+        path: "/etc/sudoers.d/10_{{ item.name }}"
+        line: "%{{ item.name }} ALL=(ALL) NOPASSWD: ALL"
+        state: "{{ item.state | default(omit) }}"
+        mode: '0440'
+        create: true
+        validate: '/usr/sbin/visudo -cf %s'
+      when: item.sudo is defined and item.sudo | bool
+      loop: "{{ access_groups }}"
+
+- name: Configure users
+  when: access_users is defined and access_users | length > 0
+  no_log: true
+  block:
+    - name: Create users
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        comment: "{{ item.comment | default(omit) }}"
+        uid: "{{ item.uid | default(omit) }}"
+        group: "{{ item.group | default(omit) }}"
+        groups: "{{ item.groups | default(omit) }}"
+        append: "{{ item.append | default(omit) }}"
+        password: "{{ item.password | default(omit) }}"
+        shell: "{{ item.shell | default(omit) }}"
+        home: "{{ item.home | default(omit) }}"
+        create_home: "{{ item.create_home | default(omit) }}"
+        system: "{{ item.system | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+      when: item.name is defined and item.name != 'root'
+      loop: "{{ access_users }}"
+
+    - name: Add authorized keys
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.authorized_keys }}"
+        exclusive: "{{ item.exclusive | default(omit) }}"
+        path: "{{ item.authorized_key_path | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+      when: item.authorized_keys is defined and item.authorized_keys | length > 0
+      loop: "{{ access_users }}"
