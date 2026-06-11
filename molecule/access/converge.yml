@@ -7,10 +7,15 @@
       ansible.builtin.include_role:
         name: vladgh.system.access
       vars:
+        access_groups:
+          - name: mygroup
+            gid: 1234
+            system: true
+            sudo: true
         access_users:
           - name: test
             comment: Testing User
-            groups: admins
+            groups: mygroup
             append: true
             password: 'test'
             authorized_keys: |
@@ -21,8 +26,3 @@
               ssh-ed25519 1234 MyKey
               ssh-ed25519 5678 MyOtherKey
             exclusive: true
-        access_groups:
-          - name: mygroup
-            gid: 1234
-            system: true
-            sudo: true
