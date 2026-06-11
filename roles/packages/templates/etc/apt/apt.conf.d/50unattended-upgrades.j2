@@ -5,7 +5,7 @@ Unattended-Upgrade::Automatic-Reboot-Time "{{ packages_unattended_upgrades_autou
 
 {% if packages_unattended_upgrades_autoupdate_mail_to %}
 Unattended-Upgrade::Mail "{{ packages_unattended_upgrades_autoupdate_mail_to }}";
-{% if packages_unattended_upgrades_autoupdate_mail_on_error %}
+{% if packages_unattended_upgrades_autoupdate_mail_on_error | bool %}
 Unattended-Upgrade::MailOnlyOnError "true";
 {% endif %}
 {% endif %}
