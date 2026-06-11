@@ -1,8 +1,0 @@
----
-- name: Proxmox Virtual Environment
-  hosts: proxmox
-  become: true
-  tasks:
-    - name: Include proxmox role
-      ansible.builtin.include_role:
-        name: vladgh.system.proxmox

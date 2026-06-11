@@ -31,12 +31,6 @@ collections:
     type: git
 ```
 
-Install the requirements for playbooks
-
-```sh
-ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansible_collections/vladgh/system/requirements.yml
-```
-
 ### Roles
 
 ```yaml
@@ -52,17 +46,13 @@ ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansi
 
 ### Playbooks
 
-Before using the playbooks, install the required external roles and collections (modify to your own collections installation path)
-
-```sh
-ansible-galaxy install --verbose --force --role-file ~/.ansible/collections/ansible_collections/vladgh/system/collection-requirements.yml`
-```
-
 Import playbooks
 
 ```yaml
 ---
-- import_playbook: vladgh.system.ansible
+- name: Upgrade Packages
+  ansible.builtin.import_playbook: vladgh.system.upgrade
+  tags: ["upgrade"]
 ```
 
 See [Ansible using collections in a playbook](https://docs.ansible.com/ansible/latest/collections_guide/collections_using_playbooks.html) for more details.
