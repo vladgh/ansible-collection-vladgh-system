@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include misc role
+      ansible.builtin.include_role:
+        name: vladgh.system.misc
+      vars:
+        misc_disable_lid_switch: true

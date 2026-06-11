@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include access role
+      ansible.builtin.include_role:
+        name: vladgh.system.access
+      vars:
+        access_users:
+          - name: test
+            comment: Testing User
+            groups: admins
+            append: true
+            password: 'test'
+            authorized_keys: |
+              ssh-ed25519 1234 MyKey
+              ssh-ed25519 5678 MyOtherKey
+          - name: root
+            authorized_keys: |
+              ssh-ed25519 1234 MyKey
+              ssh-ed25519 5678 MyOtherKey
+            exclusive: true
+        access_groups:
+          - name: mygroup
+            gid: 1234
+            system: true
+            sudo: true

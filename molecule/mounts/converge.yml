@@ -1,0 +1,32 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include mounts role
+      ansible.builtin.include_role:
+        name: vladgh.system.mounts
+      vars:
+        mounts_entries:
+          - name: Test
+            path: /mnt/boot
+            src: /boot
+            opts: bind
+            fstype: none
+        mounts_systemd:
+          - name: SystemD Mount Test
+            automount: false
+            what: /srv
+            where: /mnt/srv
+            options: bind
+            type: none
+            service_state: started
+            service_enabled: true
+          - name: SystemD Auto Mount Test
+            automount: true
+            what: localhost:/media
+            where: /mnt/media
+            options: _netdev,auto
+            type: nfs
+            service_state: started
+            service_enabled: true
