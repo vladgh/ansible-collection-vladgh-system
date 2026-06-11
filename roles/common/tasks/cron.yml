@@ -1,4 +1,9 @@
 ---
+- name: Ensure cron package is installed
+  ansible.builtin.package:
+    name: "{{ 'cronie' if ansible_os_family in ['RedHat', 'Suse'] else 'cron' }}"
+    state: present
+
 - name: Cron jobs
   ansible.builtin.cron:
     name: "{{ item.name }}"
