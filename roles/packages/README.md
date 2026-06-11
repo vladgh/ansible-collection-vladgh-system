@@ -27,7 +27,6 @@ packages_apt_extra_repositories:
       - stable
     architectures:
       - amd64
-packages_apt_extra_repositories:
   - name: PBS Community
     repo: "deb http://download.proxmox.com/debian/pbs {{ ansible_facts['distribution_release'] }} pbs-no-subscription"
     repo_filename: pbs-no-subscription

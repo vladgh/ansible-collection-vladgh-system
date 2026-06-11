@@ -1,5 +1,7 @@
-Unattended-Upgrade::Automatic-Reboot "{{ packages_unattended_upgrades_autoupdate_reboot }}";
+{% if packages_unattended_upgrades_autoupdate_reboot %}
+Unattended-Upgrade::Automatic-Reboot "true";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ packages_unattended_upgrades_autoupdate_reboot_time }}";
+{% endif %}
 
 {% if packages_unattended_upgrades_autoupdate_mail_to %}
 Unattended-Upgrade::Mail "{{ packages_unattended_upgrades_autoupdate_mail_to }}";
@@ -15,6 +17,6 @@ Unattended-Upgrade::Allowed-Origins {
 
 Unattended-Upgrade::Package-Blacklist{
 {% for package in packages_unattended_upgrades_autoupdate_blacklist %}
-      "{{package}}";
+      "{{ package }}";
 {% endfor %}
-}
+};
