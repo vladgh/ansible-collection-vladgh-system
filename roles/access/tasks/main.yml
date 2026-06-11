@@ -23,7 +23,6 @@
 
 - name: Configure users
   when: access_users is defined and access_users | length > 0
-  no_log: false
   block:
     - name: Create users
       ansible.builtin.user:

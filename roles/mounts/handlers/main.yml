@@ -7,7 +7,7 @@
     enabled: "{{ item.service_enabled | default(true) }}"
     daemon_reload: true
   loop: "{{ mounts_systemd }}"
-  when: ( item.automount is not defined ) or ( not item.automount )
+  when: ( item.automount | bool is not defined ) or ( not item.automount )
 
 - name: Restart SystemD auto mount
   ansible.builtin.systemd:
@@ -16,4 +16,4 @@
     enabled: "{{ item.service_enabled | default(true) }}"
     daemon_reload: true
   loop: "{{ mounts_systemd }}"
-  when: item.automount is defined and item.automount
+  when: item.automount | bool is defined and item.automount

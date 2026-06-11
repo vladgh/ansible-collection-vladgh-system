@@ -71,8 +71,15 @@
   until: packages_apt_task_result is success
   retries: 3
   delay: 2
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - packages_extra is defined
+    - packages_extra | length > 0
 
 - name: Unattended upgrades
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - packages_unattended_upgrades_autoupdate_enabled | bool
   block:
     - name: Install unattended upgrades package
       ansible.builtin.package:
