@@ -1,0 +1,3 @@
+---
+## Set to `true` to disable lid switch on laptops.
+misc_disable_lid_switch: false

@@ -2,7 +2,7 @@
 - name: Ensure NFS package is installed
   ansible.builtin.package:
     name: "{{ nfs_client_package_name }}"
-  loop: "{{ [mounts, systemd_mounts] | flatten | unique }}"
+  loop: "{{ [mounts_entries, mounts_systemd] | flatten | unique }}"
   when: >
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
@@ -12,7 +12,7 @@
     name: rpcbind
     state: started
     enabled: true
-  loop: "{{ [mounts, systemd_mounts] | flatten | unique }}"
+  loop: "{{ [mounts_entries, mounts_systemd] | flatten | unique }}"
   when: >
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
@@ -24,7 +24,7 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.group | default(omit) }}"
-  loop: "{{ mounts }}"
+  loop: "{{ mounts_entries }}"
   when: item is defined and item | length > 0
 
 - name: Create mount points
@@ -36,7 +36,7 @@
     dump: "{{ item.dump | default(omit) }}"
     passno: "{{ item.passno | default(omit) }}"
     state: "{{ item.state | default('mounted') }}"
-  loop: "{{ mounts }}"
+  loop: "{{ mounts_entries }}"
   when: item is defined and item | length > 0
 
 # SystemD Mounts
@@ -48,7 +48,8 @@
     group: root
     mode: '0644'
   notify: Restart SystemD mount
-  loop: "{{ systemd_mounts }}"
+  loop: "{{ mounts_systemd }}"
+  when: (item.automount is not defined) or (not item.automount)
 
 - name: Enable and start SystemD mount
   ansible.builtin.systemd:
@@ -56,7 +57,7 @@
     state: "{{ item.service_state | default('started') }}"
     enabled: "{{ item.service_enabled | default(true) }}"
     daemon_reload: true
-  loop: "{{ systemd_mounts }}"
+  loop: "{{ mounts_systemd }}"
   when: (item.automount is not defined) or (not item.automount)
 
 - name: Setup SystemD service for auto mount
@@ -67,7 +68,7 @@
     group: root
     mode: '0644'
   notify: Restart SystemD auto mount
-  loop: "{{ systemd_mounts }}"
+  loop: "{{ mounts_systemd }}"
   when: item.automount is defined and item.automount | bool
 
 - name: Enable and start SystemD auto mount
@@ -76,5 +77,5 @@
     state: "{{ item.service_state | default('started') }}"
     enabled: "{{ item.service_enabled | default(true) }}"
     daemon_reload: true
-  loop: "{{ systemd_mounts }}"
+  loop: "{{ mounts_systemd }}"
   when: item.automount is defined and item.automount | bool

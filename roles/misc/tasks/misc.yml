@@ -8,8 +8,8 @@
 - name: Check if logind.conf exists
   ansible.builtin.stat:
     path: /etc/systemd/logind.conf
-  register: common_systemd_logind_conf
-  when: disable_lid_switch is defined and disable_lid_switch | bool
+  register: misc_systemd_logind_conf
+  when: misc_disable_lid_switch is defined and misc_disable_lid_switch | bool
 
 - name: Disable lid switch
   ansible.builtin.lineinfile:
@@ -17,4 +17,4 @@
     regexp: HandleLidSwitch
     line: 'HandleLidSwitch=lock'
   notify: Restart LoginD
-  when: disable_lid_switch is defined and disable_lid_switch | bool and common_systemd_logind_conf.stat.exists
+  when: misc_disable_lid_switch is defined and misc_disable_lid_switch | bool and misc_systemd_logind_conf.stat.exists

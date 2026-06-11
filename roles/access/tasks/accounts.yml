@@ -1,6 +1,6 @@
 ---
 - name: Configure groups
-  when: local_groups is defined and local_groups | length > 0
+  when: access_groups is defined and access_groups | length > 0
   block:
     - name: Create groups
       ansible.builtin.group:
@@ -8,7 +8,7 @@
         gid: "{{ item.gid | default(omit) }}"
         system: "{{ item.system | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
-      loop: "{{ local_groups }}"
+      loop: "{{ access_groups }}"
 
     - name: Add Groups to Sudoers
       ansible.builtin.lineinfile:
@@ -19,10 +19,10 @@
         create: true
         validate: '/usr/sbin/visudo -cf %s'
       when: item.sudo is defined and item.sudo | bool
-      loop: "{{ local_groups }}"
+      loop: "{{ access_groups }}"
 
 - name: Configure users
-  when: local_users is defined and local_users | length > 0
+  when: access_users is defined and access_users | length > 0
   no_log: false
   block:
     - name: Create users
@@ -40,7 +40,7 @@
         system: "{{ item.system | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
       when: item.name is defined and item.name != 'root'
-      loop: "{{ local_users }}"
+      loop: "{{ access_users }}"
 
     - name: Add authorized keys
       ansible.posix.authorized_key:
@@ -50,4 +50,4 @@
         path: "{{ item.authorized_key_path | default(omit) }}"
         state: "{{ item.state | default(omit) }}"
       when: item.authorized_keys is defined and item.authorized_keys | length > 0
-      loop: "{{ local_users }}"
+      loop: "{{ access_users }}"

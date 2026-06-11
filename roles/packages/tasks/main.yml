@@ -2,21 +2,21 @@
 - name: Disable APT repositories
   when:
     - ansible_facts['os_family'] == 'Debian'
-    - apt_disable_repositories is defined
-    - apt_disable_repositories | length > 0
+    - packages_apt_disable_repositories is defined
+    - packages_apt_disable_repositories | length > 0
   block:
     - name: Disable APT repositories
       ansible.builtin.deb822_repository:
         name: "{{ item.name }}"
         state: absent
-      loop: "{{ apt_disable_repositories }}"
+      loop: "{{ packages_apt_disable_repositories }}"
       notify: Update APT cache
 
 - name: Add extra APT repositories
   when:
     - ansible_facts['os_family'] == 'Debian'
-    - apt_extra_repositories is defined
-    - apt_extra_repositories | length > 0
+    - packages_apt_extra_repositories is defined
+    - packages_apt_extra_repositories | length > 0
   block:
     - name: Ensure GnuPG package is installed
       ansible.builtin.apt:
@@ -39,7 +39,7 @@
         url: "{{ item.key_url }}"
         dest: "/etc/apt/keyrings/{{ item.key_filename | default(item.name ~ '.asc') }}"
         mode: "{{ item.key_filemode | default('0644') }}"
-      loop: "{{ apt_extra_repositories }}"
+      loop: "{{ packages_apt_extra_repositories }}"
       when:
         - item.key_url is defined
         - item.key_url | length > 0
@@ -59,5 +59,32 @@
           }}
         state: "{{ item.state | default('present') }}"
         enabled: "{{ item.enabled | default(true) }}"
-      loop: "{{ apt_extra_repositories }}"
+      loop: "{{ packages_apt_extra_repositories }}"
       notify: Update APT cache
+
+- name: Install additional packages (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name: "{{ packages_extra }}"
+    state: present
+    update_cache: true
+  register: packages_apt_task_result
+  until: packages_apt_task_result is success
+  retries: 3
+  delay: 2
+
+- name: Unattended upgrades
+  block:
+    - name: Install unattended upgrades package
+      ansible.builtin.package:
+        name: unattended-upgrades
+        state: present
+    - name: Copy unattended-upgrades configuration files in place
+      ansible.builtin.template:
+        src: "etc/apt/apt.conf.d/{{ item }}.j2"
+        dest: "/etc/apt/apt.conf.d/{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop:
+        - 10periodic
+        - 50unattended-upgrades
