@@ -1,15 +1,4 @@
 ---
-- name: Gather variables for each operating system
-  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', params) }}"
-  vars:
-    params:
-      files:
-        - "{{ ansible_facts['distribution'] | lower }}-{{ ansible_facts['distribution_major_version'] }}.yml"
-        - "{{ ansible_facts['distribution'] | lower }}.yml"
-        - "{{ ansible_facts['os_family'] | lower }}.yml"
-      paths:
-        - vars
-
 - name: Timezone
   ansible.builtin.import_tasks: timezone.yml
   when: common_timezone is defined and common_timezone | length > 0
