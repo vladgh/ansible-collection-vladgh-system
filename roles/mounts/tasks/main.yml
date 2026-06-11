@@ -31,7 +31,6 @@
     mode: '0644'
   notify: Restart SystemD mount
   loop: "{{ mounts_systemd }}"
-  when: (item.automount is not defined) or (not item.automount)
 
 - name: Enable and start SystemD mount
   ansible.builtin.systemd:

@@ -1,8 +1,4 @@
 ---
-- name: Ensure Crontab is installed
-  ansible.builtin.package:
-    name: "{{ common_crontab_package_name }}"
-
 - name: Cron jobs
   ansible.builtin.cron:
     name: "{{ item.name }}"
