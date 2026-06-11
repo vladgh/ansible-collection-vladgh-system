@@ -2,7 +2,7 @@
 - name: Ensure NFS package is installed
   ansible.builtin.package:
     name: "{{ mounts_nfs_client_package_name | default('nfs-common') }}"
-  loop: "{{ [mounts, systemd_mounts] | flatten | unique }}"
+  loop: "{{ [mounts_entries, mounts_systemd] | flatten | unique }}"
   when: >
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
@@ -12,7 +12,7 @@
     name: rpcbind
     state: started
     enabled: true
-  loop: "{{ [mounts, systemd_mounts] | flatten | unique }}"
+  loop: "{{ [mounts_entries, mounts_systemd] | flatten | unique }}"
   when: >
     ( item.fstype is defined and item.fstype is match('nfs') ) or
     ( item.type is defined and item.type is match('nfs') )
