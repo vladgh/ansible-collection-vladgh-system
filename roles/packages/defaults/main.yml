@@ -1,6 +1,5 @@
 ---
 # APT
-packages_apt_extra_keys: []
 packages_apt_extra_repositories: []
 packages_apt_disable_repositories: []
 
