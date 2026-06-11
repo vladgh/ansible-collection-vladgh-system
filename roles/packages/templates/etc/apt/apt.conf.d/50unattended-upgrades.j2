@@ -1,5 +1,5 @@
-Unattended-Upgrade::Automatic-Reboot "{{ packages_unattended_upgrades_autoupdate_reboot | ternary('true', 'false') }}";
-{% if packages_unattended_upgrades_autoupdate_reboot %}
+Unattended-Upgrade::Automatic-Reboot "{{ (packages_unattended_upgrades_autoupdate_reboot | bool) | ternary('true', 'false') }}";
+{% if packages_unattended_upgrades_autoupdate_reboot | bool %}
 Unattended-Upgrade::Automatic-Reboot-Time "{{ packages_unattended_upgrades_autoupdate_reboot_time }}";
 {% endif %}
 
