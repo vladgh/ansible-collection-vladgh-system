@@ -41,7 +41,7 @@ common_sysctl_overwrite:
 ### BASH Extra Aliases
 
 ```yaml
-common_bash_extra_aliases: []
+common_bash_extra_aliases:
   - alias: ll
     command: ls -lahpF
     dest: /root/.bashrc
