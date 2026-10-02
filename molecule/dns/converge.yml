@@ -7,4 +7,4 @@
       ansible.builtin.include_role:
         name: vladgh.system.dns
       vars:
-        cloudflare_ddns_updater_enabled: true
+        cloudflare_dns_records: []
