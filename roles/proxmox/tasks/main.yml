@@ -67,13 +67,22 @@
         - Regenerate initramfs
         - Reboot
 
+    - name: Ensure Grub drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/default/grub.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Configure Grub for VFIO
-      ansible.builtin.lineinfile:
-        dest: /etc/default/grub
-        regexp: "^GRUB_CMDLINE_LINUX_DEFAULT"
-        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt i915.enable_gvt=1"'
-        state: present
-      become: true
+      ansible.builtin.copy:
+        dest: /etc/default/grub.d/50-vfio.cfg
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT intel_iommu=on iommu=pt i915.enable_gvt=1"
       notify:
         - Update Grub
         - Reboot
