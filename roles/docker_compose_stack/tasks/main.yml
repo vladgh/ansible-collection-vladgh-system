@@ -20,7 +20,8 @@
     dest: "{{ docker_compose_stack_path }}/{{ item.name }}/.env"
     owner: root
     group: root
-    mode: '0644'
+    mode: '0600'
+  no_log: true
   vars:
     all_vars: "{{ item.env | default({}) }}"
   when: >

@@ -22,19 +22,16 @@
 
 - name: Install binaries
   ansible.builtin.get_url:
-    url: "https://raw.githubusercontent.com/jimsalterjrs/sanoid/master/{{ item }}"
+    url: "https://raw.githubusercontent.com/jimsalterjrs/sanoid/{{ sanoid_version }}/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     owner: root
     group: root
     mode: '0755'
-  loop:
-    - sanoid
-    - syncoid
-    - findoid
+  loop: [sanoid, syncoid, findoid]
 
 - name: Install Sanoid Default Configuration
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/jimsalterjrs/sanoid/master/sanoid.defaults.conf
+    url: "https://raw.githubusercontent.com/jimsalterjrs/sanoid/{{ sanoid_version }}/sanoid.defaults.conf"
     dest: /etc/sanoid/sanoid.defaults.conf
     owner: root
     group: root
