@@ -80,7 +80,7 @@
       [Service]
       Type=oneshot
       ExecStart=/usr/local/bin/sanoid --take-snapshots --verbose
-    notify: Reload SystemD
+  notify: Reload SystemD
 
 - name: Generate Sanoid Prune Service
   ansible.builtin.copy:
