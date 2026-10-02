@@ -5,36 +5,41 @@ change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 
 categories:
   - title: '🚨 Breaking changes'
+    semver-increment: major
     when:
       label: breaking
   - title: '✨ Enhancements'
+    semver-increment: minor
     when:
-      labels:
-        - enhancement
-        - security
-        - refactor
+      label: enhancement
   - title: '🐛 Bug fixes'
+    semver-increment: patch
     when:
       label: bug
+  - title: '🛡️ Security updates'
+    semver-increment: patch
+    when:
+      label: security
+  - title: '🧹 Refactoring'
+    semver-increment: patch
+    when:
+      label: refactor
   - title: '📚 Documentation'
+    semver-increment: patch
     when:
       label: documentation
   - title: '📦 Dependency Updates'
+    semver-increment: patch
     when:
       label: dependencies
   - type: version-resolver
     semver-increment: major
     when:
-      labels:
-        - major
-        - breaking
+      label: major
   - type: version-resolver
     semver-increment: minor
     when:
-      labels:
-        - minor
-        - enhancement
-        - security
+      label: minor
   - type: version-resolver
     semver-increment: patch
 
