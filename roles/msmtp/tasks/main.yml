@@ -19,8 +19,7 @@
     dest: /etc/msmtprc
     owner: root
     group: root
-    mode: '0640'
-  no_log: true
+    mode: '0644'
 
 - name: Configure aliases
   ansible.builtin.template:

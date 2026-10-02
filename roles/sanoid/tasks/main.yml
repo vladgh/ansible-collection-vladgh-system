@@ -24,7 +24,6 @@
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/jimsalterjrs/sanoid/{{ sanoid_version }}/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
-    checksum: "sha256:{{ sanoid_checksums[item] }}"
     owner: root
     group: root
     mode: '0755'
