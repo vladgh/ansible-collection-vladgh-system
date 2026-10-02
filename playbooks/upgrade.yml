@@ -1,6 +1,7 @@
 ---
 - name: Upgrade everything
   hosts: upgrade
+  become: true
   tasks:
     - name: Upgrade Debian Systems
       when: ansible_facts['os_family'] is defined and ansible_facts['os_family'] == 'Debian'
