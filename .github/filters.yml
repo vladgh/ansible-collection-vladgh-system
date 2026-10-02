@@ -13,9 +13,6 @@ common:
 dns:
   - roles/dns/**/!(**.md)
   - molecule/dns/**
-logs:
-  - roles/logs/**/!(**.md)
-  - molecule/logs/**
 misc:
   - roles/misc/**/!(**.md)
   - molecule/misc/**

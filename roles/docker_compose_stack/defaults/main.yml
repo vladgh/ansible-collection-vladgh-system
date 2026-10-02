@@ -1,2 +1,4 @@
 ---
 docker_compose_stack_path: /opt/appstack
+docker_compose_stack: []  # noqa: var-naming[no-role-prefix]
+docker_compose_stack_networks: []
