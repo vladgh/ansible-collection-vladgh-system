@@ -1,9 +1,0 @@
----
-- name: Update trusted CA certificates
-  ansible.builtin.command: /usr/sbin/update-ca-certificates --fresh
-  changed_when: false
-
-- name: Restart RSysLog
-  ansible.builtin.service:
-    name: rsyslog
-    state: restarted

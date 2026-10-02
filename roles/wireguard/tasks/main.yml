@@ -38,5 +38,5 @@
         name: "wg-quick@{{ item }}"
         state: started
         enabled: true
-      # no_log: true
-      loop: "{{ wireguard_config | flatten(levels=1) }}"
+      no_log: true
+      loop: "{{ wireguard_config | list }}"

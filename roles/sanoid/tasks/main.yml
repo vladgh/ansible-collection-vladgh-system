@@ -15,7 +15,7 @@
     state: directory
     owner: root
     group: root
-    recurse: true
+    mode: '0755'
   loop:
     - /usr/local/bin
     - /etc/sanoid
@@ -80,6 +80,7 @@
       [Service]
       Type=oneshot
       ExecStart=/usr/local/bin/sanoid --take-snapshots --verbose
+  notify: Reload SystemD
 
 - name: Generate Sanoid Prune Service
   ansible.builtin.copy:
@@ -100,6 +101,7 @@
 
       [Install]
       WantedBy=sanoid.service
+  notify: Reload SystemD
 
 - name: Generate Sanoid Timer
   ansible.builtin.copy:
@@ -117,6 +119,10 @@
 
       [Install]
       WantedBy=timers.target
+  notify: Reload SystemD
+
+- name: Apply pending systemd unit changes
+  ansible.builtin.meta: flush_handlers
 
 - name: Start and enable Sanoid timer
   ansible.builtin.service:
