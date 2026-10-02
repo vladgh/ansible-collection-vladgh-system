@@ -41,7 +41,6 @@
           vfio
           vfio_iommu_type1
           vfio_pci
-          vfio_virqfd
         owner: root
         group: root
         mode: '0664'
@@ -66,6 +65,14 @@
       notify:
         - Regenerate initramfs
         - Reboot
+
+    - name: Ensure Grub drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/default/grub.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
 
     - name: Configure Grub for VFIO
       ansible.builtin.copy:
