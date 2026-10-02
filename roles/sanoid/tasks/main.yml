@@ -101,7 +101,7 @@
 
       [Install]
       WantedBy=sanoid.service
-    notify: Reload SystemD
+  notify: Reload SystemD
 
 - name: Generate Sanoid Timer
   ansible.builtin.copy:
@@ -119,7 +119,7 @@
 
       [Install]
       WantedBy=timers.target
-    notify: Reload SystemD
+  notify: Reload SystemD
 
 - name: Apply pending systemd unit changes
   ansible.builtin.meta: flush_handlers
