@@ -32,8 +32,12 @@ cloudflare_ddns_updater_config:
 ### Cloudflare DNS records
 
 ```yml
-cloudflare_email: xxx  # The email used to login 'https://dash.cloudflare.com'
-cloudflare_api_token: xxx  # Your API Token or Global API Key
+# Use EITHER an API token (preferred) ...
+cloudflare_api_token: xxx
+# ... OR the account email plus Global API Key
+cloudflare_account_email: xxx
+cloudflare_account_api_key: xxx
+
 cloudflare_dns_records:
   - zone: example.com
     type: CNAME
