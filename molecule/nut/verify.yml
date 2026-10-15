@@ -19,16 +19,10 @@
     - name: Assert NUT services are known and the client is running
       ansible.builtin.assert:
         that:
-          - "'nut-client.service' in ansible_facts['services']"
-          - >
-            (
-              ansible_facts.services['nut-client.service'].state == 'running'
-            ) or
-            (
-              ansible_facts.services['nut-client.service'].status == 'enabled'
-            )
-          - "'nut-server.service' in ansible_facts['services']"
-          - ansible_facts['services']['nut-server.service']['status'] == 'enabled'
+          - "'nut-client.service' in ansible_facts.services"
+          - ansible_facts.services['nut-client.service'].state in ['running', 'started']
+          - "'nut-server.service' in ansible_facts.services"
+          - ansible_facts.services['nut-server.service'].status == 'enabled'
 
     - name: Check NUT configuration files
       ansible.builtin.stat:
