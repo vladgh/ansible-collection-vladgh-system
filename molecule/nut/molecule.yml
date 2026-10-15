@@ -1,1 +1,4 @@
 ---
+provisioner:
+  playbooks:
+    prepare: prepare.yml

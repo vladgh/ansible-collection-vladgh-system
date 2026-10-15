@@ -1,4 +1,7 @@
 ---
+- name: Import shared prepare
+  ansible.builtin.import_playbook: ../prepare.yml
+
 - name: Prepare
   hosts: all
   become: true
