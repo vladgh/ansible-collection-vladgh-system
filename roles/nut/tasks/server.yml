@@ -16,4 +16,14 @@
   loop:
     - ups.conf
     - upsd.conf
-    - upsd.users
+
+- name: Generate NUT User Configuration
+  ansible.builtin.template:
+    src: upsd.users.j2
+    dest: /etc/nut/upsd.users
+    owner: root
+    group: nut
+    mode: "0640"
+  no_log: true
+  notify:
+    - Restart NUT Server
