@@ -1,14 +1,14 @@
 ---
-
-- name: Gather package facts for prerequisite checks
-  ansible.builtin.package_facts:
-    manager: auto
+- name: Check curl for Telegram notifications
+  ansible.builtin.stat:
+    path: /usr/bin/curl
+  register: nut_curl_check
   when: nut_notify_telegram_enabled | bool
 
 - name: Require curl for Telegram notifications
   ansible.builtin.assert:
     that:
-      - "'curl' in ansible_facts.packages"
+      - nut_curl_check.stat.exists
     fail_msg: >-
       nut_notify_telegram_enabled is true but curl is not installed.
       Install curl on the host (or disable Telegram notifications).
