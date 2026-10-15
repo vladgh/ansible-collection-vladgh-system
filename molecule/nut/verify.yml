@@ -16,6 +16,10 @@
           - "'nut-server' in ansible_facts['packages']"
           - "'nut-client' in ansible_facts['packages']"
 
+    - name: Show NUT service facts
+      ansible.builtin.debug:
+        var: ansible_facts.services
+
     # - name: Assert NUT services are known and the client is running
     #   ansible.builtin.assert:
     #     that:
