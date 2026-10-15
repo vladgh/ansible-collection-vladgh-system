@@ -1,9 +1,9 @@
 ---
 default:
   - .github/workflows/test.yml
-playbooks:
+playbook-tests:
   - playbooks/**/!(**.md)
-  - molecule/playbooks/**
+  - molecule/playbook-tests/**
 access:
   - roles/access/**/!(**.md)
   - molecule/access/**
