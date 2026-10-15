@@ -1,28 +1,8 @@
 ---
-- name: Require notification recipients
-  ansible.builtin.assert:
-    that:
-      - not nut_notify_email_enabled | bool or (nut_notify_email_to | default('') | length > 0)
-      - not nut_notify_telegram_enabled | bool or (nut_telegram_chat_id | default('') | length > 0)
-      - not nut_notify_telegram_enabled | bool or (nut_telegram_bot_token | default('') | length > 0)
-    fail_msg: >-
-      Set nut_notify_email_to when email is enabled, and nut_telegram_chat_id
-      plus nut_telegram_bot_token when Telegram is enabled
-
 - name: Ensure NUT Client Package
   ansible.builtin.package:
     name: nut-client
     state: present
-
-- name: Gather package facts for Telegram prerequisite check
-  ansible.builtin.package_facts:
-  when: nut_notify_telegram_enabled | bool
-
-- name: Require curl for Telegram notifications
-  ansible.builtin.assert:
-    that: "'curl' in ansible_facts['packages']"
-    fail_msg: Install curl before enabling Telegram notifications
-  when: nut_notify_telegram_enabled | bool
 
 - name: Generate NUT Configuration Files
   ansible.builtin.template:

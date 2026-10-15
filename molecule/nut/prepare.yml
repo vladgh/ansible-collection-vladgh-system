@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Install curl for Telegram notification tests
+      ansible.builtin.package:
+        name: curl
+        state: present
