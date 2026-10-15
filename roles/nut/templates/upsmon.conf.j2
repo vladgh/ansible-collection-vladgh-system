@@ -1,3 +1,20 @@
 MONITOR {{ nut_host }} {{ nut_powervalue }} {{ nut_user }} {{ nut_password }} {{ nut_role }}
 
-{{ nut_upsmon_extra }}
+SHUTDOWNCMD "/sbin/shutdown -h +0"
+POWERDOWNFLAG /etc/killpower
+{% if __nut_notify_enabled | bool %}
+
+NOTIFYCMD /etc/nut/notifycmd
+{% for event in nut_notify_events if event not in nut_upsmon_notifyflags %}
+NOTIFYFLAG {{ event }} SYSLOG+WALL+EXEC
+{% endfor %}
+{% endif %}
+{% for event, flags in nut_upsmon_notifyflags.items() %}
+NOTIFYFLAG {{ event }} {{ flags }}
+{% endfor %}
+{% if nut_upsmon_settings | length > 0 %}
+
+{% for key, value in nut_upsmon_settings.items() %}
+{{ key }} {{ value }}
+{% endfor %}
+{% endif %}

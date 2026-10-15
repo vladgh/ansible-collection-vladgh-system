@@ -1,0 +1,2 @@
+---
+__nut_notify_enabled: "{{ nut_notify_email_enabled | bool or nut_notify_telegram_enabled | bool }}"

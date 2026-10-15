@@ -1,3 +1,4 @@
+.ansible
 .env
 .cache
 *.retry

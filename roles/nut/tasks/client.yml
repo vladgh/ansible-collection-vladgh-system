@@ -11,6 +11,7 @@
     owner: root
     group: nut
     mode: "0640"
+  no_log: true
   notify: Restart NUT Client
 
 - name: Generate NUT Notification Script
@@ -19,5 +20,27 @@
     dest: /etc/nut/notifycmd
     owner: root
     group: nut
-    mode: "0775"
-  notify: Restart NUT Client
+    mode: "0750"
+  when: __nut_notify_enabled | bool
+
+- name: Generate NUT Telegram Credentials
+  ansible.builtin.template:
+    src: telegram.env.j2
+    dest: /etc/nut/telegram.env
+    owner: root
+    group: nut
+    mode: "0640"
+  no_log: true
+  when: nut_notify_telegram_enabled | bool
+
+- name: Remove NUT Notification Script
+  ansible.builtin.file:
+    path: /etc/nut/notifycmd
+    state: absent
+  when: not __nut_notify_enabled | bool
+
+- name: Remove NUT Telegram Credentials
+  ansible.builtin.file:
+    path: /etc/nut/telegram.env
+    state: absent
+  when: not nut_notify_telegram_enabled | bool

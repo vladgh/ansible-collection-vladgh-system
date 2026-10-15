@@ -26,50 +26,33 @@ nut_upsd_users:
     upsmon: slave
 
 # Client
-nut_notification_email: root@localhost
 nut_host: ups@localhost
 nut_user: monitor
 nut_password: changeme
 nut_role: slave
 nut_powervalue: 1
-nut_upsmon_extra: |
-  MINSUPPLIES 1
-  POLLFREQ 5
-  POLLFREQALERT 5
-  HOSTSYNC 15
-  DEADTIME 15
-  RBWARNTIME 43200
-  NOCOMMWARNTIME 300
-  FINALDELAY 5
 
-  POWERDOWNFLAG "/etc/killpower"
-  SHUTDOWNCMD "/sbin/shutdown -h +0"
-  NOTIFYCMD "/etc/nut/notifycmd"
+# Extra upsmon.conf directives rendered as "KEY value", for example
+# POLLFREQ: 5, DEADTIME: 15, FINALDELAY: 5, MINSUPPLIES: 1
+nut_upsmon_settings: {}
 
-  # Possible values for <notify type>:
-  # ONLINE   : UPS is back online
-  # ONBATT   : UPS is on battery
-  # LOWBATT  : UPS has a low battery (if also on battery, it's "critical")
-  # FSD      : UPS is being shutdown by the master (FSD = "Forced Shutdown")
-  # COMMOK   : Communications established with the UPS
-  # COMMBAD  : Communications lost to the UPS
-  # SHUTDOWN : The system is being shutdown
-  # REPLBATT : The UPS battery is bad and needs to be replaced
-  # NOCOMM   : A UPS is unavailable (can't be contacted for monitoring)
+# Notifications (disabled by default)
+nut_notify_events:
+  - ONBATT
+  - ONLINE
+  - LOWBATT
+  - FSD
+  - COMMBAD
+  - COMMOK
+  - SHUTDOWN
+  - REPLBATT
+# Per-event NOTIFYFLAG overrides, for example ONBATT: SYSLOG+WALL
+nut_upsmon_notifyflags: {}
 
-  # Possible values for the flags:
-  # SYSLOG - Write the message in the syslog
-  # WALL   - Write the message to all users on the system
-  # EXEC   - Execute NOTIFYCMD (see above) with the message
-  # IGNORE - Don't do anything
+nut_notify_email_enabled: false
+# nut_notify_email_to: ops@example.com
+nut_notify_email_subject_prefix: UPS
 
-  NOTIFYFLAG ONLINE      SYSLOG+WALL
-  NOTIFYFLAG ONBATT      SYSLOG+WALL
-  NOTIFYFLAG LOWBATT     SYSLOG+WALL
-  NOTIFYFLAG FSD         SYSLOG+WALL
-  NOTIFYFLAG COMMOK      SYSLOG+WALL
-  NOTIFYFLAG COMMBAD     SYSLOG+WALL
-  NOTIFYFLAG SHUTDOWN    SYSLOG+WALL+EXEC
-  NOTIFYFLAG REPLBATT    SYSLOG+WALL
-  NOTIFYFLAG NOCOMM      SYSLOG+WALL
-  NOTIFYFLAG NOPARENT    SYSLOG+WALL
+nut_notify_telegram_enabled: false
+# nut_telegram_chat_id: "123456789"
+# nut_telegram_bot_token: "{{ vault_nut_telegram_bot_token }}"

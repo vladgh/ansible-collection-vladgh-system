@@ -8,3 +8,10 @@
         name: vladgh.system.nut
       vars:
         nut_mode: netserver
+        nut_notify_email_enabled: true
+        nut_notify_email_to: ops@example.com
+        nut_notify_telegram_enabled: true
+        nut_telegram_chat_id: '123456789'
+        nut_telegram_bot_token: '000000:molecule-placeholder'
+        nut_upsmon_settings:
+          POLLFREQ: 5

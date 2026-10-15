@@ -1,4 +1,38 @@
 ---
+- name: Check curl for Telegram notifications
+  ansible.builtin.stat:
+    path: /usr/bin/curl
+  register: nut_curl_check
+  when: nut_notify_telegram_enabled | bool
+
+- name: Require curl for Telegram notifications
+  ansible.builtin.assert:
+    that:
+      - nut_curl_check.stat.exists
+    fail_msg: >-
+      nut_notify_telegram_enabled is true but curl is not installed.
+      Install curl on the host (or disable Telegram notifications).
+    quiet: true
+  when: nut_notify_telegram_enabled | bool
+
+- name: Require Telegram settings
+  ansible.builtin.assert:
+    that:
+      - nut_telegram_chat_id is defined
+      - nut_telegram_bot_token is defined
+    fail_msg: nut_telegram_chat_id and nut_telegram_bot_token are required when Telegram notifications are enabled.
+  when: nut_notify_telegram_enabled | bool
+
+- name: Require mail support for email notifications
+  ansible.builtin.assert:
+    that:
+      - nut_notify_email_to is defined
+      - nut_notify_email_to | length > 0
+    fail_msg: >-
+      nut_notify_email_enabled is true but nut_notify_email_to is missing.
+    quiet: true
+  when: nut_notify_email_enabled | bool
+
 - name: Generate Configuration Directory
   ansible.builtin.file:
     path: /etc/nut

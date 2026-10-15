@@ -1,5 +1,29 @@
 #!/usr/bin/env bash
+# Notify script for NUT, called by upsmon with NOTIFYTYPE and UPSNAME set.
+set -u
 
-# Notify script for NUT (Network UPS Tools)
-EMAIL='{{ nut_notification_email }}'
-echo -e "UPS: $UPSNAME\r\nALERT TYPE: $NOTIFYTYPE\r\nTIME: $(date)\r\n\r\nADDITIONAL INFO:\r\n$(upsc $UPSNAME)" | mail -s "UPS: $NOTIFYTYPE" "$EMAIL"
+status=0
+subject="{{ nut_notify_email_subject_prefix }}: ${NOTIFYTYPE:-unknown}"
+body="UPS: ${UPSNAME:-unknown}
+ALERT TYPE: ${NOTIFYTYPE:-unknown}
+TIME: $(date)
+
+ADDITIONAL INFO:
+$(upsc "${UPSNAME:-}" 2>&1 || true)"
+{% if nut_notify_email_enabled | bool %}
+
+printf '%s\n' "$body" | mail -s "$subject" {{ nut_notify_email_to | quote }} || status=1
+{% endif %}
+{% if nut_notify_telegram_enabled | bool %}
+
+# The token is passed to curl on stdin so it never appears in the process list
+(
+  . /etc/nut/telegram.env
+  printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TELEGRAM_BOT_TOKEN" |
+    curl --silent --show-error --fail --max-time 20 --config - \
+      --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+      --data-urlencode "text=${subject}"$'\n\n'"${body}" > /dev/null
+) || status=1
+{% endif %}
+
+exit "$status"

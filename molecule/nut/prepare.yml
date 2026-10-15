@@ -1,0 +1,12 @@
+---
+- name: Import shared prepare
+  ansible.builtin.import_playbook: ../prepare.yml
+
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Install curl for Telegram notification tests
+      ansible.builtin.package:
+        name: curl
+        state: present
