@@ -1,0 +1,147 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Gather package and service facts
+      ansible.builtin.package_facts:
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Assert NUT server and client packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'nut-server' in ansible_facts['packages']"
+          - "'nut-client' in ansible_facts['packages']"
+
+    - name: Assert NUT services are known and the client is running
+      ansible.builtin.assert:
+        that:
+          - "'nut-server.service' in ansible_facts['services']"
+          - "'nut-client.service' in ansible_facts['services']"
+          - ansible_facts['services']['nut-client.service']['state'] == 'running'
+          - ansible_facts['services']['nut-server.service']['status'] == 'enabled'
+          - ansible_facts['services']['nut-client.service']['status'] == 'enabled'
+
+    - name: Check NUT configuration files
+      ansible.builtin.stat:
+        path: "/etc/nut/{{ item }}"
+      loop:
+        - nut.conf
+        - ups.conf
+        - upsd.conf
+        - upsd.users
+        - upsmon.conf
+        - telegram.env
+        - notifycmd
+      register: __verify_stat
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Assert NUT files exist, are owned by root:nut and are not world accessible
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.pw_name == 'root'
+          - item.stat.gr_name == 'nut'
+          - item.stat.mode == ('0750' if item.item == 'notifycmd' else '0640')
+        quiet: true
+      loop: "{{ __verify_stat.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Read NUT configuration files
+      ansible.builtin.slurp:
+        src: "/etc/nut/{{ item }}"
+      loop:
+        - nut.conf
+        - ups.conf
+        - upsd.conf
+        - upsd.users
+        - upsmon.conf
+        - notifycmd
+      register: __verify_slurp
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Index NUT configuration content by file name
+      ansible.builtin.set_fact:
+        __verify_conf: >-
+          {{ __verify_conf | default({}) | combine({item.item: item.content | b64decode}) }}
+      loop: "{{ __verify_slurp.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Assert nut.conf sets the mode
+      ansible.builtin.assert:
+        that: "'MODE=netserver' in __verify_conf['nut.conf']"
+
+    - name: Assert ups.conf has the default driver section
+      ansible.builtin.assert:
+        that:
+          - "'maxretry = 3' in __verify_conf['ups.conf']"
+          - "'[ups]' in __verify_conf['ups.conf']"
+          - "'driver = usbhid-ups' in __verify_conf['ups.conf']"
+          - "'port = auto' in __verify_conf['ups.conf']"
+          - "'ignorelb' not in __verify_conf['ups.conf']"
+
+    - name: Assert upsd.conf listens on the configured address
+      ansible.builtin.assert:
+        that: "'LISTEN 0.0.0.0 3493' in __verify_conf['upsd.conf']"
+
+    - name: Assert upsd.users defines the default users
+      ansible.builtin.assert:
+        that:
+          - "'[admin]' in __verify_conf['upsd.users']"
+          - "'actions = SET FSD' in __verify_conf['upsd.users']"
+          - "'instcmds = ALL' in __verify_conf['upsd.users']"
+          - "'[monitor]' in __verify_conf['upsd.users']"
+          - "'upsmon master' in __verify_conf['upsd.users']"
+          - "'[client]' in __verify_conf['upsd.users']"
+          - "'upsmon slave' in __verify_conf['upsd.users']"
+
+    - name: Assert upsmon.conf has the minimal baseline
+      ansible.builtin.assert:
+        that:
+          - "'MONITOR ups@localhost 1 monitor changeme slave' in __verify_conf['upsmon.conf']"
+          - "'SHUTDOWNCMD \"/sbin/shutdown -h +0\"' in __verify_conf['upsmon.conf']"
+          - "'POWERDOWNFLAG /etc/killpower' in __verify_conf['upsmon.conf']"
+          - "'POLLFREQ 5' in __verify_conf['upsmon.conf']"
+          - "'DEADTIME' not in __verify_conf['upsmon.conf']"
+
+    - name: Assert upsmon.conf enables notifications for every default event
+      ansible.builtin.assert:
+        that:
+          - "'NOTIFYCMD /etc/nut/notifycmd' in __verify_conf['upsmon.conf']"
+          - "('NOTIFYFLAG ' ~ item ~ ' SYSLOG+WALL+EXEC') in __verify_conf['upsmon.conf']"
+        quiet: true
+      loop: [ONBATT, ONLINE, LOWBATT, FSD, COMMBAD, COMMOK, SHUTDOWN, REPLBATT]
+
+    - name: Assert notification script sends email and Telegram without exposing the token
+      ansible.builtin.assert:
+        that:
+          - "'mail -s' in __verify_conf['notifycmd']"
+          - "'ops@example.com' in __verify_conf['notifycmd']"
+          - "'api.telegram.org' in __verify_conf['notifycmd']"
+          - "'--config -' in __verify_conf['notifycmd']"
+          - "'000000:molecule-placeholder' not in __verify_conf['notifycmd']"
+
+    - name: Check notification script syntax
+      ansible.builtin.command: bash -n /etc/nut/notifycmd
+      changed_when: false
+      check_mode: false
+
+    - name: Read Telegram credentials
+      ansible.builtin.slurp:
+        src: /etc/nut/telegram.env
+      register: __verify_telegram
+      no_log: true
+
+    - name: Assert Telegram credentials are present
+      ansible.builtin.assert:
+        that:
+          - "'TELEGRAM_BOT_TOKEN=' in (__verify_telegram.content | b64decode)"
+          - "'TELEGRAM_CHAT_ID=' in (__verify_telegram.content | b64decode)"
+      no_log: true

@@ -1,0 +1,100 @@
+---
+argument_specs:
+  main:
+    short_description: Configure NUT (Network UPS Tools)
+    options:
+      nut_mode:
+        type: str
+        default: none
+        choices: [none, standalone, netserver, netclient]
+        description: NUT mode.
+      nut_driver:
+        type: str
+        default: usbhid-ups
+        description: UPS driver (server).
+      nut_port:
+        type: str
+        default: auto
+        description: UPS driver port (server).
+      nut_ups_description:
+        type: str
+        default: UPS
+        description: UPS description (server).
+      nut_ups_ignorelb:
+        type: bool
+        default: false
+        description: Ignore the low battery flag (server).
+      nut_ups_override_battery_charge_low:
+        type: int
+        default: 25
+        description: Low battery charge percentage (server).
+      nut_ups_override_battery_runtime_low:
+        type: int
+        default: 300
+        description: Low battery runtime in seconds (server).
+      nut_ups_extra:
+        type: str
+        default: "maxretry = 3\n"
+        description: Extra ups.conf content (server).
+      nut_upsd_extra:
+        type: str
+        default: "LISTEN 0.0.0.0 3493\n"
+        description: Extra upsd.conf content (server).
+      nut_upsd_users:
+        type: dict
+        description: upsd.users entries (server).
+      nut_host:
+        type: str
+        default: ups@localhost
+        description: UPS to monitor, as name@host.
+      nut_user:
+        type: str
+        default: monitor
+        description: upsd user.
+      nut_password:
+        type: str
+        default: changeme
+        description: upsd password.
+      nut_role:
+        type: str
+        default: slave
+        choices: [master, slave, primary, secondary]
+        description: upsmon role.
+      nut_powervalue:
+        type: int
+        default: 1
+        description: Power supplies this system draws from the UPS.
+      nut_upsmon_settings:
+        type: dict
+        default: {}
+        description: Extra upsmon.conf directives, rendered as "KEY value".
+      nut_notify_events:
+        type: list
+        elements: str
+        default: [ONBATT, ONLINE, LOWBATT, FSD, COMMBAD, COMMOK, SHUTDOWN, REPLBATT]
+        description: Events that run the notification script.
+      nut_upsmon_notifyflags:
+        type: dict
+        default: {}
+        description: Per-event NOTIFYFLAG overrides.
+      nut_notify_email_enabled:
+        type: bool
+        default: false
+        description: Send email notifications.
+      nut_notify_email_to:
+        type: str
+        description: Email recipient, required when email is enabled.
+      nut_notify_email_subject_prefix:
+        type: str
+        default: UPS
+        description: Email subject prefix.
+      nut_notify_telegram_enabled:
+        type: bool
+        default: false
+        description: Send Telegram notifications.
+      nut_telegram_chat_id:
+        type: str
+        description: Telegram chat ID, required when Telegram is enabled.
+      nut_telegram_bot_token:
+        type: str
+        description: Telegram bot token, required when Telegram is enabled.
