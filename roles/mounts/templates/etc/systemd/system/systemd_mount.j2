@@ -22,6 +22,9 @@ Type={{ item.type }}
 {% if item.options is defined and item.options | length > 0 -%}
 Options={{ item.options }}
 {% endif %}
+{% if item.timeout_sec is defined %}
+TimeoutSec={{ item.timeout_sec }}
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target

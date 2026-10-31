@@ -38,7 +38,10 @@ mounts_systemd:
     where: /mnt/share
     type: nfs
     options: defaults
+    timeout_sec: 30
 ```
+
+The optional `timeout_sec` value sets `TimeoutSec` for the systemd mount unit.
 
 ## Dependencies
 
