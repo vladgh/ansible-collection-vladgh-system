@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Read mount unit with configured timeout
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/mnt-srv.mount
+      register: __mounts_configured_unit
+
+    - name: Verify configured mount timeout
+      ansible.builtin.assert:
+        that:
+          - "'TimeoutSec=30' in (__mounts_configured_unit.content | b64decode)"
+
+    - name: Read mount unit without configured timeout
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/mnt-media.mount
+      register: __mounts_default_unit
+
+    - name: Verify mount timeout is omitted when unset
+      ansible.builtin.assert:
+        that:
+          - "'TimeoutSec=' not in (__mounts_default_unit.content | b64decode)"

@@ -20,6 +20,7 @@
             where: /mnt/srv
             options: bind
             type: none
+            timeout_sec: 30
             service_state: started
             service_enabled: true
           - name: SystemD Auto Mount Test
