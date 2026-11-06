@@ -1,0 +1,15 @@
+# Managed by Ansible
+{% for dataset, settings in sanoid_datasets.items() %}
+[{{ dataset }}]
+{% for key, value in settings.items() %}
+{{ key }} = {{ (value | string | lower) if value is boolean else value }}
+{% endfor %}
+
+{% endfor %}
+{% for name, settings in sanoid_templates.items() %}
+[template_{{ name }}]
+{% for key, value in settings.items() %}
+{{ key }} = {{ (value | string | lower) if value is boolean else value }}
+{% endfor %}
+
+{% endfor %}

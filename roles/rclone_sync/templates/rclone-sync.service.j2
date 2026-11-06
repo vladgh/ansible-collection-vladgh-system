@@ -1,0 +1,13 @@
+# Managed by Ansible.
+[Unit]
+Description=Rclone sync {{ rclone_sync_job.name }}
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+ExecStart={{ rclone_sync_binary | replace('%', '%%') | replace('$', '$$') | to_json }} sync {{ rclone_sync_job.source | replace('%', '%%') | replace('$', '$$') | to_json }} {{ rclone_sync_job.destination | replace('%', '%%') | replace('$', '$$') | to_json }} --config {{ rclone_sync_job.config_path | default(rclone_sync_config_path) | replace('%', '%%') | replace('$', '$$') | to_json }}{% for flag in rclone_sync_job.flags | default([]) %} {{ flag | replace('%', '%%') | replace('$', '$$') | to_json }}{% endfor %}
+
+TimeoutStartSec=infinity

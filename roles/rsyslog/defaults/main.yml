@@ -1,0 +1,6 @@
+---
+rsyslog_target: ''
+rsyslog_port: '1514'
+rsyslog_protocol: 'udp'
+rsyslog_template: 'RSYSLOG_SyslogProtocol23Format'
+rsyslog_ruleset: '*.*'

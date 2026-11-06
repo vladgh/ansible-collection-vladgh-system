@@ -1,0 +1,34 @@
+---
+- name: Validate log receiver
+  ansible.builtin.assert:
+    that:
+      - rsyslog_target | length > 0
+      - rsyslog_protocol in ['udp', 'tcp']
+    fail_msg: Supply rsyslog_target and select udp or tcp forwarding.
+
+- name: Install RSysLog
+  ansible.builtin.package:
+    name: rsyslog
+    state: present
+
+- name: Configure RSysLog forwarding to Alloy
+  ansible.builtin.copy:
+    dest: /etc/rsyslog.d/90-alloy.conf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      # Managed by Ansible. Local changes will be overwritten.
+      {{ rsyslog_ruleset }} action(
+        type="omfwd"
+        target="{{ rsyslog_target }}"
+        port="{{ rsyslog_port }}"
+        protocol="{{ rsyslog_protocol }}"
+        Template="{{ rsyslog_template }}"
+        action.resumeRetryCount="-1"
+        queue.type="LinkedList"
+        queue.filename="alloy"
+        queue.saveOnShutdown="on"
+        queue.maxDiskSpace="1g"
+      )
+  notify: Restart RSysLog

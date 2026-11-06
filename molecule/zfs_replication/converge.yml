@@ -1,0 +1,15 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include zfs_replication role
+      ansible.builtin.include_role:
+        name: vladgh.system.zfs_replication
+      vars:
+        zfs_replication_user: backup
+        zfs_replication_host: backup.example.org
+        zfs_replication_source_dataset: tank/documents
+        zfs_replication_destination_dataset: backup/documents
+        zfs_replication_on_calendar: daily
+        zfs_replication_enabled: false

@@ -1,0 +1,11 @@
+---
+# renovate: datasource=github-releases depName=caddyserver/caddy
+caddy_version: 2.11.9
+
+# renovate: datasource=github-tags depName=caddy-dns/cloudflare
+caddy_cloudflare_version: v0.2.4
+
+caddy_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
+caddy_user: caddy
+caddy_cloudflare_api_token: ''
+caddy_sites: []

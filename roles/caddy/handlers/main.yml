@@ -1,0 +1,9 @@
+---
+- name: Reload SystemD
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart Caddy
+  ansible.builtin.systemd:
+    name: caddy
+    state: restarted

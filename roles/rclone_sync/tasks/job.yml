@@ -1,0 +1,12 @@
+---
+- name: Install service and timer for {{ rclone_sync_job.name }}
+  ansible.builtin.template:
+    src: "rclone-sync.{{ item }}.j2"
+    dest: "/etc/systemd/system/rclone-sync-{{ rclone_sync_job.name }}.{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - service
+    - timer
+  notify: Reload rclone sync systemd

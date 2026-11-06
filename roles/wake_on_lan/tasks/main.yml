@@ -1,0 +1,43 @@
+---
+- name: Ensure host uses systemd
+  ansible.builtin.assert:
+    that:
+      - ansible_facts["service_mgr"] == "systemd"
+    fail_msg: "wake-on-lan role requires systemd"
+
+- name: Install ethtool
+  ansible.builtin.package:
+    name: ethtool
+    state: present
+
+- name: Deploy wol@.service template unit
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/wol@.service
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Wake-on-LAN for %i
+      Requires=network.target
+      After=network.target
+
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/usr/sbin/ethtool -s %i wol g
+
+      [Install]
+      WantedBy=multi-user.target
+  notify: Reload SystemD
+
+- name: Apply pending systemd unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start WoL units
+  ansible.builtin.systemd:
+    name: "wol@{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ wake_on_lan_interfaces }}"
+  when: wake_on_lan_interfaces is defined and wake_on_lan_interfaces | length > 0

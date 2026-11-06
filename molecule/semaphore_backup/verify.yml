@@ -1,0 +1,43 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect installed files
+      ansible.builtin.stat:
+        path: '{{ item.path }}'
+      loop:
+        - path: /root/.ssh/id_ed25519_semaphore_backup
+          mode: '0600'
+        - path: /usr/local/bin/semaphore-backup
+          mode: '0750'
+      register: installed_files
+    - name: Verify installed files and permissions
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.pw_name == 'root'
+          - item.stat.mode == item.item.mode
+      loop: '{{ installed_files.results }}'
+      loop_control:
+        label: '{{ item.item.path }}'
+    - name: Read timer enablement
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - is-enabled
+          - semaphore-backup.timer
+      register: timer_enabled
+      changed_when: false
+      failed_when: timer_enabled.rc not in [0, 1]
+    - name: Verify timer enablement
+      ansible.builtin.assert:
+        that:
+          - timer_enabled.stdout == 'disabled'
+    - name: Check installed script syntax
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -n
+          - /usr/local/bin/semaphore-backup
+      changed_when: false

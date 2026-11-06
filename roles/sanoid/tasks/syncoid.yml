@@ -1,0 +1,43 @@
+---
+- name: Gather services for removed jobs
+  ansible.builtin.service_facts:
+  when: replication_job.state | default('present') == 'absent'
+
+- name: Stop removed Syncoid timer
+  ansible.builtin.systemd_service:
+    name: "syncoid-{{ replication_job.name }}.timer"
+    state: stopped
+    enabled: false
+  when:
+    - replication_job.state | default('present') == 'absent'
+    - "'syncoid-' ~ replication_job.name ~ '.timer' in ansible_facts.services"
+
+- name: Remove Syncoid units
+  ansible.builtin.file:
+    path: "/etc/systemd/system/syncoid-{{ replication_job.name }}.{{ item }}"
+    state: absent
+  loop: [service, timer]
+  when: replication_job.state | default('present') == 'absent'
+  notify: Reload SystemD
+
+- name: Install Syncoid units
+  ansible.builtin.template:
+    src: "syncoid.{{ item }}.j2"
+    dest: "/etc/systemd/system/syncoid-{{ replication_job.name }}.{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop: [service, timer]
+  when: replication_job.state | default('present') == 'present'
+  notify: Reload SystemD
+
+- name: Apply pending systemd unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure Syncoid timer
+  ansible.builtin.systemd_service:
+    name: "syncoid-{{ replication_job.name }}.timer"
+    state: >-
+      {{ 'started' if replication_job.enabled | default(true) else 'stopped' }}
+    enabled: "{{ replication_job.enabled | default(true) }}"
+  when: replication_job.state | default('present') == 'present'

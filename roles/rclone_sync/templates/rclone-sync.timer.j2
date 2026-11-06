@@ -1,0 +1,12 @@
+# Managed by Ansible.
+[Unit]
+Description=Scheduled rclone sync {{ rclone_sync_job.name }}
+
+[Timer]
+OnCalendar={{ rclone_sync_job.schedule | default(rclone_sync_schedule) }}
+RandomizedDelaySec={{ rclone_sync_job.randomized_delay | default(rclone_sync_randomized_delay) }}
+Persistent=true
+Unit=rclone-sync-{{ rclone_sync_job.name }}.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,14 @@
+# Managed by Ansible. Do not edit by hand.
+
+(cf_tls) {
+  tls {
+    dns cloudflare {env.CF_API_TOKEN}
+  }
+}
+{% for site in caddy_sites %}
+
+{{ site.name }} {
+  import cf_tls
+  reverse_proxy {{ site.upstream }}
+}
+{% endfor %}

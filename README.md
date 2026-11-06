@@ -44,6 +44,22 @@ collections:
         name: vladgh.system.common
 ```
 
+### Additional roles
+
+The following roles are also available; configure host settings and credentials
+in inventory. Each role documents its requirements and operational effects.
+
+- [caddy](roles/caddy/README.md)
+- [docker_data_backup](roles/docker_data_backup/README.md)
+- [prerequisites](roles/prerequisites/README.md)
+- [rclone_sync](roles/rclone_sync/README.md)
+- [rsyslog](roles/rsyslog/README.md)
+- [semaphore](roles/semaphore/README.md)
+- [semaphore_backup](roles/semaphore_backup/README.md)
+- [wake_on_lan](roles/wake_on_lan/README.md)
+- [zfs_replication](roles/zfs_replication/README.md)
+- [zfs_replication_monitor](roles/zfs_replication_monitor/README.md)
+
 ### Playbooks
 
 Import playbooks
@@ -56,6 +72,30 @@ Import playbooks
 ```
 
 See [Ansible using collections in a playbook](https://docs.ansible.com/ansible/latest/collections_guide/collections_using_playbooks.html) for more details.
+
+## Testing imported roles
+
+Each additional role has a scenario under `molecule/<role>/` registered in the
+existing test workflow. From a collection checkout with Molecule, its Docker
+plugin, and a Docker daemon, run:
+
+```sh
+molecule --base-config molecule/base.yml test --scenario-name rclone_sync
+```
+
+The scenarios use documentation endpoints, disabled backup and replication
+timers, and future schedules. They check installation, file modes, generated
+configuration, and timer enablement. They do not authenticate real cloud remotes,
+exercise physical Wake-on-LAN, reboot hardware, or copy production data.
+
+Focused backup and monitor tests run with fake external commands:
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+These need Jinja2, PyYAML, and ShellCheck and run as a separate CI job. They check
+backup failure recovery, argument handling, and monitor health/failure paths.
 
 ## Changelog & Releases
 

@@ -1,0 +1,29 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect installed files
+      ansible.builtin.stat:
+        path: '{{ item.path }}'
+      loop:
+        - path: /etc/rsyslog.d/90-alloy.conf
+          mode: '0644'
+      register: installed_files
+    - name: Verify installed files and permissions
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.pw_name == 'root'
+          - item.stat.mode == item.item.mode
+      loop: '{{ installed_files.results }}'
+      loop_control:
+        label: '{{ item.item.path }}'
+    - name: Read installed configuration
+      ansible.builtin.slurp:
+        src: /etc/rsyslog.d/90-alloy.conf
+      register: installed_config
+    - name: Verify installed configuration
+      ansible.builtin.assert:
+        that:
+          - '''logs.example.org'' in (installed_config.content | b64decode)'

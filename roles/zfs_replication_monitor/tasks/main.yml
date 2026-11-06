@@ -1,0 +1,109 @@
+---
+- name: Validate monitor names
+  ansible.builtin.assert:
+    that:
+      - item.name is match('^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
+      - item.max_age | default(zfs_replication_monitor_max_age) | int > 0
+      - item.kuma_url | regex_search('[\r\n]') is none
+    fail_msg: Supply a safe monitor name, positive max_age, and single-line URL.
+  loop: "{{ zfs_replication_monitors }}"
+  no_log: true
+  diff: false
+
+- name: Create private monitor configuration directory
+  ansible.builtin.file:
+    path: /etc/zfs-replication-monitor
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Write private monitor environment
+  ansible.builtin.copy:
+    dest: "/etc/zfs-replication-monitor/{{ item.name }}.env"
+    content: "KUMA_URL={{ item.kuma_url | to_json }}\n"
+    owner: root
+    group: root
+    mode: '0600'
+  loop: "{{ zfs_replication_monitors }}"
+  no_log: true
+  diff: false
+
+- name: Install ZFS replication monitor
+  ansible.builtin.template:
+    src: zfs-replication-monitor.sh.j2
+    dest: /usr/local/bin/zfs-replication-monitor
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install ZFS replication monitor service unit
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=ZFS replication monitor for {{ item.name }}
+
+      [Service]
+      Type=oneshot
+      User=root
+      EnvironmentFile=/etc/zfs-replication-monitor/{{ item.name }}.env
+      ExecStart=/usr/local/bin/zfs-replication-monitor \
+        {{ item.dataset | replace('%', '%%') | replace('$', '$$') | to_json }} \
+        {{ item.max_age | default(zfs_replication_monitor_max_age) | int }}
+    dest: "/etc/systemd/system/zfs-replication-monitor-{{ item.name }}.service"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload SystemD
+  loop: "{{ zfs_replication_monitors | default([]) }}"
+  no_log: true
+  diff: false
+  loop_control:
+    label: "{{ item.name }} ({{ item.dataset }})"
+  when:
+    - item.dataset is defined and item.dataset | length > 0
+    - item.kuma_url is defined and item.kuma_url | length > 0
+
+- name: Install ZFS replication monitor timer unit
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Hourly ZFS replication monitor for {{ item.name }}
+
+      [Timer]
+      OnCalendar={{ item.on_calendar | default(zfs_replication_monitor_on_calendar) }}
+      Persistent=true
+      Unit=zfs-replication-monitor-{{ item.name }}.service
+
+      [Install]
+      WantedBy=timers.target
+    dest: "/etc/systemd/system/zfs-replication-monitor-{{ item.name }}.timer"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload SystemD
+  loop: "{{ zfs_replication_monitors | default([]) }}"
+  no_log: true
+  diff: false
+  loop_control:
+    label: "{{ item.name }} ({{ item.dataset }})"
+  when:
+    - item.dataset is defined and item.dataset | length > 0
+    - item.kuma_url is defined and item.kuma_url | length > 0
+
+- name: Apply pending systemd unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable ZFS replication monitor timers
+  ansible.builtin.systemd_service:
+    name: "zfs-replication-monitor-{{ item.name }}.timer"
+    enabled: true
+    state: started
+  loop: "{{ zfs_replication_monitors | default([]) }}"
+  no_log: true
+  diff: false
+  loop_control:
+    label: "{{ item.name }} ({{ item.dataset }})"
+  when:
+    - item.dataset is defined and item.dataset | length > 0
+    - item.kuma_url is defined and item.kuma_url | length > 0

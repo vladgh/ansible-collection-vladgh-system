@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: docker_data_backup
+  author: vladgh
+  description: Back up Docker bind-mount data to a remote host with rsync
+  license: Apache v2
+  min_ansible_version: '2.18'
+  galaxy_tags: []
+  platforms: []
+dependencies: []

@@ -1,0 +1,44 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Read Sanoid configuration
+      ansible.builtin.slurp:
+        src: /etc/sanoid/sanoid.conf
+      register: snapshot_config
+
+    - name: Check snapshot policy rendering
+      ansible.builtin.assert:
+        that:
+          - "'[tank/dataset]' in (snapshot_config.content | b64decode)"
+          - "'autosnap = true' in (snapshot_config.content | b64decode)"
+
+    - name: Gather service state
+      ansible.builtin.service_facts:
+
+    - name: Check replication timers
+      ansible.builtin.assert:
+        that:
+          - >-
+            ansible_facts.services['syncoid-documents.timer'].status ==
+            'enabled'
+          - ansible_facts.services['syncoid-paused.timer'].status ==
+            'disabled'
+          - "'syncoid-removed.timer' not in ansible_facts.services"
+
+    - name: Read replication service
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/syncoid-documents.service
+      register: replication_service
+
+    - name: Check replication arguments and locking
+      vars:
+        replication_unit: "{{ replication_service.content | b64decode }}"
+      ansible.builtin.assert:
+        that:
+          - >-
+            "'/usr/bin/flock /run/syncoid.lock' in replication_unit"
+          - "'\"--recursive\"' in replication_unit"
+          - >-
+            "'\"backup@backup.example.org:backup/dataset\"' in replication_unit"

@@ -1,0 +1,15 @@
+---
+# Semaphore Version: https://github.com/semaphoreui/semaphore/releases
+# Managed by RenovateBot (https://docs.renovatebot.com/modules/manager/regex/#advanced-capture)
+# renovate: datasource=github-releases depName=semaphoreui/semaphore versioning=semver-coerced
+semaphore_version: 2.19.18
+
+# Other
+semaphore_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
+semaphore_deb_path: "/tmp/semaphore_{{ semaphore_version }}_linux_{{ semaphore_arch }}.deb"
+semaphore_ansible_venv_path: '/opt/ansible-venv'
+semaphore_ansible_python_packages:
+  - ansible
+
+semaphore_restart_enabled: true
+semaphore_config_path: /opt/semaphore/config.json

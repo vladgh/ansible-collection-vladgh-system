@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include zfs_replication_monitor role
+      ansible.builtin.include_role:
+        name: vladgh.system.zfs_replication_monitor
+      vars:
+        zfs_replication_monitors:
+          - name: documents
+            dataset: tank/documents
+            kuma_url: https://monitor.example.org/api/push/molecule-test
+            on_calendar: '2099-01-01 00:00:00'

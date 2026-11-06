@@ -1,0 +1,20 @@
+---
+argument_specs:
+  main:
+    short_description: Rsyslog
+    options:
+      rsyslog_target:
+        type: str
+        default: ''
+      rsyslog_port:
+        type: str
+        default: '1514'
+      rsyslog_protocol:
+        type: str
+        default: udp
+      rsyslog_template:
+        type: str
+        default: RSYSLOG_SyslogProtocol23Format
+      rsyslog_ruleset:
+        type: str
+        default: '*.*'

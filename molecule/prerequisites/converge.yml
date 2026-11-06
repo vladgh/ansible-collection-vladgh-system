@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    skip_grub: true
+    skip_reboot: true
+  pre_tasks:
+    - name: Create test GRUB configuration directory
+      ansible.builtin.file:
+        path: /etc/default/grub.d
+        state: directory
+        mode: '0755'
+  tasks:
+    - name: Include prerequisites role
+      ansible.builtin.include_role:
+        name: vladgh.system.prerequisites
+      vars:
+        prerequisites_fix_intel_nuc_pm: true

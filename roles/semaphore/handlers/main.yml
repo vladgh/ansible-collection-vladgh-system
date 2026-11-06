@@ -1,0 +1,14 @@
+---
+- name: Reload SystemD
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Delayed Semaphore Restart
+  ansible.builtin.command:
+    cmd: >
+      systemd-run
+      --unit=semaphore-delayed-restart
+      --on-active=5
+      /bin/systemctl restart semaphore
+  changed_when: true
+  when: semaphore_restart_enabled | bool

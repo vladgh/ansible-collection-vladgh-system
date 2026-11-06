@@ -1,0 +1,131 @@
+---
+- name: Ensure the Cloudflare token is set
+  ansible.builtin.assert:
+    that:
+      - caddy_cloudflare_api_token | length > 0
+    fail_msg: caddy_cloudflare_api_token must be set (use a vault variable)
+    quiet: true
+  no_log: true
+  diff: false
+
+- name: Ensure Caddy system group exists
+  ansible.builtin.group:
+    name: "{{ caddy_user }}"
+    system: true
+
+- name: Ensure Caddy system user exists
+  ansible.builtin.user:
+    name: "{{ caddy_user }}"
+    group: "{{ caddy_user }}"
+    system: true
+    shell: /usr/sbin/nologin
+    home: /var/lib/caddy
+    create_home: false
+
+- name: Ensure Caddy directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /usr/local/lib/caddy
+    - /etc/caddy
+
+# Versioned file name keeps the download idempotent and makes upgrades a one-line change
+- name: Download Caddy with the Cloudflare DNS module
+  ansible.builtin.get_url:
+    url: >-
+      {{
+        'https://caddyserver.com/api/download?os=linux&arch=' ~ caddy_arch
+        ~ '&p=github.com/caddy-dns/cloudflare@' ~ caddy_cloudflare_version
+        ~ '&version=v' ~ caddy_version
+      }}
+    dest: "/usr/local/lib/caddy/caddy-{{ caddy_version }}-cloudflare-{{ caddy_cloudflare_version }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Restart Caddy
+
+- name: Link the active Caddy version
+  ansible.builtin.file:
+    src: "/usr/local/lib/caddy/caddy-{{ caddy_version }}-cloudflare-{{ caddy_cloudflare_version }}"
+    dest: /usr/local/bin/caddy
+    state: link
+  notify: Restart Caddy
+
+- name: Write the Caddy environment file
+  ansible.builtin.copy:
+    dest: /etc/caddy/caddy.env
+    owner: root
+    group: root
+    mode: '0600'
+    content: |
+      CF_API_TOKEN={{ caddy_cloudflare_api_token }}
+  no_log: true
+  diff: false
+  notify: Restart Caddy
+
+- name: Generate the Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: '0644'
+    validate: "/usr/local/bin/caddy validate --config %s --adapter caddyfile"
+  environment:
+    CF_API_TOKEN: "{{ caddy_cloudflare_api_token }}"
+  no_log: true
+  diff: false
+  notify: Restart Caddy
+
+- name: Install the Caddy systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/caddy.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Caddy reverse proxy
+      Documentation=https://caddyserver.com/docs/
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      Type=notify
+      User={{ caddy_user }}
+      Group={{ caddy_user }}
+      EnvironmentFile=/etc/caddy/caddy.env
+      Environment=XDG_DATA_HOME=/var/lib/caddy
+      Environment=XDG_CONFIG_HOME=/var/lib/caddy/config
+      StateDirectory=caddy
+      ExecStart=/usr/local/bin/caddy run --config /etc/caddy/Caddyfile
+      ExecReload=/usr/local/bin/caddy reload --config /etc/caddy/Caddyfile --force
+      TimeoutStopSec=5s
+      LimitNOFILE=1048576
+      AmbientCapabilities=CAP_NET_BIND_SERVICE
+      CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+      NoNewPrivileges=true
+      ProtectSystem=strict
+      ProtectHome=true
+      PrivateTmp=true
+      Restart=on-failure
+      RestartSec=10s
+
+      [Install]
+      WantedBy=multi-user.target
+  notify:
+    - Reload SystemD
+    - Restart Caddy
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable and start Caddy
+  ansible.builtin.systemd:
+    name: caddy
+    enabled: true
+    state: started

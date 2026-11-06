@@ -1,0 +1,20 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include rclone_sync role
+      ansible.builtin.include_role:
+        name: vladgh.system.rclone_sync
+      vars:
+        rclone_sync_jobs:
+          - name: local
+            source: /tmp/source
+            destination: /tmp/destination
+            flags:
+              - --dry-run
+            schedule: '2099-01-01 00:00:00'
+          - name: paused
+            source: /tmp/source
+            destination: /tmp/paused
+            enabled: false

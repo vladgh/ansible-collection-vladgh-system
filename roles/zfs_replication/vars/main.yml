@@ -1,0 +1,14 @@
+---
+zfs_replication_packages:
+  - libconfig-inifiles-perl
+  - libcapture-tiny-perl
+  - mbuffer
+  - lzop
+  - pv
+zfs_replication_syncoid_path: /usr/local/bin/syncoid
+zfs_replication_syncoid_url: >-
+  {{ 'https://raw.githubusercontent.com/jimsalterjrs/sanoid/' ~
+  zfs_replication_sanoid_version ~ '/syncoid' }}
+zfs_replication_remote_target: >-
+  {{ zfs_replication_user }}@{{
+  zfs_replication_host }}:{{ zfs_replication_destination_dataset }}

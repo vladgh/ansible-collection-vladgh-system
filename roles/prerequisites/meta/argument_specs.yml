@@ -1,0 +1,8 @@
+---
+argument_specs:
+  main:
+    short_description: Prerequisites
+    options:
+      prerequisites_fix_intel_nuc_pm:
+        type: bool
+        default: false

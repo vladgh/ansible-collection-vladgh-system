@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include caddy role
+      ansible.builtin.include_role:
+        name: vladgh.system.caddy
+      vars:
+        caddy_cloudflare_api_token: molecule-test-not-a-real-token
+        caddy_sites: []

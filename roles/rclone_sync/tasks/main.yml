@@ -1,0 +1,38 @@
+---
+- name: Validate rclone sync job names
+  ansible.builtin.assert:
+    that:
+      - rclone_sync_jobs | map(attribute='name') | unique | length == rclone_sync_jobs | length
+
+- name: Validate rclone sync jobs
+  ansible.builtin.assert:
+    that:
+      - item.name is match('^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
+      - item.source is string
+      - item.source | length > 0
+      - item.destination is string
+      - item.destination | length > 0
+      - item.schedule | default(rclone_sync_schedule) | length > 0
+      - item.flags | default([]) is sequence
+      - item.flags | default([]) is not string
+    fail_msg: Each job needs a unique name and non-empty source and destination paths.
+  loop: "{{ rclone_sync_jobs }}"
+
+- name: Install rclone sync units
+  ansible.builtin.include_tasks: job.yml
+  loop: "{{ rclone_sync_jobs }}"
+  loop_control:
+    loop_var: rclone_sync_job
+    label: "{{ rclone_sync_job.name }}"
+
+- name: Apply rclone sync unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure rclone sync timers
+  ansible.builtin.systemd_service:
+    name: "rclone-sync-{{ item.name }}.timer"
+    enabled: "{{ item.enabled | default(true) | bool }}"
+    state: "{{ 'started' if item.enabled | default(true) | bool else 'stopped' }}"
+  loop: "{{ rclone_sync_jobs }}"
+  loop_control:
+    label: "{{ item.name }}"

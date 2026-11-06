@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+DATASET="${1:-}"
+MAX_AGE="${2:-}"
+KUMA_URL="${KUMA_URL:-}"
+
+[[ $# -eq 2 ]] || die "expected dataset and max age; set KUMA_URL"
+[[ -n "$DATASET" && -n "$MAX_AGE" && -n "$KUMA_URL" ]] || die "missing arguments"
+[[ "$MAX_AGE" =~ ^[0-9]+$ ]] || die "invalid MAX_AGE"
+
+# Verify the dataset exists and its encryption key is available
+zfs list -H "$DATASET" >/dev/null || die "dataset unavailable: $DATASET"
+[[ "$(zfs get -H -o value keystatus "$DATASET")" == "available" ]] || die "encryption key unavailable: $DATASET"
+
+# Get the newest snapshot
+snapshot=$(zfs list -H -r -t snapshot -o creation -s creation "$DATASET" | tail -1)
+[[ -n "$snapshot" ]] || die "no snapshots found: $DATASET"
+
+# Check that the newest snapshot is within the allowed age
+created=$(date -d "$snapshot" +%s) || die "invalid snapshot date"
+age=$(($(date +%s) - created))
+
+(( age >= 0 && age <= MAX_AGE )) || die "latest snapshot is too old: ${age}s"
+
+# Report healthy replication to Uptime Kuma
+escaped_url=${KUMA_URL//\\/\\\\}
+escaped_url=${escaped_url//\"/\\\"}
+printf 'url = "%s"\n' "$escaped_url" |
+    curl --config - --fail --silent --max-time 30 >/dev/null ||
+    die "failed to contact Uptime Kuma"

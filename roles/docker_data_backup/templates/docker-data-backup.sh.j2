@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Managed by Ansible. Local changes will be overwritten.
+set -euo pipefail
+
+readonly SOURCE={{ docker_data_backup_source | quote }}
+readonly DESTINATION={{ docker_data_backup_destination | quote }}
+readonly LOCK_FILE=/run/docker-data-backup.lock
+readonly RSYNC_OPTS=({{ docker_data_backup_rsync_opts | map('quote') | join(' ') }})
+readonly SSH_CMD={{ ('ssh -i ' ~ (docker_data_backup_ssh_key_path | quote) ~
+    ' -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=' ~
+    (docker_data_backup_ssh_timeout | string) ~
+    ' -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ~
+    ' -o GlobalKnownHostsFile=/dev/null') | quote }}
+
+projects=()
+
+die() {
+  printf 'ERROR: %s\n' "$*" >&2
+  exit 1
+}
+
+# Always restart what was stopped, even if the backup fails partway.
+# Starting a project that is already running is harmless.
+restart_projects() {
+  local rc=$? project
+  trap - EXIT
+  for project in "${projects[@]}"; do
+    echo "Starting project ${project}"
+    docker compose -p "$project" start || {
+      echo "ERROR: failed to start project ${project}" >&2
+      rc=1
+    }
+  done
+  exit "$rc"
+}
+
+command -v docker >/dev/null || die "docker not found"
+docker compose version >/dev/null 2>&1 || die "docker compose plugin not found"
+command -v rsync >/dev/null || die "rsync not found"
+[[ -d "$SOURCE" ]] || die "source directory ${SOURCE} does not exist"
+
+exec 200>"$LOCK_FILE"
+flock -n 200 || die "another docker-data-backup run is already in progress"
+
+# Only running Compose projects are listed, so stacks stopped on purpose stay stopped.
+# Containers started outside Compose are left running.
+project_list=$(docker compose ls --quiet) || die "cannot list Compose projects"
+while IFS= read -r project; do
+  if [[ -n "$project" ]]; then
+    projects+=("$project")
+  fi
+done <<< "$project_list"
+
+trap restart_projects EXIT
+
+for project in "${projects[@]}"; do
+  echo "Stopping project ${project}"
+  docker compose -p "$project" stop --timeout {{ docker_data_backup_stop_timeout }}
+done
+
+echo "Backing up ${SOURCE} to ${DESTINATION}"
+rsync "${RSYNC_OPTS[@]}" -e "$SSH_CMD" "$SOURCE" "$DESTINATION"
+
+echo "Backup complete"
