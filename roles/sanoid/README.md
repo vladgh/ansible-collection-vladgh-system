@@ -82,6 +82,33 @@ individual Syncoid arguments, defaulting to empty. Jobs run as root; provision
 SSH keys, trusted host keys, and ZFS permissions separately. This role does not
 change SSH verification or grant remote privileges.
 
+### Optional SSH private key
+
+Set `sanoid_syncoid_ssh_private_key` from an encrypted Vault variable to install
+a root-owned key with mode `0600`. Its default is empty, which leaves SSH files
+untouched. `sanoid_syncoid_ssh_key_path` defaults to `/root/.ssh/syncoid`; its
+parent directory is managed with mode `0700`. Use a dedicated SSH directory.
+Key contents are excluded from task output and diffs. For example:
+
+```yaml
+sanoid_syncoid_ssh_private_key: '{{ vault_syncoid_ssh_private_key }}'
+sanoid_syncoid_jobs:
+  - name: documents
+    source: tank/documents
+    destination: backup@backup.example.org:backup/documents
+    options:
+      - '--sshkey={{ sanoid_syncoid_ssh_key_path }}'
+    on_calendar: hourly
+```
+
+Pass `--sshkey` in each remote job's `options` to select the installed key.
+The `syncoid_ssh` tag installs credentials separately. Provision trusted host
+keys, remote authorization, and ZFS permissions separately. Passphrase-protected
+keys need an agent available to the service; the role does not configure one.
+Clearing the key variable leaves the installed file intact. Revoke remote
+authorization and remove the file explicitly when retiring a key. Check mode
+predicts installation without writing the key.
+
 Each job creates `syncoid-<name>.service` and `.timer`. `enabled` defaults to
 `true`; set it to `false` to stop and disable its timer. `persistent` defaults
 to `false`, so missed replication runs are skipped. All jobs share a blocking

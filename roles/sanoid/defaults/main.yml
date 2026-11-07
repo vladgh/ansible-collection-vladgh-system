@@ -6,6 +6,8 @@ sanoid_version: v2.3.0
 sanoid_enabled: true
 sanoid_on_calendar: '*:0/15'
 sanoid_syncoid_jobs: []
+sanoid_syncoid_ssh_private_key: ''
+sanoid_syncoid_ssh_key_path: /root/.ssh/syncoid
 
 sanoid_templates:
   default:

@@ -47,3 +47,11 @@ argument_specs:
           persistent:
             type: bool
             default: false
+      sanoid_syncoid_ssh_private_key:
+        type: str
+        default: ''
+        no_log: true
+        description: Optional Vault-provided SSH private key for root.
+      sanoid_syncoid_ssh_key_path:
+        type: path
+        default: /root/.ssh/syncoid

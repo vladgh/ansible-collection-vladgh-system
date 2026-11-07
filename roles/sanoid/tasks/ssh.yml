@@ -1,0 +1,20 @@
+---
+- name: Create Syncoid key directory
+  ansible.builtin.file:
+    path: "{{ sanoid_syncoid_ssh_key_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  when: sanoid_syncoid_ssh_private_key | length > 0
+
+- name: Install Syncoid SSH private key
+  ansible.builtin.copy:
+    content: "{{ sanoid_syncoid_ssh_private_key }}"
+    dest: "{{ sanoid_syncoid_ssh_key_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  when: sanoid_syncoid_ssh_private_key | length > 0
+  no_log: true
+  diff: false
