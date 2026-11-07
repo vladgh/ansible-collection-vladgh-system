@@ -1,0 +1,11 @@
+# Managed by Ansible. Local changes will be overwritten.
+
+[Unit]
+Description=Back up {{ docker_data_backup_source }} to a remote host
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart={{ docker_data_backup_script_path }}

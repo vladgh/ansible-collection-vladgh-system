@@ -1,0 +1,37 @@
+---
+# Toggle to enable/disable the scheduled backup timer
+docker_data_backup_enabled: true
+
+# Directory with the container data (bind mounts) to back up
+docker_data_backup_source: /opt/appdata/
+
+# Parent directory containing one Compose directory per project name
+docker_data_backup_compose_root: /opt/appstack
+
+# rsync destination in user@host:path form (required, no default)
+# docker_data_backup_destination: backup-user@nas.example.com:/mnt/pool/backup/data/
+
+# OpenSSH private key used to authenticate to the destination (required, no default)
+# Set it from the vault: "{{ vault_docker_data_backup_ssh_private_key }}"
+# docker_data_backup_ssh_private_key: ""
+
+# systemd OnCalendar expression controlling when the backup timer fires
+docker_data_backup_schedule: "*-*-* 03:33:33"
+
+# Seconds to wait for each container to stop gracefully
+docker_data_backup_stop_timeout: 60
+
+# Max seconds to wait when establishing the ssh connection for rsync
+docker_data_backup_ssh_timeout: 30
+
+# rsync options (--delete makes the destination an exact mirror of the source)
+docker_data_backup_rsync_opts:
+  - -aH
+  - --delete
+  - --numeric-ids
+
+# Where the backup script is installed
+docker_data_backup_script_path: /usr/local/bin/docker-data-backup
+
+# Where the dedicated SSH private key is installed
+docker_data_backup_ssh_key_path: /root/.ssh/id_ed25519_docker_data_backup

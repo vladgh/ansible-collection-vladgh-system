@@ -1,0 +1,94 @@
+---
+- name: Update apt cache and upgrade packages
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: dist
+    autoremove: true
+    autoclean: true
+    cache_valid_time: 21600  # Update the apt cache if its older than 6 hours
+
+###############################################################################
+# Python Virtual Environment
+###############################################################################
+
+- name: Ensure required apt packages are installed
+  ansible.builtin.apt:
+    name:
+      - python3
+      - python3-venv
+      - python3-pip
+      - git
+      - rsync
+      - sshpass
+      - acl
+      - vim
+    state: present
+
+- name: Ensure Ansible virtual environment exists
+  ansible.builtin.command:
+    cmd: python3 -m venv {{ semaphore_ansible_venv_path }}
+    creates: "{{ semaphore_ansible_venv_path }}/bin/activate"
+
+- name: Upgrade pip inside virtual environment  # noqa package-latest
+  ansible.builtin.pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ semaphore_ansible_venv_path }}"
+
+- name: Install Python packages inside virtual environment  # noqa package-latest
+  ansible.builtin.pip:
+    name: "{{ semaphore_ansible_python_packages }}"
+    state: latest
+    virtualenv: "{{ semaphore_ansible_venv_path }}"
+
+###############################################################################
+# Semaphore
+###############################################################################
+
+- name: Download Semaphore package
+  ansible.builtin.get_url:
+    url: "https://github.com/semaphoreui/semaphore/releases/download/v{{ semaphore_version }}/semaphore_{{ semaphore_version }}_linux_{{ semaphore_arch }}.deb"
+    dest: "{{ semaphore_deb_path }}"
+    mode: '0644'
+
+- name: Install Semaphore package
+  ansible.builtin.apt:
+    deb: "{{ semaphore_deb_path }}"
+  notify:
+    - Delayed Semaphore Restart
+
+- name: Install Semaphore systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/semaphore.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      # Managed by Ansible. Local changes will be overwritten.
+
+      [Unit]
+      Description=Semaphore Ansible
+      Documentation=https://github.com/semaphoreui/semaphore
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      Type=simple
+      ExecReload=/bin/kill -HUP $MAINPID
+      ExecStart=/usr/bin/semaphore server --config={{ semaphore_config_path }}
+      Environment=PATH={{ semaphore_ansible_venv_path }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+      Environment=VIRTUAL_ENV={{ semaphore_ansible_venv_path }}
+      SyslogIdentifier=semaphore
+      Restart=always
+      RestartSec=10s
+
+      [Install]
+      WantedBy=multi-user.target
+  notify:
+    - Reload SystemD
+    - Delayed Semaphore Restart
+
+- name: Enable Semaphore service
+  ansible.builtin.systemd:
+    name: semaphore
+    enabled: true

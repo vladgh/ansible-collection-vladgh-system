@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include semaphore role
+      ansible.builtin.include_role:
+        name: vladgh.system.semaphore
+      vars:
+        semaphore_restart_enabled: false
+        semaphore_ansible_python_packages:
+          - ansible-core

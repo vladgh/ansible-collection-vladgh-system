@@ -1,0 +1,14 @@
+---
+- name: Fix Intel NUC power management on kernel 6+
+  when: prerequisites_fix_intel_nuc_pm | default(false) | bool
+  ansible.builtin.copy:
+    dest: /etc/default/grub.d/50-aspm.cfg
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      # Managed by Ansible. Local changes will be overwritten.
+      GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT pcie_aspm=off"
+  notify:
+    - Update Grub
+    - Reboot

@@ -8,22 +8,35 @@ authors:
 description: Ansible collection that holds roles, that can be used to configure common system services.
 license_file: LICENSE
 tags:
-  - common
+  - backup
+  - caddy
   - dns
+  - docker
   - linux
-  - logs
+  - monitoring
   - msmtp
   - nfs
   - nut
   - proxmox
   - qemu
+  - rclone
+  - rsyslog
   - sanoid
+  - semaphore
   - system
   - ubuntu
+  - wake_on_lan
   - wireguard
+  - zfs
 dependencies:
   ansible.posix: "*"
   community.general: "*"
+build_ignore:
+  - .ansible
+  - .cache
+  - .github
+  - molecule
+  - tests
 repository: https://github.com/vladgh/ansible-collection-vladgh-system
 documentation: https://github.com/vladgh/ansible-collection-vladgh-system
 homepage: https://github.com/vladgh/ansible-collection-vladgh-system

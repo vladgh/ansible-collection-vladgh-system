@@ -1,0 +1,32 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect installed files
+      ansible.builtin.stat:
+        path: '{{ item.path }}'
+      loop:
+        - path: /etc/systemd/system/semaphore.service
+          mode: '0644'
+        - path: /opt/ansible-venv/bin/ansible
+          mode: '0755'
+      register: installed_files
+    - name: Verify installed files and permissions
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.pw_name == 'root'
+          - item.stat.mode == item.item.mode
+      loop: '{{ installed_files.results }}'
+      loop_control:
+        label: '{{ item.item.path }}'
+    - name: Read installed configuration
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/semaphore.service
+      register: installed_config
+    - name: Verify installed configuration
+      ansible.builtin.assert:
+        that:
+          - '''/opt/ansible-venv/bin'' in (installed_config.content | b64decode)'
+          - '''--config=/opt/semaphore/config.json'' in (installed_config.content | b64decode)'

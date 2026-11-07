@@ -1,0 +1,29 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect installed files
+      ansible.builtin.stat:
+        path: '{{ item.path }}'
+      loop:
+        - path: /etc/systemd/system/wol@.service
+          mode: '0644'
+      register: installed_files
+    - name: Verify installed files and permissions
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.pw_name == 'root'
+          - item.stat.mode == item.item.mode
+      loop: '{{ installed_files.results }}'
+      loop_control:
+        label: '{{ item.item.path }}'
+    - name: Read installed configuration
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/wol@.service
+      register: installed_config
+    - name: Verify installed configuration
+      ansible.builtin.assert:
+        that:
+          - '''ethtool -s %i wol g'' in (installed_config.content | b64decode)'

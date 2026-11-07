@@ -1,0 +1,31 @@
+---
+# Toggle to enable/disable the scheduled backup timer
+semaphore_backup_enabled: true
+
+# Directory on the Semaphore host to back up (config + database)
+semaphore_backup_source: /opt/semaphore/
+
+# rsync destination, in user@host:path form
+# semaphore_backup_destination: required; supply through inventory
+
+# systemd OnCalendar expression controlling when the backup timer fires
+semaphore_backup_schedule: "*-*-* 03:00:00"
+
+# Service to stop/start around the backup, for a consistent copy
+semaphore_backup_service: semaphore
+
+# Where the backup script is installed
+semaphore_backup_script_path: /usr/local/bin/semaphore-backup
+
+# rsync behavior
+semaphore_backup_rsync_opts: "-a --delete"
+
+# Max seconds to wait when establishing the ssh connection for rsync
+semaphore_backup_ssh_timeout: 30
+
+# Where the dedicated backup SSH private key is installed
+semaphore_backup_ssh_key_path: /root/.ssh/id_ed25519_semaphore_backup
+
+# OpenSSH private key used to authenticate to semaphore_backup_destination.
+# Set this to vault_semaphore_backup_ssh_private_key in host/group vars.
+# semaphore_backup_ssh_private_key: required; supply through inventory

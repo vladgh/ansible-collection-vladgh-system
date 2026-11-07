@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include wake_on_lan role
+      ansible.builtin.include_role:
+        name: vladgh.system.wake_on_lan
+      vars:
+        wake_on_lan_interfaces: []

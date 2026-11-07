@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: semaphore
+  author: vladgh
+  description: Semaphore
+  license: Apache v2
+  min_ansible_version: '2.18'
+  galaxy_tags: []
+  platforms: []
+dependencies: []

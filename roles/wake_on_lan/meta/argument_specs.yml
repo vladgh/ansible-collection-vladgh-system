@@ -1,0 +1,9 @@
+---
+argument_specs:
+  main:
+    short_description: Wake on lan
+    options:
+      wake_on_lan_interfaces:
+        type: list
+        elements: str
+        default: []

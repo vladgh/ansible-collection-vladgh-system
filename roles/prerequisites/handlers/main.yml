@@ -1,0 +1,10 @@
+---
+- name: Update Grub
+  ansible.builtin.command: update-grub
+  changed_when: true
+  when: not skip_grub | default(false)
+
+- name: Reboot
+  ansible.builtin.reboot:
+    msg: Rebooting
+  when: not skip_reboot | default(false)

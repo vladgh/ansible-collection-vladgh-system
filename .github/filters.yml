@@ -43,3 +43,33 @@ sanoid:
 wireguard:
   - roles/wireguard/**/!(**.md)
   - molecule/wireguard/**
+caddy:
+  - roles/caddy/**/!(**.md)
+  - molecule/caddy/**
+docker_data_backup:
+  - roles/docker_data_backup/**/!(**.md)
+  - molecule/docker_data_backup/**
+prerequisites:
+  - roles/prerequisites/**/!(**.md)
+  - molecule/prerequisites/**
+rclone_sync:
+  - roles/rclone_sync/**/!(**.md)
+  - molecule/rclone_sync/**
+rsyslog:
+  - roles/rsyslog/**/!(**.md)
+  - molecule/rsyslog/**
+semaphore:
+  - roles/semaphore/**/!(**.md)
+  - molecule/semaphore/**
+semaphore_backup:
+  - roles/semaphore_backup/**/!(**.md)
+  - molecule/semaphore_backup/**
+wake_on_lan:
+  - roles/wake_on_lan/**/!(**.md)
+  - molecule/wake_on_lan/**
+zfs_replication:
+  - roles/zfs_replication/**/!(**.md)
+  - molecule/zfs_replication/**
+zfs_replication_monitor:
+  - roles/zfs_replication_monitor/**/!(**.md)
+  - molecule/zfs_replication_monitor/**

@@ -1,0 +1,45 @@
+---
+- name: Inspect timer unit for removed job
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/syncoid-{{ sanoid_job.name }}.timer"
+  register: sanoid_timer_unit
+  when: sanoid_job.state | default('present') == 'absent'
+
+- name: Stop removed Syncoid timer
+  ansible.builtin.systemd_service:
+    name: "syncoid-{{ sanoid_job.name }}.timer"
+    state: stopped
+    enabled: false
+  when:
+    - sanoid_job.state | default('present') == 'absent'
+    - sanoid_timer_unit.stat.exists
+
+- name: Remove Syncoid units
+  ansible.builtin.file:
+    path: "/etc/systemd/system/syncoid-{{ sanoid_job.name }}.{{ item }}"
+    state: absent
+  loop: [service, timer]
+  when: sanoid_job.state | default('present') == 'absent'
+  notify: Reload SystemD
+
+- name: Install Syncoid units
+  ansible.builtin.template:
+    src: "syncoid.{{ item }}.j2"
+    dest: "/etc/systemd/system/syncoid-{{ sanoid_job.name }}.{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop: [service, timer]
+  when: sanoid_job.state | default('present') == 'present'
+  notify: Reload SystemD
+
+- name: Apply pending systemd unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure Syncoid timer
+  ansible.builtin.systemd_service:
+    name: "syncoid-{{ sanoid_job.name }}.timer"
+    state: >-
+      {{ 'started' if sanoid_job.enabled | default(true) | bool else 'stopped' }}
+    enabled: "{{ sanoid_job.enabled | default(true) }}"
+  when: sanoid_job.state | default('present') == 'present'

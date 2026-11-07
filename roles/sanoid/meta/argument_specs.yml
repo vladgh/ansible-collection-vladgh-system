@@ -1,0 +1,49 @@
+---
+argument_specs:
+  main:
+    short_description: Configure Sanoid and Syncoid
+    options:
+      sanoid_version:
+        type: str
+        default: v2.3.0
+      sanoid_templates:
+        type: dict
+        description: Named policies with upstream Sanoid configuration keys.
+      sanoid_datasets:
+        type: dict
+        default: {}
+        description: Dataset names mapped to upstream Sanoid configuration keys.
+      sanoid_enabled:
+        type: bool
+        default: true
+      sanoid_on_calendar:
+        type: str
+        default: '*:0/15'
+      sanoid_syncoid_jobs:
+        type: list
+        elements: dict
+        default: []
+        options:
+          name:
+            type: str
+            required: true
+          state:
+            type: str
+            default: present
+            choices: [present, absent]
+          source:
+            type: str
+          destination:
+            type: str
+          on_calendar:
+            type: str
+          options:
+            type: list
+            elements: str
+            default: []
+          enabled:
+            type: bool
+            default: true
+          persistent:
+            type: bool
+            default: false

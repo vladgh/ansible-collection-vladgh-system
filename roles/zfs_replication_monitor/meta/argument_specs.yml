@@ -1,0 +1,29 @@
+---
+argument_specs:
+  main:
+    short_description: Zfs replication monitor
+    options:
+      zfs_replication_monitor_max_age:
+        type: int
+        default: 108000
+      zfs_replication_monitor_on_calendar:
+        type: str
+        default: '*-*-* *:06:00'
+      zfs_replication_monitor_jobs:
+        type: list
+        elements: dict
+        default: []
+        options:
+          name:
+            type: str
+            required: true
+          dataset:
+            type: str
+            required: true
+          kuma_url:
+            type: str
+            required: true
+          max_age:
+            type: int
+          on_calendar:
+            type: str

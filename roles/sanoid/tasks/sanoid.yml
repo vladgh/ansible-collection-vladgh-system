@@ -1,0 +1,86 @@
+---
+- name: Install Sanoid Default Configuration
+  ansible.builtin.get_url:
+    url: >-
+      https://raw.githubusercontent.com/jimsalterjrs/sanoid/{{
+      sanoid_version }}/sanoid.defaults.conf
+    dest: /etc/sanoid/sanoid.defaults.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Generate Sanoid Configuration
+  ansible.builtin.template:
+    src: sanoid.conf.j2
+    dest: /etc/sanoid/sanoid.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Generate Sanoid Service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/sanoid.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Snapshot ZFS Pool
+      Requires=zfs.target
+      After=zfs.target
+      Wants=sanoid-prune.service
+      Before=sanoid-prune.service
+      ConditionFileNotEmpty=/etc/sanoid/sanoid.conf
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/sanoid --take-snapshots --verbose
+  notify: Reload SystemD
+
+- name: Generate Sanoid Prune Service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/sanoid-prune.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Cleanup ZFS Pool
+      Requires=zfs.target
+      After=zfs.target sanoid.service
+      ConditionFileNotEmpty=/etc/sanoid/sanoid.conf
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/sanoid --prune-snapshots --verbose
+
+      [Install]
+      WantedBy=sanoid.service
+  notify: Reload SystemD
+
+- name: Generate Sanoid Timer
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/sanoid.timer
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Run Sanoid Every 15 Minutes
+
+      [Timer]
+      OnCalendar={{ sanoid_on_calendar }}
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+  notify: Reload SystemD
+
+- name: Apply pending systemd unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure Sanoid timer
+  ansible.builtin.service:
+    name: sanoid.timer
+    state: "{{ 'started' if sanoid_enabled | bool else 'stopped' }}"
+    enabled: "{{ sanoid_enabled }}"

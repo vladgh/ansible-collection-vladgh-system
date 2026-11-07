@@ -1,0 +1,44 @@
+---
+argument_specs:
+  main:
+    short_description: Rclone sync
+    options:
+      rclone_sync_binary:
+        type: str
+        default: /usr/bin/rclone
+      rclone_sync_config_path:
+        type: str
+        default: /root/.config/rclone/rclone.conf
+      rclone_sync_schedule:
+        type: str
+        default: '*-*-* 04:00:00'
+      rclone_sync_randomized_delay:
+        type: str
+        default: 15m
+      rclone_sync_jobs:
+        type: list
+        elements: dict
+        default: []
+        options:
+          name:
+            type: str
+            required: true
+          source:
+            type: str
+            required: true
+          destination:
+            type: str
+            required: true
+          config_path:
+            type: str
+          schedule:
+            type: str
+          randomized_delay:
+            type: str
+          enabled:
+            type: bool
+            default: true
+          flags:
+            type: list
+            elements: str
+            default: []

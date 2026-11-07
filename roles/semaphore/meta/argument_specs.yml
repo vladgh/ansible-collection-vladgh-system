@@ -1,0 +1,26 @@
+---
+argument_specs:
+  main:
+    short_description: Semaphore
+    options:
+      semaphore_version:
+        type: str
+        default: 2.19.18
+      semaphore_arch:
+        type: str
+      semaphore_deb_path:
+        type: str
+      semaphore_ansible_venv_path:
+        type: str
+        default: /opt/ansible-venv
+      semaphore_ansible_python_packages:
+        type: list
+        elements: str
+        default:
+          - ansible
+      semaphore_restart_enabled:
+        type: bool
+        default: true
+      semaphore_config_path:
+        type: str
+        default: /opt/semaphore/config.json

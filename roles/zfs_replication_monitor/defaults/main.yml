@@ -1,0 +1,6 @@
+---
+zfs_replication_monitor_max_age: 108000
+zfs_replication_monitor_on_calendar: "*-*-* *:06:00"
+
+# Accept the previous inventory name until callers migrate.
+zfs_replication_monitor_jobs: "{{ zfs_replication_monitors | default([]) }}"

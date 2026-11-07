@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Managed by Ansible. Local changes will be overwritten.
+set -euo pipefail
+
+SERVICE={{ semaphore_backup_service | quote }}
+SOURCE={{ semaphore_backup_source | quote }}
+DESTINATION={{ semaphore_backup_destination | quote }}
+LOCK_FILE="/var/run/semaphore-backup.lock"
+read -r -a RSYNC_OPTS <<< {{ semaphore_backup_rsync_opts | quote }}
+SSH_CMD={{ ('ssh -i ' ~ (semaphore_backup_ssh_key_path | quote) ~
+    ' -o ConnectTimeout=' ~ (semaphore_backup_ssh_timeout | string) ~
+    ' -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ~
+    ' -o GlobalKnownHostsFile=/dev/null') | quote }}
+
+exec 200>"$LOCK_FILE"
+flock -n 200 || {
+    echo "ERROR: another semaphore-backup run is already in progress" >&2
+    exit 1
+}
+
+# Always try to bring the service back up, even if the backup fails partway
+restart_service() {
+    local rc=$?
+    echo "Starting ${SERVICE} service"
+    trap - EXIT
+    systemctl start "$SERVICE" || rc=1
+    exit "$rc"
+}
+trap restart_service EXIT
+
+echo "Stopping ${SERVICE} service"
+systemctl stop "$SERVICE"
+
+echo "Backing up ${SOURCE} to ${DESTINATION}"
+rsync "${RSYNC_OPTS[@]}" \
+    -e "$SSH_CMD" "$SOURCE" "$DESTINATION"
+
+echo "Backup complete"

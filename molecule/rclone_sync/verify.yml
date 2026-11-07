@@ -1,0 +1,54 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect installed files
+      ansible.builtin.stat:
+        path: '{{ item.path }}'
+      loop:
+        - path: /etc/systemd/system/rclone-sync-local.service
+          mode: '0644'
+        - path: /etc/systemd/system/rclone-sync-paused.timer
+          mode: '0644'
+      register: installed_files
+    - name: Verify installed files and permissions
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.pw_name == 'root'
+          - item.stat.mode == item.item.mode
+      loop: '{{ installed_files.results }}'
+      loop_control:
+        label: '{{ item.item.path }}'
+    - name: Read timer enablement
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - is-enabled
+          - rclone-sync-paused.timer
+      register: timer_enabled
+      changed_when: false
+      failed_when: timer_enabled.rc not in [0, 1]
+    - name: Verify timer enablement
+      ansible.builtin.assert:
+        that:
+          - timer_enabled.stdout == 'disabled'
+    - name: Read installed configuration
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/rclone-sync-local.service
+      register: installed_config
+    - name: Verify installed configuration
+      ansible.builtin.assert:
+        that:
+          - '''"--dry-run"'' in (installed_config.content | b64decode)'
+          - '''"/tmp/source"'' in (installed_config.content | b64decode)'
+          - '''"/tmp/destination"'' in (installed_config.content | b64decode)'
+    - name: Read local timer schedule
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/rclone-sync-local.timer
+      register: local_timer
+    - name: Verify future test schedule
+      ansible.builtin.assert:
+        that:
+          - '''OnCalendar=2099-01-01 00:00:00'' in (local_timer.content | b64decode)'

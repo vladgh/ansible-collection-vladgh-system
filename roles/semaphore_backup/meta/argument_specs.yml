@@ -1,0 +1,35 @@
+---
+argument_specs:
+  main:
+    short_description: Semaphore backup
+    options:
+      semaphore_backup_enabled:
+        type: bool
+        default: true
+      semaphore_backup_source:
+        type: str
+        default: /opt/semaphore/
+      semaphore_backup_schedule:
+        type: str
+        default: '*-*-* 03:00:00'
+      semaphore_backup_service:
+        type: str
+        default: semaphore
+      semaphore_backup_script_path:
+        type: str
+        default: /usr/local/bin/semaphore-backup
+      semaphore_backup_rsync_opts:
+        type: str
+        default: -a --delete
+      semaphore_backup_ssh_timeout:
+        type: int
+        default: 30
+      semaphore_backup_ssh_key_path:
+        type: str
+        default: /root/.ssh/id_ed25519_semaphore_backup
+      semaphore_backup_destination:
+        type: str
+        required: true
+      semaphore_backup_ssh_private_key:
+        type: str
+        required: true

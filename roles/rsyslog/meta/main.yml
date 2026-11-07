@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: rsyslog
+  author: vladgh
+  description: Rsyslog
+  license: Apache v2
+  min_ansible_version: '2.18'
+  galaxy_tags: []
+  platforms: []
+dependencies: []

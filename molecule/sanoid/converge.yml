@@ -19,3 +19,16 @@
         sanoid_datasets:
           tank/dataset:
             use_template: default
+        sanoid_syncoid_jobs:
+          - name: documents
+            source: tank/dataset
+            destination: backup@backup.example.org:backup/dataset
+            options: [--recursive]
+            on_calendar: hourly
+          - name: paused
+            source: tank/archive
+            destination: backup/archive
+            on_calendar: daily
+            enabled: false
+          - name: removed
+            state: absent
