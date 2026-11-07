@@ -4,6 +4,7 @@ set -euo pipefail
 
 readonly SOURCE={{ docker_data_backup_source | quote }}
 readonly DESTINATION={{ docker_data_backup_destination | quote }}
+readonly COMPOSE_ROOT={{ docker_data_backup_compose_root | quote }}
 readonly LOCK_FILE=/run/docker-data-backup.lock
 readonly RSYNC_OPTS=({{ docker_data_backup_rsync_opts | map('quote') | join(' ') }})
 readonly SSH_CMD={{ ('ssh -i ' ~ (docker_data_backup_ssh_key_path | quote) ~
@@ -13,6 +14,7 @@ readonly SSH_CMD={{ ('ssh -i ' ~ (docker_data_backup_ssh_key_path | quote) ~
     ' -o GlobalKnownHostsFile=/dev/null') | quote }}
 
 projects=()
+stopped_projects=()
 
 die() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -24,9 +26,9 @@ die() {
 restart_projects() {
   local rc=$? project
   trap - EXIT
-  for project in "${projects[@]}"; do
+  for project in "${stopped_projects[@]}"; do
     echo "Starting project ${project}"
-    docker compose -p "$project" start || {
+    docker compose --project-directory "$COMPOSE_ROOT/$project" -p "$project" start || {
       echo "ERROR: failed to start project ${project}" >&2
       rc=1
     }
@@ -37,26 +39,34 @@ restart_projects() {
 command -v docker >/dev/null || die "docker not found"
 docker compose version >/dev/null 2>&1 || die "docker compose plugin not found"
 command -v rsync >/dev/null || die "rsync not found"
+[[ "$COMPOSE_ROOT" == /* ]] || die "Compose root must be an absolute path"
 [[ -d "$SOURCE" ]] || die "source directory ${SOURCE} does not exist"
 
 exec 200>"$LOCK_FILE"
 flock -n 200 || die "another docker-data-backup run is already in progress"
 
-# Only running Compose projects are listed, so stacks stopped on purpose stay stopped.
-# Containers started outside Compose are left running.
+# Resolve every running project's configuration before stopping any project.
 project_list=$(docker compose ls --quiet) || die "cannot list Compose projects"
 while IFS= read -r project; do
   if [[ -n "$project" ]]; then
+    [[ "$project" =~ ^[a-z0-9][a-z0-9_-]*$ ]] || die "invalid project name: $project"
+    [[ -d "$COMPOSE_ROOT/$project" ]] || die "missing project directory: $COMPOSE_ROOT/$project"
+    docker compose --project-directory "$COMPOSE_ROOT/$project" -p "$project" config --quiet ||
+      die "invalid Compose configuration for project: $project"
     projects+=("$project")
   fi
 done <<< "$project_list"
 
-trap restart_projects EXIT
-
-for project in "${projects[@]}"; do
-  echo "Stopping project ${project}"
-  docker compose -p "$project" stop --timeout {{ docker_data_backup_stop_timeout }}
-done
+if [[ -n "$project_list" ]]; then
+  for project in "${projects[@]}"; do
+    # Include a project before stopping it so a partial stop is also recovered.
+    stopped_projects+=("$project")
+    trap restart_projects EXIT
+    echo "Stopping project ${project}"
+    docker compose --project-directory "$COMPOSE_ROOT/$project" -p "$project" \
+      stop --timeout {{ docker_data_backup_stop_timeout }}
+  done
+fi
 
 echo "Backing up ${SOURCE} to ${DESTINATION}"
 rsync "${RSYNC_OPTS[@]}" -e "$SSH_CMD" "$SOURCE" "$DESTINATION"

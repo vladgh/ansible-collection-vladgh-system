@@ -1,17 +1,26 @@
 # docker_data_backup
 
-Installs a script and a systemd timer that stop all running Docker Compose
-projects (`docker compose -p <project> stop`, which honors `depends_on` order),
-rsync the container data (default `/opt/appdata/`) to a remote host over SSH,
-and start the same projects again. The projects are always restarted, even
-when the backup fails. Containers started outside Compose (for example with
-`docker run`) are left running, so their data may be copied while in use. A short outage during the backup is the price for a
-consistent copy of SQLite and other live databases.
+Installs a script and a systemd timer that discover running Docker Compose
+projects, stop them, rsync their data (default `/opt/appdata/`) to a remote host
+over SSH, and attempt to restart the projects even if the backup fails.
+
+Compose files must live under `<compose_root>/<project_name>/`, defaulting to
+`/opt/appstack/<project_name>/`. Every stop, start, and configuration check uses
+`--project-directory` and `-p`, so the service can run from `/`. All discovered
+project configurations are validated before any project is stopped.
+
+Use standard Compose filenames, such as `compose.yaml` or `docker-compose.yml`,
+and keep required `.env` settings in the project directory. Custom file names,
+extra `-f` files, and environments supplied only by an interactive shell are not
+supported. Projects already fully stopped and containers outside Compose are
+left alone. Within a selected project, `compose start` can start services that
+were stopped before the backup. Avoid concurrent deployments during backups.
+A short outage allows copying live database files while services are stopped.
 
 ## Requirements
 
-- Docker with the Compose plugin installed on the host (for example with `geerlingguy.docker`).
-- Compose projects must be discoverable by `docker compose -p <project>` without the compose file.
+- A running Docker Engine, Docker CLI, and Compose plugin.
+- Each running project has valid Compose configuration under its named directory.
 - A dedicated, restricted account on the destination, with its public key authorized.
 - The role is idempotent and supports `--check`.
 
@@ -22,6 +31,7 @@ consistent copy of SQLite and other live databases.
 | `docker_data_backup_destination` | required | rsync destination, `user@host:path` |
 | `docker_data_backup_ssh_private_key` | required | private key for the destination (keep in the vault) |
 | `docker_data_backup_enabled` | `true` | enable the timer |
+| `docker_data_backup_compose_root` | `/opt/appstack` | Parent directory for Compose project directories |
 | `docker_data_backup_source` | `/opt/appdata/` | directory to back up |
 | `docker_data_backup_schedule` | `*-*-* 03:30:00` | systemd `OnCalendar` |
 | `docker_data_backup_stop_timeout` | `60` | seconds to wait for each container to stop |

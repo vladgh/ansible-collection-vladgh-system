@@ -88,15 +88,6 @@ timers, and future schedules. They check installation, file modes, generated
 configuration, and timer enablement. They do not authenticate real cloud remotes,
 exercise physical Wake-on-LAN, reboot hardware, or copy production data.
 
-Focused backup and monitor tests run with fake external commands:
-
-```sh
-python -m unittest discover -s tests -v
-```
-
-These need Jinja2, PyYAML, and ShellCheck and run as a separate CI job. They check
-backup failure recovery, argument handling, and monitor health/failure paths.
-
 ## Changelog & Releases
 
 This repository keeps a change log using [GitHub's releases](releases)

@@ -41,3 +41,18 @@
           - -n
           - /usr/local/bin/docker-data-backup
       changed_when: false
+
+    - name: Read installed backup script
+      ansible.builtin.slurp:
+        src: /usr/local/bin/docker-data-backup
+      register: backup_script
+
+    - name: Check configured Compose project lookup
+      vars:
+        script_content: "{{ backup_script.content | b64decode }}"
+      ansible.builtin.assert:
+        that:
+          - >-
+            "readonly COMPOSE_ROOT='/opt/test appstack'" in script_content
+          - "'--project-directory' in script_content"
+          - "'config --quiet' in script_content"

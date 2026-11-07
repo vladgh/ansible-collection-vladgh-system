@@ -5,6 +5,9 @@ docker_data_backup_enabled: true
 # Directory with the container data (bind mounts) to back up
 docker_data_backup_source: /opt/appdata/
 
+# Parent directory containing one Compose directory per project name
+docker_data_backup_compose_root: /opt/appstack
+
 # rsync destination in user@host:path form (required, no default)
 # docker_data_backup_destination: backup-user@nas.example.com:/mnt/pool/backup/data/
 

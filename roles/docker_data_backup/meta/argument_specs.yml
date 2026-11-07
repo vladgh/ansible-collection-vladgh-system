@@ -9,6 +9,9 @@ argument_specs:
       docker_data_backup_source:
         type: str
         default: /opt/appdata/
+      docker_data_backup_compose_root:
+        type: str
+        default: /opt/appstack
       docker_data_backup_schedule:
         type: str
         default: '*-*-* 03:33:33'
