@@ -1,6 +1,8 @@
 ---
-- name: Gather services for removed jobs
-  ansible.builtin.service_facts:
+- name: Inspect timer unit for removed job
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/syncoid-{{ replication_job.name }}.timer"
+  register: sanoid_timer_unit
   when: replication_job.state | default('present') == 'absent'
 
 - name: Stop removed Syncoid timer
@@ -10,7 +12,7 @@
     enabled: false
   when:
     - replication_job.state | default('present') == 'absent'
-    - "'syncoid-' ~ replication_job.name ~ '.timer' in ansible_facts.services"
+    - sanoid_timer_unit.stat.exists
 
 - name: Remove Syncoid units
   ansible.builtin.file:

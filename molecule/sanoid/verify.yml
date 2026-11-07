@@ -14,18 +14,42 @@
           - "'[tank/dataset]' in (snapshot_config.content | b64decode)"
           - "'autosnap = true' in (snapshot_config.content | b64decode)"
 
-    - name: Gather service state
-      ansible.builtin.service_facts:
+    - name: Read replication timer enablement
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - is-enabled
+          - "{{ item.name }}"
+      loop:
+        - name: syncoid-documents.timer
+          expected: enabled
+        - name: syncoid-paused.timer
+          expected: disabled
+      register: replication_timers
+      changed_when: false
+      failed_when: replication_timers.rc not in [0, 1]
 
-    - name: Check replication timers
+    - name: Check replication timer enablement
       ansible.builtin.assert:
         that:
-          - >-
-            ansible_facts.services['syncoid-documents.timer'].status ==
-            'enabled'
-          - ansible_facts.services['syncoid-paused.timer'].status ==
-            'disabled'
-          - "'syncoid-removed.timer' not in ansible_facts.services"
+          - item.stdout == item.item.expected
+      loop: "{{ replication_timers.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: Inspect removed replication units
+      ansible.builtin.stat:
+        path: "/etc/systemd/system/syncoid-removed.{{ item }}"
+      loop: [service, timer]
+      register: removed_units
+
+    - name: Check replication units were removed
+      ansible.builtin.assert:
+        that:
+          - not item.stat.exists
+      loop: "{{ removed_units.results }}"
+      loop_control:
+        label: "{{ item.item }}"
 
     - name: Read replication service
       ansible.builtin.slurp:
