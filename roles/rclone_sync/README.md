@@ -26,7 +26,7 @@ Keep credentials in the rclone config, not in job flags or inventory examples.
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `rclone_sync_binary` | `/usr/bin/rclone` | Absolute path to the installed executable. |
+| `rclone_sync_binary` | `/usr/local/bin/rclone` | Absolute path to the installed executable. |
 | `rclone_sync_config_path` | `/root/.config/rclone/rclone.conf` | Existing config used unless a job overrides it. |
 | `rclone_sync_jobs` | `[]` | Jobs to manage. An empty list creates no units. |
 | `rclone_sync_randomized_delay` | `15m` | Maximum random delay added to each scheduled run. |

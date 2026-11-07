@@ -1,5 +1,5 @@
 ---
-rclone_sync_binary: /usr/bin/rclone
+rclone_sync_binary: /usr/local/bin/rclone
 rclone_sync_config_path: /root/.config/rclone/rclone.conf
 rclone_sync_schedule: "*-*-* 04:00:00"
 rclone_sync_randomized_delay: 15m
