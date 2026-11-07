@@ -5,7 +5,7 @@ argument_specs:
     options:
       rclone_sync_binary:
         type: str
-        default: /usr/bin/rclone
+        default: /usr/local/bin/rclone
       rclone_sync_config_path:
         type: str
         default: /root/.config/rclone/rclone.conf
