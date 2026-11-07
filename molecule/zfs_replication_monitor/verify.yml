@@ -39,12 +39,15 @@
         src: /etc/systemd/system/zfs-replication-monitor-documents.service
       register: installed_config
     - name: Verify installed configuration
+      vars:
+        monitor_unit: "{{ installed_config.content | b64decode }}"
       ansible.builtin.assert:
         that:
-          - '''EnvironmentFile=/etc/zfs-replication-monitor/documents.env'' in (installed_config.content
-            | b64decode)'
-          - '''https://'' not in (installed_config.content | b64decode)'
-          - '''molecule-test'' not in (installed_config.content | b64decode)'
+          - >-
+            'EnvironmentFile=/etc/zfs-replication-monitor/documents.env'
+            in monitor_unit
+          - "'https://' not in monitor_unit"
+          - "'molecule-test' not in monitor_unit"
     - name: Check installed script syntax
       ansible.builtin.command:
         argv:

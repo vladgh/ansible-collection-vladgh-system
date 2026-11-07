@@ -40,7 +40,9 @@ and `kuma_url`; optional fields are `max_age` (seconds) and `on_calendar`.
 Supply push URLs through encrypted inventory because they contain credentials.
 For example, use `kuma_url: "{{ vault_replication_push_url }}"`.
 ZFS and curl must already be installed. This check expects an encrypted dataset
-with an available key and at least one snapshot. The URL is stored in a root-only
+with an available key and at least one snapshot on the named dataset. Child
+snapshots do not count; configure a separate monitor for each dataset whose
+freshness matters. The URL is stored in a root-only
 `0600` environment file, and curl reads it through stdin rather than argv.
 Only healthy checks send a heartbeat. Failed checks leave the endpoint to time
 out. Timers are persistent and can run after missed schedules. Removing a list

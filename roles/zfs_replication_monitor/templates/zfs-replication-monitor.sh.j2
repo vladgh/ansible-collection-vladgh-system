@@ -18,8 +18,8 @@ KUMA_URL="${KUMA_URL:-}"
 zfs list -H "$DATASET" >/dev/null || die "dataset unavailable: $DATASET"
 [[ "$(zfs get -H -o value keystatus "$DATASET")" == "available" ]] || die "encryption key unavailable: $DATASET"
 
-# Get the newest snapshot
-snapshot=$(zfs list -H -r -t snapshot -o creation -s creation "$DATASET" | tail -1)
+# Snapshots of this dataset are depth 1; exclude child datasets' snapshots.
+snapshot=$(zfs list -H -d 1 -t snapshot -o creation -s creation "$DATASET" | tail -1)
 [[ -n "$snapshot" ]] || die "no snapshots found: $DATASET"
 
 # Check that the newest snapshot is within the allowed age
