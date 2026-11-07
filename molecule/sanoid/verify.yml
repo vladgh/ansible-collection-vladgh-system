@@ -62,7 +62,7 @@
       ansible.builtin.assert:
         that:
           - >-
-            "'/usr/bin/flock /run/syncoid.lock' in replication_unit"
+            '/usr/bin/flock /run/syncoid.lock' in replication_unit
           - "'\"--recursive\"' in replication_unit"
           - >-
-            "'\"backup@backup.example.org:backup/dataset\"' in replication_unit"
+            '"backup@backup.example.org:backup/dataset"' in replication_unit
