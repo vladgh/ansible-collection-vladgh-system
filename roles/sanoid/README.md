@@ -102,7 +102,7 @@ sanoid_syncoid_jobs:
 ```
 
 Pass `--sshkey` in each remote job's `options` to select the installed key.
-The `syncoid_ssh` tag installs credentials separately. Provision trusted host
+Provision trusted host
 keys, remote authorization, and ZFS permissions separately. Passphrase-protected
 keys need an agent available to the service; the role does not configure one.
 Clearing the key variable leaves the installed file intact. Revoke remote
