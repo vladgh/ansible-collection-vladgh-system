@@ -82,5 +82,5 @@
 - name: Configure Sanoid timer
   ansible.builtin.service:
     name: sanoid.timer
-    state: "{{ 'started' if sanoid_enabled else 'stopped' }}"
+    state: "{{ 'started' if sanoid_enabled | bool else 'stopped' }}"
     enabled: "{{ sanoid_enabled }}"
