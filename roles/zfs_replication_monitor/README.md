@@ -17,7 +17,7 @@ fields are in [meta/argument_specs.yml](meta/argument_specs.yml).
 | --- | --- |
 | `zfs_replication_monitor_max_age` | `108000` |
 | `zfs_replication_monitor_on_calendar` | `*-*-* *:06:00` |
-| `zfs_replication_monitors` | `[]` |
+| `zfs_replication_monitor_jobs` | `[]` |
 
 ## Usage
 
@@ -35,7 +35,8 @@ credentials to role defaults or examples.
 
 ## Operational details
 
-`zfs_replication_monitors` defaults to `[]`. Each entry needs `name`, `dataset`,
+`zfs_replication_monitor_jobs` defaults to `[]`. For compatibility, when the new
+variable is unset it uses the previous `zfs_replication_monitors` value. Each entry needs `name`, `dataset`,
 and `kuma_url`; optional fields are `max_age` (seconds) and `on_calendar`.
 Supply push URLs through encrypted inventory because they contain credentials.
 For example, use `kuma_url: "{{ vault_replication_push_url }}"`.

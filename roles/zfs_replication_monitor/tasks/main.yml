@@ -6,7 +6,7 @@
       - item.max_age | default(zfs_replication_monitor_max_age) | int > 0
       - item.kuma_url | regex_search('[\r\n]') is none
     fail_msg: Supply a safe monitor name, positive max_age, and single-line URL.
-  loop: "{{ zfs_replication_monitors }}"
+  loop: "{{ zfs_replication_monitor_jobs }}"
   no_log: true
   diff: false
 
@@ -25,7 +25,7 @@
     owner: root
     group: root
     mode: '0600'
-  loop: "{{ zfs_replication_monitors }}"
+  loop: "{{ zfs_replication_monitor_jobs }}"
   no_log: true
   diff: false
 
@@ -55,7 +55,7 @@
     group: root
     mode: '0644'
   notify: Reload SystemD
-  loop: "{{ zfs_replication_monitors | default([]) }}"
+  loop: "{{ zfs_replication_monitor_jobs | default([]) }}"
   no_log: true
   diff: false
   loop_control:
@@ -82,7 +82,7 @@
     group: root
     mode: '0644'
   notify: Reload SystemD
-  loop: "{{ zfs_replication_monitors | default([]) }}"
+  loop: "{{ zfs_replication_monitor_jobs | default([]) }}"
   no_log: true
   diff: false
   loop_control:
@@ -99,7 +99,7 @@
     name: "zfs-replication-monitor-{{ item.name }}.timer"
     enabled: true
     state: started
-  loop: "{{ zfs_replication_monitors | default([]) }}"
+  loop: "{{ zfs_replication_monitor_jobs | default([]) }}"
   no_log: true
   diff: false
   loop_control:

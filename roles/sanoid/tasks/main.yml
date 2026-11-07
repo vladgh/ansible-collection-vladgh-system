@@ -66,5 +66,5 @@
   ansible.builtin.include_tasks: syncoid.yml
   loop: "{{ sanoid_syncoid_jobs }}"
   loop_control:
-    loop_var: replication_job
-    label: "{{ replication_job.name }}"
+    loop_var: sanoid_job
+    label: "{{ sanoid_job.name }}"

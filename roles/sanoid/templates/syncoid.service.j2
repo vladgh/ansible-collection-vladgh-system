@@ -1,6 +1,6 @@
 # Managed by Ansible
 [Unit]
-Description=Syncoid replication {{ replication_job.name }}
+Description=Syncoid replication {{ sanoid_job.name }}
 Wants=network-online.target
 After=network-online.target zfs.target
 
@@ -8,4 +8,4 @@ After=network-online.target zfs.target
 Type=oneshot
 User=root
 # Serialize all replication jobs on this host; wait for the preceding job.
-ExecStart=/usr/bin/flock /run/syncoid.lock /usr/local/bin/syncoid {% for arg in (replication_job.options | default([])) + [replication_job.source, replication_job.destination] %}{{ arg | replace('%', '%%') | replace('$', '$$') | to_json }} {% endfor %}
+ExecStart=/usr/bin/flock /run/syncoid.lock /usr/local/bin/syncoid {% for arg in (sanoid_job.options | default([])) + [sanoid_job.source, sanoid_job.destination] %}{{ arg | replace('%', '%%') | replace('$', '$$') | to_json }} {% endfor %}

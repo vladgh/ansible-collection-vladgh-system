@@ -1,10 +1,10 @@
 # Managed by Ansible
 [Unit]
-Description=Scheduled Syncoid replication {{ replication_job.name }}
+Description=Scheduled Syncoid replication {{ sanoid_job.name }}
 
 [Timer]
-OnCalendar={{ replication_job.on_calendar }}
-Persistent={{ replication_job.persistent | default(false) | bool | lower }}
+OnCalendar={{ sanoid_job.on_calendar }}
+Persistent={{ sanoid_job.persistent | default(false) | bool | lower }}
 
 [Install]
 WantedBy=timers.target

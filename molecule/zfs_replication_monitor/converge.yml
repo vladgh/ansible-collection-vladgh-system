@@ -7,7 +7,7 @@
       ansible.builtin.include_role:
         name: vladgh.system.zfs_replication_monitor
       vars:
-        zfs_replication_monitors:
+        zfs_replication_monitor_jobs:
           - name: documents
             dataset: tank/documents
             kuma_url: https://monitor.example.org/api/push/molecule-test

@@ -9,7 +9,7 @@ argument_specs:
       zfs_replication_monitor_on_calendar:
         type: str
         default: '*-*-* *:06:00'
-      zfs_replication_monitors:
+      zfs_replication_monitor_jobs:
         type: list
         elements: dict
         default: []
