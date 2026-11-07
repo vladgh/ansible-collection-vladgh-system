@@ -40,6 +40,6 @@
   ansible.builtin.systemd_service:
     name: "syncoid-{{ replication_job.name }}.timer"
     state: >-
-      {{ 'started' if replication_job.enabled | default(true) else 'stopped' }}
+      {{ 'started' if replication_job.enabled | default(true) | bool else 'stopped' }}
     enabled: "{{ replication_job.enabled | default(true) }}"
   when: replication_job.state | default('present') == 'present'
