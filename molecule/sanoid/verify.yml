@@ -3,6 +3,29 @@
   hosts: all
   become: true
   tasks:
+    - name: Inspect installed replication key
+      ansible.builtin.stat:
+        path: /root/.ssh/syncoid
+        checksum_algorithm: sha256
+      register: replication_key
+
+    - name: Inspect replication key directory
+      ansible.builtin.stat:
+        path: /root/.ssh
+      register: replication_key_directory
+
+    - name: Check replication key contents and permissions
+      ansible.builtin.assert:
+        that:
+          - replication_key.stat.isreg
+          - replication_key.stat.uid == 0
+          - replication_key.stat.gid == 0
+          - replication_key.stat.mode == '0600'
+          - >-
+            replication_key.stat.checksum ==
+            ('molecule-test-key-not-a-real-credential' | hash('sha256'))
+          - replication_key_directory.stat.mode == '0700'
+
     - name: Read Sanoid configuration
       ansible.builtin.slurp:
         src: /etc/sanoid/sanoid.conf

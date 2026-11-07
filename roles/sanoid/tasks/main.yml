@@ -59,6 +59,9 @@
     mode: '0755'
   loop: [sanoid, syncoid, findoid]
 
+- name: Configure Syncoid SSH credentials
+  ansible.builtin.import_tasks: ssh.yml
+
 - name: Configure Sanoid snapshots
   ansible.builtin.import_tasks: sanoid.yml
 
