@@ -67,9 +67,6 @@ semaphore_backup:
 wake_on_lan:
   - roles/wake_on_lan/**/!(**.md)
   - molecule/wake_on_lan/**
-zfs_replication:
-  - roles/zfs_replication/**/!(**.md)
-  - molecule/zfs_replication/**
 zfs_replication_monitor:
   - roles/zfs_replication_monitor/**/!(**.md)
   - molecule/zfs_replication_monitor/**

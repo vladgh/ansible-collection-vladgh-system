@@ -57,7 +57,7 @@ in inventory. Each role documents its requirements and operational effects.
 - [semaphore](roles/semaphore/README.md)
 - [semaphore_backup](roles/semaphore_backup/README.md)
 - [wake_on_lan](roles/wake_on_lan/README.md)
-- [zfs_replication](roles/zfs_replication/README.md)
+- [sanoid](roles/sanoid/README.md) — snapshot policies and scheduled Syncoid replication
 - [zfs_replication_monitor](roles/zfs_replication_monitor/README.md)
 
 ### Playbooks
