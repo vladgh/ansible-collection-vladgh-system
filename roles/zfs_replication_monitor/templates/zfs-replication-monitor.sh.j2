@@ -8,25 +8,39 @@ die() {
 
 DATASET="${1:-}"
 MAX_AGE="${2:-}"
+RECURSIVE="${3:-false}"
 KUMA_URL="${KUMA_URL:-}"
 
-[[ $# -eq 2 ]] || die "expected dataset and max age; set KUMA_URL"
+[[ $# -eq 2 || $# -eq 3 ]] || die "expected dataset, max age, optional recursive; set KUMA_URL"
 [[ -n "$DATASET" && -n "$MAX_AGE" && -n "$KUMA_URL" ]] || die "missing arguments"
 [[ "$MAX_AGE" =~ ^[0-9]+$ ]] || die "invalid MAX_AGE"
+[[ "$RECURSIVE" == true || "$RECURSIVE" == false ]] || die "invalid recursive mode"
 
 # Verify the dataset exists and its encryption key is available
 zfs list -H "$DATASET" >/dev/null || die "dataset unavailable: $DATASET"
 [[ "$(zfs get -H -o value keystatus "$DATASET")" == "available" ]] || die "encryption key unavailable: $DATASET"
 
-# Snapshots of this dataset are depth 1; exclude child datasets' snapshots.
-snapshot=$(zfs list -H -d 1 -t snapshot -o creation -s creation "$DATASET" | tail -1)
-[[ -n "$snapshot" ]] || die "no snapshots found: $DATASET"
+datasets="$DATASET"
+if [[ "$RECURSIVE" == true ]]; then
+    # The named dataset is a container; check every descendant independently.
+    listing=$(zfs list -H -r -t filesystem,volume -o name "$DATASET") || die "cannot list descendants"
+    datasets=""
+    while IFS= read -r dataset; do
+        [[ "$dataset" == "$DATASET" ]] && continue
+        datasets+="${dataset}"$'\n'
+    done <<< "$listing"
+    [[ -n "$datasets" ]] || die "no descendants found: $DATASET"
+fi
 
-# Check that the newest snapshot is within the allowed age
-created=$(date -d "$snapshot" +%s) || die "invalid snapshot date"
-age=$(($(date +%s) - created))
-
-(( age >= 0 && age <= MAX_AGE )) || die "latest snapshot is too old: ${age}s"
+while IFS= read -r dataset; do
+    [[ -n "$dataset" ]] || continue
+    [[ "$(zfs get -H -o value keystatus "$dataset")" == "available" ]] || die "encryption key unavailable: $dataset"
+    # Epoch output avoids parsing localized creation dates. Depth 1 excludes children.
+    snapshot=$(zfs list -H -p -d 1 -t snapshot -o creation -s creation "$dataset" | tail -1) || die "cannot list snapshots: $dataset"
+    [[ "$snapshot" =~ ^[0-9]+$ ]] || die "no valid snapshot found: $dataset"
+    age=$(($(date +%s) - snapshot))
+    (( age >= 0 && age <= MAX_AGE )) || die "latest snapshot is too old: $dataset (${age}s)"
+done <<< "$datasets"
 
 # Report healthy replication to Uptime Kuma
 escaped_url=${KUMA_URL//\\/\\\\}
