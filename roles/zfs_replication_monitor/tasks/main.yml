@@ -49,7 +49,8 @@
       EnvironmentFile=/etc/zfs-replication-monitor/{{ item.name }}.env
       ExecStart=/usr/local/bin/zfs-replication-monitor \
         {{ item.dataset | replace('%', '%%') | replace('$', '$$') | to_json }} \
-        {{ item.max_age | default(zfs_replication_monitor_max_age) | int }}
+        {{ item.max_age | default(zfs_replication_monitor_max_age) | int }} \
+        {{ item.recursive | default(false) | bool | lower }}
     dest: "/etc/systemd/system/zfs-replication-monitor-{{ item.name }}.service"
     owner: root
     group: root

@@ -10,5 +10,6 @@
         zfs_replication_monitor_jobs:
           - name: documents
             dataset: tank/documents
+            recursive: true
             kuma_url: https://monitor.example.org/api/push/molecule-test
             on_calendar: '2099-01-01 00:00:00'

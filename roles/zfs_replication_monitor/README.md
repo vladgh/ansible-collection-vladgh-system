@@ -35,15 +35,32 @@ credentials to role defaults or examples.
 
 ## Operational details
 
-`zfs_replication_monitor_jobs` defaults to `[]`. For compatibility, when the new
-variable is unset it uses the previous `zfs_replication_monitors` value. Each entry needs `name`, `dataset`,
-and `kuma_url`; optional fields are `max_age` (seconds) and `on_calendar`.
+`zfs_replication_monitor_jobs` defaults to `[]`. Each entry needs `name`, `dataset`,
+and `kuma_url`; optional fields are `max_age` (seconds), `on_calendar`, and
+`recursive` (boolean, default `false`).
 Supply push URLs through encrypted inventory because they contain credentials.
 For example, use `kuma_url: "{{ vault_replication_push_url }}"`.
 ZFS and curl must already be installed. This check expects an encrypted dataset
 with an available key and at least one snapshot on the named dataset. Child
-snapshots do not count; configure a separate monitor for each dataset whose
-freshness matters. The URL is stored in a root-only
+snapshots do not count by default.
+
+With `recursive: true`, the named dataset is a container: it must exist and be
+unlocked but does not need snapshots. Every descendant filesystem or volume
+must be unlocked and have its own recent snapshot, including nested children.
+A stale or snapshotless descendant prevents the heartbeat even if other
+descendants are healthy. An empty container also fails. This discovers existing
+descendants; it cannot detect a dataset that has never arrived or was deleted.
+Snapshot age is creation time on the source, not the last receive time.
+
+```yaml
+zfs_replication_monitor_jobs:
+  - name: offsite
+    dataset: backup/replicas
+    recursive: true
+    kuma_url: '{{ vault_replication_push_url }}'
+```
+
+The URL is stored in a root-only
 `0600` environment file, and curl reads it through stdin rather than argv.
 Only healthy checks send a heartbeat. Failed checks leave the endpoint to time
 out. Timers are persistent and can run after missed schedules. Removing a list

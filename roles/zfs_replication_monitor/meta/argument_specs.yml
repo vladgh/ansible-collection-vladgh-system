@@ -27,3 +27,6 @@ argument_specs:
             type: int
           on_calendar:
             type: str
+          recursive:
+            type: bool
+            default: false
