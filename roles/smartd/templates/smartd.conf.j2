@@ -1,0 +1,4 @@
+# Managed by Ansible. Configure disks through smartd_devices in inventory.
+{% for device in smartd_devices %}
+{{ device.path }} -d {{ device.type | default('auto') }} -a{% if device.standby | default(true) and device.type | default('auto') != 'nvme' and 'nvme' not in device.path %} -n standby{% endif %}{% if device.schedule | default('') %} -s {{ device.schedule }}{% endif %} -m {{ smartd_mail_to }} -M exec /usr/share/smartmontools/smartd-runner
+{% endfor %}

@@ -1,0 +1,71 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Read SMART monitoring configuration
+      ansible.builtin.slurp:
+        src: /etc/smartd.conf
+      register: smartd_config
+
+    - name: Check disk directives and schedules
+      vars:
+        config: "{{ smartd_config.content | b64decode }}"
+      ansible.builtin.assert:
+        that:
+          - "'DEVICESCAN' not in config"
+          - "' -s (S/../../1/20|L/../20/./06)' in config"
+          - >-
+            ' -m root -M exec /usr/share/smartmontools/smartd-runner' in config
+          - "'ata-EXAMPLE_disk2 -d auto -a -m root' in config"
+          - "'nvme-EXAMPLE_disk3 -d auto -a -m root' in config"
+
+    - name: Read daemon enablement
+      ansible.builtin.command:
+        argv: [systemctl, is-enabled, smartmontools.service]
+      register: smartd_service_state
+      changed_when: false
+      failed_when: smartd_service_state.rc not in [0, 1]
+
+    - name: Check monitoring is disabled for fixture disks
+      ansible.builtin.assert:
+        that:
+          - smartd_service_state.stdout == 'disabled'
+
+    - name: Reject duplicate disk paths before changing configuration
+      block:
+        - name: Include role with duplicate disk paths
+          ansible.builtin.include_role:
+            name: vladgh.system.smartd
+          vars:
+            smartd_devices:
+              - path: /dev/disk/by-id/ata-EXAMPLE_disk1
+              - path: /dev/disk/by-id/ata-EXAMPLE_disk1
+      rescue:
+        - name: Record expected validation failure
+          ansible.builtin.set_fact:
+            smartd_duplicate_rejected: true
+
+    - name: Check duplicate disks were rejected
+      ansible.builtin.assert:
+        that:
+          - smartd_duplicate_rejected | default(false)
+
+    - name: Reject malformed device directives
+      block:
+        - name: Include role with an invalid device directive
+          ansible.builtin.include_role:
+            name: vladgh.system.smartd
+          vars:
+            smartd_devices:
+              - path: /dev/disk/by-id/example
+                type: 'sat -s invalid'
+      rescue:
+        - name: Record expected device type failure
+          ansible.builtin.set_fact:
+            smartd_type_rejected: true
+
+    - name: Check invalid directive was rejected
+      ansible.builtin.assert:
+        that:
+          - smartd_type_rejected | default(false)

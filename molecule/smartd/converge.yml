@@ -1,0 +1,18 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Configure SMART monitoring without physical disks
+      ansible.builtin.include_role:
+        name: vladgh.system.smartd
+      vars:
+        smartd_enabled: false
+        smartd_validate_config: false
+        smartd_devices:
+          - path: /dev/disk/by-id/ata-EXAMPLE_disk1
+            type: sat
+            schedule: '(S/../../1/20|L/../20/./06)'
+          - path: /dev/disk/by-id/ata-EXAMPLE_disk2
+            standby: false
+          - path: /dev/disk/by-id/nvme-EXAMPLE_disk3

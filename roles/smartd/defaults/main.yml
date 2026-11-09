@@ -1,0 +1,5 @@
+---
+smartd_enabled: true
+smartd_validate_config: true
+smartd_mail_to: root
+smartd_devices: []

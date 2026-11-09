@@ -58,6 +58,9 @@ rclone_sync:
 rsyslog:
   - roles/rsyslog/**/!(**.md)
   - molecule/rsyslog/**
+smartd:
+  - roles/smartd/**/!(**.md)
+  - molecule/smartd/**
 semaphore:
   - roles/semaphore/**/!(**.md)
   - molecule/semaphore/**
