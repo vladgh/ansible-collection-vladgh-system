@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: Check ZFS pool health and send healthy heartbeats
+    options:
+      zfs_pool_monitor_on_calendar:
+        type: str
+        default: '*-*-* *:00/5:00'
+      zfs_pool_monitor_jobs:
+        type: list
+        elements: dict
+        default: []
+        options:
+          name:
+            type: str
+            required: true
+          pool:
+            type: str
+            required: true
+          kuma_url:
+            type: str
+            required: true
+          on_calendar:
+            type: str
+          enabled:
+            type: bool
+            default: true

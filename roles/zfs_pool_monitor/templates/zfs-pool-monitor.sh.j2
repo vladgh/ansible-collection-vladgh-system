@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export LC_ALL=C
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+[[ $# -eq 0 ]] || die "this monitor takes no arguments"
+pool={{ item.pool | quote }}
+KUMA_URL={{ item.kuma_url | quote }}
+[[ "$pool" =~ ^[a-zA-Z][a-zA-Z0-9_.:-]*$ ]] || die "invalid pool name"
+[[ -n "${KUMA_URL:-}" ]] || die "missing KUMA_URL"
+[[ "$KUMA_URL" != *$'\n'* && "$KUMA_URL" != *$'\r'* ]] || die "invalid URL"
+
+health=$(zpool list -H -o health "$pool") || die "pool unavailable: $pool"
+[[ "$health" == ONLINE ]] || die "pool $pool is $health"
+status=$(zpool status -v -p "$pool") || die "cannot read pool status: $pool"
+[[ "$status" == *'errors: No known data errors'* ]] || die "pool reports data errors: $pool"
+
+# ONLINE pools can retain device error counters after a recovered fault.
+awk '
+    $2 == "ONLINE" && $3 ~ /^[0-9]+$/ && $4 ~ /^[0-9]+$/ && $5 ~ /^[0-9]+$/ {
+        if ($3 != 0 || $4 != 0 || $5 != 0) failed = 1
+    }
+    END { exit failed }
+' <<< "$status" || die "pool reports device errors: $pool"
+
+# Keep the push token out of command arguments and logs.
+escaped_url=${KUMA_URL//\\/\\\\}
+escaped_url=${escaped_url//\"/\\\"}
+printf 'url = "%s"\n' "$escaped_url" |
+    curl --config - --fail --silent --max-time 30 >/dev/null ||
+    die "failed to contact Uptime Kuma"

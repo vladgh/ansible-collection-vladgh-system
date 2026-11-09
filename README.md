@@ -60,6 +60,7 @@ in inventory. Each role documents its requirements and operational effects.
 - [wake_on_lan](roles/wake_on_lan/README.md)
 - [sanoid](roles/sanoid/README.md) — snapshot policies and scheduled Syncoid replication
 - [zfs_replication_monitor](roles/zfs_replication_monitor/README.md)
+- [zfs_pool_monitor](roles/zfs_pool_monitor/README.md)
 
 ### Playbooks
 

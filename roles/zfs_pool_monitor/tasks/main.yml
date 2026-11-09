@@ -1,0 +1,97 @@
+---
+- name: Validate unique monitor names
+  ansible.builtin.assert:
+    that:
+      - >-
+        zfs_pool_monitor_jobs | map(attribute='name') | unique | length ==
+        zfs_pool_monitor_jobs | length
+    fail_msg: Supply unique pool monitor names.
+
+- name: Validate pool monitor settings
+  ansible.builtin.assert:
+    that:
+      - item.name is match('^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
+      - item.pool is match('^[a-zA-Z][a-zA-Z0-9_.:-]*$')
+      - item.kuma_url is match('^https?://[^\s]+$')
+      - item.kuma_url | regex_search('[\r\n]') is none
+      - item.on_calendar | default(zfs_pool_monitor_on_calendar) | length > 0
+      - >-
+        item.on_calendar | default(zfs_pool_monitor_on_calendar) |
+        regex_search('[\r\n]') is none
+    fail_msg: Supply safe names, a single-line HTTP push URL, and a schedule.
+  loop: "{{ zfs_pool_monitor_jobs }}"
+  no_log: true
+  diff: false
+
+- name: Install heartbeat dependency
+  ansible.builtin.package:
+    name: curl
+    state: present
+
+- name: Install pool health check
+  ansible.builtin.template:
+    src: zfs-pool-monitor.sh.j2
+    dest: "/usr/local/bin/zfs-pool-monitor-{{ item.name }}"
+    owner: root
+    group: root
+    mode: '0700'
+  loop: "{{ zfs_pool_monitor_jobs }}"
+  no_log: true
+  diff: false
+
+- name: Install pool monitor service
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/zfs-pool-monitor-{{ item.name }}.service"
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=ZFS pool health monitor {{ item.name }}
+      After=zfs.target network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=oneshot
+      User=root
+      TimeoutStartSec=90
+      ExecStart=/usr/local/bin/zfs-pool-monitor-{{ item.name }}
+  loop: "{{ zfs_pool_monitor_jobs }}"
+  notify: Reload pool monitor units
+  no_log: true
+  diff: false
+
+- name: Install pool monitor timer
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/zfs-pool-monitor-{{ item.name }}.timer"
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Scheduled ZFS pool health monitor {{ item.name }}
+
+      [Timer]
+      OnCalendar={{ item.on_calendar | default(zfs_pool_monitor_on_calendar) }}
+      Persistent=true
+      Unit=zfs-pool-monitor-{{ item.name }}.service
+
+      [Install]
+      WantedBy=timers.target
+  loop: "{{ zfs_pool_monitor_jobs }}"
+  notify: Reload pool monitor units
+  no_log: true
+  diff: false
+
+- name: Apply pool monitor unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure pool monitor timers
+  ansible.builtin.systemd_service:
+    name: "zfs-pool-monitor-{{ item.name }}.timer"
+    enabled: "{{ item.enabled | default(true) }}"
+    state: "{{ 'started' if item.enabled | default(true) else 'stopped' }}"
+  loop: "{{ zfs_pool_monitor_jobs }}"
+  when: not ansible_check_mode
+  no_log: true
+  diff: false
