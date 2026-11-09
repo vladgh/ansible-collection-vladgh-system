@@ -1,0 +1,31 @@
+---
+argument_specs:
+  main:
+    short_description: Configure disk health monitoring and SMART tests
+    options:
+      smartd_enabled:
+        type: bool
+        default: true
+      smartd_validate_config:
+        type: bool
+        default: true
+      smartd_mail_to:
+        type: str
+        default: root
+      smartd_devices:
+        type: list
+        elements: dict
+        default: []
+        options:
+          path:
+            type: path
+            required: true
+          type:
+            type: str
+            default: auto
+          schedule:
+            type: str
+            default: ''
+          standby:
+            type: bool
+            default: true

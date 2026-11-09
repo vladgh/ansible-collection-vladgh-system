@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: smartd
+  author: vladgh
+  description: Monitor disk health and schedule SMART self-tests
+  license: Apache v2
+  min_ansible_version: '2.18'
+  galaxy_tags: []
+  platforms:
+    - name: Debian
+      versions: [all]
+    - name: Ubuntu
+      versions: [all]
+dependencies: []

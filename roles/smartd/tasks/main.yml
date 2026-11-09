@@ -1,0 +1,52 @@
+---
+- name: Validate platform and disk configuration
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['os_family'] == 'Debian'
+      - smartd_devices | length > 0
+      - >-
+        smartd_devices | map(attribute='path') | unique | length ==
+        smartd_devices | length
+      - smartd_mail_to is match('^[a-zA-Z0-9_@.+,-]+$')
+    fail_msg: Use a Debian-family host, unique disk paths, and a mail recipient.
+
+- name: Validate disk directives
+  ansible.builtin.assert:
+    that:
+      - item.path is match('^/dev/[a-zA-Z0-9_./:+-]+$')
+      - item.type | default('auto') is match('^[a-zA-Z0-9_,/+.-]+$')
+      - >-
+        item.schedule | default('') is match('^[SLCO0-9./|()+?*^$\[\]-]*$')
+    fail_msg: >-
+      Use a /dev path and single-token smartd type and schedule directives.
+  loop: "{{ smartd_devices }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Install SMART monitoring tools
+  ansible.builtin.apt:
+    name: smartmontools
+    state: present
+
+- name: Configure disk monitoring and self-tests
+  ansible.builtin.template:
+    src: smartd.conf.j2
+    dest: /etc/smartd.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+    validate: >-
+      {{ '/usr/sbin/smartd -q showtests -c %s'
+         if smartd_validate_config else omit }}
+  notify: Restart smartmontools
+
+- name: Apply pending SMART configuration changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure SMART monitoring service
+  ansible.builtin.systemd_service:
+    name: smartmontools
+    enabled: "{{ smartd_enabled }}"
+    state: "{{ 'started' if smartd_enabled else 'stopped' }}"
+  when: not ansible_check_mode

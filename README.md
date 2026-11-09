@@ -54,6 +54,7 @@ in inventory. Each role documents its requirements and operational effects.
 - [prerequisites](roles/prerequisites/README.md)
 - [rclone_sync](roles/rclone_sync/README.md)
 - [rsyslog](roles/rsyslog/README.md)
+- [smartd](roles/smartd/README.md)
 - [semaphore](roles/semaphore/README.md)
 - [semaphore_backup](roles/semaphore_backup/README.md)
 - [wake_on_lan](roles/wake_on_lan/README.md)
