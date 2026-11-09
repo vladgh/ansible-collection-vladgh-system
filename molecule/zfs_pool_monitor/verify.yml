@@ -1,0 +1,54 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Inspect private monitor script
+      ansible.builtin.stat:
+        path: /usr/local/bin/zfs-pool-monitor-data
+      register: pool_script
+
+    - name: Check private script permissions
+      ansible.builtin.assert:
+        that:
+          - pool_script.stat.isreg
+          - pool_script.stat.mode == '0700'
+          - pool_script.stat.uid == 0
+          - pool_script.stat.gid == 0
+
+    - name: Read installed service
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/zfs-pool-monitor-data.service
+      register: pool_service
+
+    - name: Check service keeps credentials out of its arguments
+      vars:
+        unit: "{{ pool_service.content | b64decode }}"
+      ansible.builtin.assert:
+        that:
+          - "'ExecStart=/usr/local/bin/zfs-pool-monitor-data' in unit"
+          - "'EnvironmentFile=' not in unit"
+          - "'private-token' not in unit"
+
+    - name: Read timer enablement
+      ansible.builtin.command:
+        argv: [systemctl, is-enabled, 'zfs-pool-monitor-{{ item.name }}.timer']
+      loop:
+        - name: data
+          expected: enabled
+        - name: paused
+          expected: disabled
+      register: pool_timers
+      changed_when: false
+      failed_when: pool_timers.rc not in [0, 1]
+
+    - name: Check enabled and disabled timers
+      ansible.builtin.assert:
+        that:
+          - item.stdout == item.item.expected
+      loop: "{{ pool_timers.results }}"
+
+    - name: Check script syntax
+      ansible.builtin.command:
+        argv: [bash, -n, /usr/local/bin/zfs-pool-monitor-data]
+      changed_when: false

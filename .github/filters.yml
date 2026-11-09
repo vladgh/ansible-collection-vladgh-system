@@ -73,3 +73,6 @@ wake_on_lan:
 zfs_replication_monitor:
   - roles/zfs_replication_monitor/**/!(**.md)
   - molecule/zfs_replication_monitor/**
+zfs_pool_monitor:
+  - roles/zfs_pool_monitor/**/!(**.md)
+  - molecule/zfs_pool_monitor/**

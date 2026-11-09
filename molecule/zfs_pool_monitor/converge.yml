@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include pool monitoring role
+      ansible.builtin.include_role:
+        name: vladgh.system.zfs_pool_monitor
+      vars:
+        zfs_pool_monitor_jobs:
+          - name: data
+            pool: tank
+            kuma_url: https://monitor.example.org/api/push/private-token
+            on_calendar: '2099-01-01 00:00:00'
+          - name: paused
+            pool: backup
+            kuma_url: https://monitor.example.org/api/push/molecule-paused
+            on_calendar: '2099-01-01 00:00:00'
+            enabled: false

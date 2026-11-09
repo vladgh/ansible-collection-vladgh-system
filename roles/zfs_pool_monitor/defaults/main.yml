@@ -1,0 +1,3 @@
+---
+zfs_pool_monitor_on_calendar: '*-*-* *:00/5:00'
+zfs_pool_monitor_jobs: []
