@@ -9,11 +9,11 @@
       vars:
         zfs_pool_monitor_jobs:
           - name: data
-            pool: tank
+            pools: [tank, backup]
             kuma_url: https://monitor.example.org/api/push/private-token
             on_calendar: '2099-01-01 00:00:00'
           - name: paused
-            pool: backup
+            pools: [backup]
             kuma_url: https://monitor.example.org/api/push/molecule-paused
             on_calendar: '2099-01-01 00:00:00'
             enabled: false

@@ -1,3 +1,7 @@
 ---
 zfs_pool_monitor_on_calendar: '*-*-* *:00/5:00'
 zfs_pool_monitor_jobs: []
+zfs_pool_monitor_capacity_warning: 80
+zfs_pool_monitor_capacity_critical: 90
+zfs_pool_monitor_capacity_delay: 3600
+zfs_pool_monitor_scrub_max_age: 3888000

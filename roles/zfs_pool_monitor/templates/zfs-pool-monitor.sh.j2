@@ -1,35 +1,152 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export LC_ALL=C
+umask 077
 
-die() {
-    echo "ERROR: $*" >&2
+if (( $# != 0 )); then
+    echo 'This monitor takes no arguments' >&2
     exit 1
+fi
+
+# Ansible supplies configuration; systemd supplies the private state directory.
+pools=({% for pool in item.pools %}{{ pool | quote }} {% endfor %})
+KUMA_URL={{ item.kuma_url | quote }}
+state_dir=${STATE_DIRECTORY:-/var/lib/zfs-pool-monitor-{{ item.name }}}
+capacity_warning={{ zfs_pool_monitor_capacity_warning }}
+capacity_critical={{ zfs_pool_monitor_capacity_critical }}
+capacity_warning_seconds={{ zfs_pool_monitor_capacity_delay }}
+scrub_max_age_seconds={{ zfs_pool_monitor_scrub_max_age }}
+now=$(date +%s)
+mkdir -p "$state_dir"
+message=''
+
+problem() {
+    # Combine every pool problem into one notification for this host.
+    message+="${message:+; }$pool: $*"
 }
 
-[[ $# -eq 0 ]] || die "this monitor takes no arguments"
-pool={{ item.pool | quote }}
-KUMA_URL={{ item.kuma_url | quote }}
-[[ "$pool" =~ ^[a-zA-Z][a-zA-Z0-9_.:-]*$ ]] || die "invalid pool name"
-[[ -n "${KUMA_URL:-}" ]] || die "missing KUMA_URL"
-[[ "$KUMA_URL" != *$'\n'* && "$KUMA_URL" != *$'\r'* ]] || die "invalid URL"
+for pool in "${pools[@]}"; do
+    # 1. Pool health: report unavailable pools before attempting other checks.
+    if ! pool_health=$(zpool list -H -o health "$pool"); then
+        problem 'CRITICAL pool unavailable'
+        continue
+    fi
+    if [[ "$pool_health" != ONLINE ]]; then
+        problem "CRITICAL pool state $pool_health"
+        continue
+    fi
+    if ! pool_status=$(zpool status -v -p "$pool"); then
+        problem 'CRITICAL cannot read pool status'
+        continue
+    fi
+    if [[ "$pool_status" != *'errors: No known data errors'* ]]; then
+        problem 'CRITICAL pool reports data errors'
+    fi
 
-health=$(zpool list -H -o health "$pool") || die "pool unavailable: $pool"
-[[ "$health" == ONLINE ]] || die "pool $pool is $health"
-status=$(zpool status -v -p "$pool") || die "cannot read pool status: $pool"
-[[ "$status" == *'errors: No known data errors'* ]] || die "pool reports data errors: $pool"
+    # Header alignment handles spaces in device names. Reject unparseable rows.
+    # Spare availability rows have no error counters, so exclude that section.
+    if ! awk '
+        /^[[:space:]]*NAME[[:space:]]+STATE[[:space:]]+READ[[:space:]]+WRITE[[:space:]]+CKSUM/ {
+            column = index($0, "STATE")
+            configuration = 1
+            header = 1
+            next
+        }
+        configuration && /^[[:space:]]*$/ { configuration = 0 }
+        !configuration { next }
+        /^[[:space:]]*spares[[:space:]]*$/ { spares = 1; next }
+        spares { next }
+        /^[[:space:]]*(logs|cache|special|dedup)[[:space:]]*$/ { next }
+        {
+            values = substr($0, column)
+            sub(/^[[:space:]]+/, "", values)
+            count = split(values, fields, /[[:space:]]+/)
+            if (count < 4 || fields[1] != "ONLINE" ||
+                fields[2] !~ /^[0-9]+$/ || fields[3] !~ /^[0-9]+$/ ||
+                fields[4] !~ /^[0-9]+$/) {
+                failed = 1
+                next
+            }
+            rows++
+            if (fields[2] != 0 || fields[3] != 0 || fields[4] != 0) failed = 1
+        }
+        END { exit (failed || !header || !rows) }
+    ' <<< "$pool_status"; then
+        problem 'CRITICAL device errors or unreadable configuration'
+    fi
 
-# ONLINE pools can retain device error counters after a recovered fault.
-awk '
-    $2 == "ONLINE" && $3 ~ /^[0-9]+$/ && $4 ~ /^[0-9]+$/ && $5 ~ /^[0-9]+$/ {
-        if ($3 != 0 || $4 != 0 || $5 != 0) failed = 1
-    }
-    END { exit failed }
-' <<< "$status" || die "pool reports device errors: $pool"
+    # 2. Capacity: critical is immediate; warnings need sustained high usage.
+    if capacity=$(zpool list -H -p -o capacity "$pool"); then
+        capacity=${capacity%\%}
+        if [[ ! "$capacity" =~ ^[0-9]+$ ]] || (( capacity > 100 )); then
+            problem 'cannot read capacity'
+        elif (( capacity >= capacity_warning )); then
+            warning_since=$now
+            if [[ -f "$state_dir/$pool.capacity" ]]; then
+                read -r warning_since < "$state_dir/$pool.capacity"
+            fi
+            if [[ ! "$warning_since" =~ ^[0-9]+$ ]] || (( warning_since > now )); then
+                # Reset invalid history or a timestamp ahead of the system clock.
+                warning_since=$now
+            fi
+            printf '%s\n' "$warning_since" > "$state_dir/$pool.capacity"
+            if (( capacity >= capacity_critical )); then
+                problem "CRITICAL capacity ${capacity}% (limit ${capacity_critical}%)"
+            elif (( now - warning_since >= capacity_warning_seconds )); then
+                problem "capacity ${capacity}% for at least $((capacity_warning_seconds / 60)) minutes"
+            fi
+        else
+            # A reading below the warning threshold starts a fresh grace period.
+            rm -f -- "$state_dir/$pool.capacity"
+        fi
+    else
+        problem 'cannot read capacity'
+    fi
 
-# Keep the push token out of command arguments and logs.
-escaped_url=${KUMA_URL//\\/\\\\}
+    # 3. Scrubs: remember completion times when a scrub or resilver hides them.
+    scan_summary=$(sed -n 's/^[[:space:]]*scan: //p' <<< "$pool_status")
+    completed_scrub_pattern='scrub repaired .* with ([0-9]+) errors on (.*)$'
+    running_scrub_pattern='scrub in progress since (.*)$'
+    scrub_time=''
+    if [[ "$scan_summary" =~ $completed_scrub_pattern ]]; then
+        scrub_errors=${BASH_REMATCH[1]}
+        scrub_date=${BASH_REMATCH[2]}
+        if (( scrub_errors != 0 )); then
+            problem "CRITICAL last scrub reported $scrub_errors errors"
+        fi
+        if scrub_time=$(date -d "$scrub_date" +%s); then
+            printf '%s\n' "$scrub_time" > "$state_dir/$pool.scrub"
+        else
+            problem 'cannot parse last scrub date'
+        fi
+    elif [[ "$scan_summary" == 'none requested' ]]; then
+        rm -f -- "$state_dir/$pool.scrub"
+    elif [[ -f "$state_dir/$pool.scrub" ]]; then
+        read -r scrub_time < "$state_dir/$pool.scrub"
+    elif [[ "$scan_summary" =~ $running_scrub_pattern ]]; then
+        # With no history, use the active scrub start time until it completes.
+        scrub_time=$(date -d "${BASH_REMATCH[1]}" +%s) || scrub_time=''
+    fi
+    if [[ ! "$scrub_time" =~ ^[0-9]+$ ]]; then
+        problem 'no known completed scrub'
+    elif (( scrub_time > now || now - scrub_time > scrub_max_age_seconds )); then
+        problem "scrub overdue (limit $((scrub_max_age_seconds / 86400)) days)"
+    fi
+done
+
+# Report the combined result. Only reporting failures should fail this service.
+kuma_status=up
+if [[ -n "$message" ]]; then
+    kuma_status=down
+else
+    message='All expected pools healthy; capacity and scrub checks passed'
+fi
+printf '%s\n' "$message"
+
+# Replace copied query parameters. Feed the secret URL to curl through stdin.
+url=${KUMA_URL%%\?*}
+escaped_url=${url//\\/\\\\}
 escaped_url=${escaped_url//\"/\\\"}
 printf 'url = "%s"\n' "$escaped_url" |
-    curl --config - --fail --silent --max-time 30 >/dev/null ||
-    die "failed to contact Uptime Kuma"
+    curl --config - --get --data-urlencode "status=$kuma_status" \
+        --data-urlencode "msg=$message" --fail --silent --max-time 30 >/dev/null
