@@ -2,6 +2,11 @@
 - name: Validate unique monitor names
   ansible.builtin.assert:
     that:
+      - zfs_pool_monitor_capacity_warning | int > 0
+      - zfs_pool_monitor_capacity_warning < zfs_pool_monitor_capacity_critical
+      - zfs_pool_monitor_capacity_critical | int <= 100
+      - zfs_pool_monitor_capacity_delay | int > 0
+      - zfs_pool_monitor_scrub_max_age | int > 0
       - >-
         zfs_pool_monitor_jobs | map(attribute='name') | unique | length ==
         zfs_pool_monitor_jobs | length
@@ -11,7 +16,11 @@
   ansible.builtin.assert:
     that:
       - item.name is match('^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
-      - item.pool is match('^[a-zA-Z][a-zA-Z0-9_.:-]*$')
+      - item.pools | length > 0
+      - item.pools | unique | length == item.pools | length
+      - >-
+        item.pools | select('match', '^[a-zA-Z][a-zA-Z0-9_.:-]*$') |
+        list | length == item.pools | length
       - item.kuma_url is match('^https?://[^\s]+$')
       - item.kuma_url | regex_search('[\r\n]') is none
       - item.on_calendar | default(zfs_pool_monitor_on_calendar) | length > 0
@@ -55,6 +64,8 @@
       Type=oneshot
       User=root
       TimeoutStartSec=90
+      StateDirectory=zfs-pool-monitor-{{ item.name }}
+      StateDirectoryMode=0700
       ExecStart=/usr/local/bin/zfs-pool-monitor-{{ item.name }}
   loop: "{{ zfs_pool_monitor_jobs }}"
   notify: Reload pool monitor units

@@ -1,8 +1,20 @@
 ---
 argument_specs:
   main:
-    short_description: Check ZFS pool health and send healthy heartbeats
+    short_description: Check host storage and report its state to Uptime Kuma
     options:
+      zfs_pool_monitor_capacity_warning:
+        type: int
+        default: 80
+      zfs_pool_monitor_capacity_critical:
+        type: int
+        default: 90
+      zfs_pool_monitor_capacity_delay:
+        type: int
+        default: 3600
+      zfs_pool_monitor_scrub_max_age:
+        type: int
+        default: 3888000
       zfs_pool_monitor_on_calendar:
         type: str
         default: '*-*-* *:00/5:00'
@@ -14,8 +26,9 @@ argument_specs:
           name:
             type: str
             required: true
-          pool:
-            type: str
+          pools:
+            type: list
+            elements: str
             required: true
           kuma_url:
             type: str
