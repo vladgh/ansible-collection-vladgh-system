@@ -1,0 +1,82 @@
+---
+- name: Validate job paths and shutdown targets
+  ansible.builtin.assert:
+    that:
+      - app_data_backup_job.name is match('^[a-z0-9][a-z0-9_-]*\Z')
+      - app_data_backup_job.source is match('^/')
+      - app_data_backup_job.source.rstrip('/') | length > 0
+      - >-
+        app_data_backup_job.destination is match('^/.+') or
+        app_data_backup_job.destination is
+        match('^[a-zA-Z0-9_][a-zA-Z0-9_.-]*@[a-zA-Z0-9][a-zA-Z0-9_.-]*:/.+')
+      - >-
+        (app_data_backup_job.services | default([]) | length > 0) !=
+        (app_data_backup_job.compose_projects | default([]) | length > 0)
+      - >-
+        app_data_backup_job.compose_root |
+        default(app_data_backup_compose_root) is match('^/')
+      - >-
+        app_data_backup_job.rsync_opts |
+        default(app_data_backup_rsync_opts) | length > 0
+      - >-
+        app_data_backup_job.services | default([]) | unique | length ==
+        app_data_backup_job.services | default([]) | length
+      - >-
+        app_data_backup_job.compose_projects | default([]) |
+        unique | length ==
+        app_data_backup_job.compose_projects | default([]) | length
+    fail_msg: >-
+      Each job needs a safe unique name, absolute source, local absolute or
+      user@host:/path destination, and either services or compose_projects.
+
+- name: Reject control characters in paths and schedule
+  ansible.builtin.assert:
+    that:
+      - item is not search('[\x00-\x1f\x7f]')
+    fail_msg: Paths and schedules must not contain control characters.
+  loop:
+    - "{{ app_data_backup_job.source }}"
+    - "{{ app_data_backup_job.destination }}"
+    - "{{ app_data_backup_job.source_mount | default('') }}"
+    - "{{ app_data_backup_job.destination_mount | default('') }}"
+    - >-
+      {{ app_data_backup_job.compose_root |
+         default(app_data_backup_compose_root) }}
+    - "{{ app_data_backup_ssh_key_path }}"
+    - >-
+      {{ app_data_backup_job.schedule |
+         default(app_data_backup_schedule) }}
+
+- name: Validate optional mount paths
+  ansible.builtin.assert:
+    that:
+      - item == '' or item is match('^/')
+    fail_msg: Expected mountpoints must be absolute paths.
+  loop:
+    - "{{ app_data_backup_job.source_mount | default('') }}"
+    - "{{ app_data_backup_job.destination_mount | default('') }}"
+
+- name: Validate systemd service names
+  ansible.builtin.assert:
+    that:
+      - item is match('^[a-zA-Z0-9_][a-zA-Z0-9_.@:-]*\.service\Z')
+    fail_msg: Use systemd service names ending in .service.
+  loop: "{{ app_data_backup_job.services | default([]) }}"
+
+- name: Validate Compose project names
+  ansible.builtin.assert:
+    that:
+      - item is match('^[a-z0-9][a-z0-9_-]*\Z')
+    fail_msg: Use lowercase Compose project names without paths.
+  loop: "{{ app_data_backup_job.compose_projects | default([]) }}"
+
+- name: Validate backup calendar
+  ansible.builtin.command:
+    argv:
+      - systemd-analyze
+      - calendar
+      - >-
+        {{ app_data_backup_job.schedule |
+           default(app_data_backup_schedule) }}
+  changed_when: false
+  check_mode: false

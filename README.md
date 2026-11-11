@@ -50,13 +50,12 @@ The following roles are also available; configure host settings and credentials
 in inventory. Each role documents its requirements and operational effects.
 
 - [caddy](roles/caddy/README.md)
-- [docker_data_backup](roles/docker_data_backup/README.md)
 - [prerequisites](roles/prerequisites/README.md)
 - [rclone_sync](roles/rclone_sync/README.md)
 - [rsyslog](roles/rsyslog/README.md)
 - [smartd](roles/smartd/README.md)
 - [semaphore](roles/semaphore/README.md)
-- [semaphore_backup](roles/semaphore_backup/README.md)
+- [app_data_backup](roles/app_data_backup/README.md)
 - [wake_on_lan](roles/wake_on_lan/README.md)
 - [sanoid](roles/sanoid/README.md) — snapshot policies and scheduled Syncoid replication
 - [zfs_replication_monitor](roles/zfs_replication_monitor/README.md)

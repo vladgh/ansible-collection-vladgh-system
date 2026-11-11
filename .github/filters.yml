@@ -46,9 +46,6 @@ wireguard:
 caddy:
   - roles/caddy/**/!(**.md)
   - molecule/caddy/**
-docker_data_backup:
-  - roles/docker_data_backup/**/!(**.md)
-  - molecule/docker_data_backup/**
 prerequisites:
   - roles/prerequisites/**/!(**.md)
   - molecule/prerequisites/**
@@ -64,9 +61,6 @@ smartd:
 semaphore:
   - roles/semaphore/**/!(**.md)
   - molecule/semaphore/**
-semaphore_backup:
-  - roles/semaphore_backup/**/!(**.md)
-  - molecule/semaphore_backup/**
 wake_on_lan:
   - roles/wake_on_lan/**/!(**.md)
   - molecule/wake_on_lan/**
@@ -76,3 +70,6 @@ zfs_replication_monitor:
 zfs_pool_monitor:
   - roles/zfs_pool_monitor/**/!(**.md)
   - molecule/zfs_pool_monitor/**
+app_data_backup:
+  - roles/app_data_backup/**/!(**.md)
+  - molecule/app_data_backup/**

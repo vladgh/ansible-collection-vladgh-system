@@ -1,0 +1,24 @@
+---
+- name: Install backup script for {{ app_data_backup_job.name }}
+  ansible.builtin.template:
+    src: app-data-backup.sh.j2
+    dest: >-
+      /usr/local/bin/app-data-backup-{{ app_data_backup_job.name }}
+    owner: root
+    group: root
+    mode: '0750'
+    validate: /bin/bash -n %s
+
+- name: Install backup units for {{ app_data_backup_job.name }}
+  ansible.builtin.template:
+    src: "app-data-backup.{{ item }}.j2"
+    dest: >-
+      /etc/systemd/system/app-data-backup-{{
+        app_data_backup_job.name }}.{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - service
+    - timer
+  notify: Reload app data backup systemd

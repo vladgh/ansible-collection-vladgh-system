@@ -1,0 +1,51 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Create local test directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop:
+        - /srv/backup test/source
+        - /srv/backup test/destination
+
+    - name: Create backup test data
+      ansible.builtin.copy:
+        content: "backup fixture\n"
+        dest: /srv/backup test/source/data.txt
+        mode: '0600'
+
+    - name: Install test service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/app-data-backup-fixture.service
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Backup scenario fixture
+          [Service]
+          ExecStart=/bin/sleep infinity
+
+    - name: Include app_data_backup role
+      ansible.builtin.include_role:
+        name: vladgh.system.app_data_backup
+      vars:
+        app_data_backup_ssh_private_key: >-
+          molecule-inert-key-not-for-authentication
+        app_data_backup_jobs:
+          - name: local
+            source: /srv/backup test/source/
+            destination: /srv/backup test/destination/
+            services:
+              - app-data-backup-fixture.service
+            schedule: '2099-01-01 00:00:00'
+          - name: remote-compose
+            source: /opt/appdata/
+            destination: backup@backup.example.org:/srv/backups/appdata/
+            compose_root: /opt/test appstack
+            compose_projects:
+              - application
+              - database
+            enabled: false

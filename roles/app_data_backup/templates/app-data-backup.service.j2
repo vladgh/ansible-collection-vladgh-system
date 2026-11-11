@@ -1,0 +1,18 @@
+# Managed by Ansible.
+[Unit]
+Description=App data backup {{ app_data_backup_job.name }}
+Wants=network-online.target
+After=network-online.target
+{% if app_data_backup_job.compose_projects | default([]) | length > 0 %}
+After=docker.service
+Requires=docker.service
+{% endif %}
+RequiresMountsFor={{ app_data_backup_job.source | replace('%', '%%') | to_json }}{% if app_data_backup_job.destination.startswith('/') %} {{ app_data_backup_job.destination | replace('%', '%%') | to_json }}{% endif %}
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+ExecStart=/usr/local/bin/app-data-backup-{{ app_data_backup_job.name }}
+TimeoutStartSec=infinity
+TimeoutStopSec=5min

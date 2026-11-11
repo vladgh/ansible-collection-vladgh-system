@@ -1,0 +1,17 @@
+---
+# Jobs select either services or compose_projects, never both.
+app_data_backup_jobs: []
+app_data_backup_schedule: '*-*-* 03:00:00'
+app_data_backup_compose_root: /opt/appstack
+app_data_backup_stop_timeout: 60
+app_data_backup_start_timeout: 120
+app_data_backup_ssh_timeout: 30
+app_data_backup_rsync_opts:
+  - -aHAX
+  - --numeric-ids
+  - --delete-delay
+  - --protect-args
+
+# Remote jobs use this key. Supply it through Vault or provision it separately.
+app_data_backup_ssh_key_path: /root/.ssh/id_ed25519_app_data_backup
+# app_data_backup_ssh_private_key: "{{ vault_backup_ssh_private_key }}"
