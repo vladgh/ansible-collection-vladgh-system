@@ -120,7 +120,7 @@
         that:
           - "'MONITOR ups@localhost 1 monitor changeme slave' in __verify_conf['upsmon.conf']"
           - "'SHUTDOWNCMD \"/sbin/shutdown -h +0\"' in __verify_conf['upsmon.conf']"
-          - "'POWERDOWNFLAG /etc/killpower' in __verify_conf['upsmon.conf']"
+          - "'POWERDOWNFLAG \"/etc/killpower\"' in __verify_conf['upsmon.conf']"
           - "'POLLFREQ 5' in __verify_conf['upsmon.conf']"
           - "'DEADTIME' not in __verify_conf['upsmon.conf']"
 
