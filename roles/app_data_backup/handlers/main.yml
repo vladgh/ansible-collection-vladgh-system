@@ -1,0 +1,4 @@
+---
+- name: Reload app data backup systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true

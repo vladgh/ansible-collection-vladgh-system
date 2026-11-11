@@ -1,0 +1,200 @@
+#!/usr/bin/env bash
+# Managed by Ansible. Local changes will be overwritten.
+set -euo pipefail
+umask 0077
+{% set job = app_data_backup_job %}
+
+readonly source={{ job.source | quote }}
+readonly destination={{ job.destination | quote }}
+readonly source_mount={{ job.source_mount | default('') | quote }}
+{% if job.destination.startswith('/') %}
+readonly destination_mount={{ job.destination_mount | default('') | quote }}
+{% endif %}
+readonly compose_root={{ job.compose_root | default(app_data_backup_compose_root) | quote }}
+readonly stop_timeout={{ app_data_backup_stop_timeout | quote }}
+readonly start_timeout={{ app_data_backup_start_timeout | quote }}
+readonly success_file=/var/lib/app-data-backup/{{ job.name }}.success
+readonly lock_file=/run/app-data-backup.lock
+{% if job.services | default([]) | length > 0 %}
+readonly mode=systemd
+readonly targets=({{ job.services | map('quote') | join(' ') }})
+{% else %}
+readonly mode=compose
+readonly targets=({{ job.compose_projects | map('quote') | join(' ') }})
+{% endif %}
+rsync_command=(rsync {{ job.rsync_opts | default(app_data_backup_rsync_opts) | map('quote') | join(' ') }})
+{% if not job.destination.startswith('/') %}
+{% set remote_host, remote_path = job.destination.split(':', 1) %}
+readonly remote_host={{ remote_host | quote }}
+readonly ssh_key={{ app_data_backup_ssh_key_path | quote }}
+{% set ssh_options = [
+  '-i', app_data_backup_ssh_key_path,
+  '-o', 'BatchMode=yes', '-o', 'IdentitiesOnly=yes',
+  '-o', 'StrictHostKeyChecking=yes',
+  '-o', 'ConnectTimeout=' ~ app_data_backup_ssh_timeout,
+  '-o', 'ServerAliveInterval=30', '-o', 'ServerAliveCountMax=3'] %}
+readonly ssh_options=({{ ssh_options | map('quote') | join(' ') }})
+readonly rsync_shell={{ (['ssh'] + ssh_options) | map('quote') | join(' ') | quote }}
+rsync_command+=(-e "$rsync_shell")
+{% set remote_check =
+  'destination=$(realpath -e -- ' ~ (remote_path | quote) ~ ') && ' ~
+  'test "$destination" != / && test -d "$destination" && ' ~
+  'test -w "$destination" && command -v rsync >/dev/null' %}
+{% if job.destination_mount | default('') %}
+{% set remote_check = remote_check ~ ' && mountpoint -q -- ' ~ (job.destination_mount | quote) %}
+{% endif %}
+# Keep shell expressions literal: they execute on the receiving host.
+# shellcheck disable=SC2016
+readonly remote_check={{ remote_check | quote }}
+{% endif %}
+{% raw %}
+active_targets=()
+stopped_targets=()
+
+die() {
+  printf 'ERROR: %s\n' "$*" >&2
+  exit 1
+}
+
+compose() {
+  local project=$1
+  shift
+  docker compose --project-directory "$compose_root/$project" -p "$project" "$@"
+}
+
+# Return false only for fully stopped targets; unexpected states abort the job.
+target_running() {
+  local target=$1 state states running=false
+  if [[ "$mode" == systemd ]]; then
+    state=$(systemctl show --property=ActiveState --value "$target") ||
+      die "cannot read state of $target"
+    case "$state" in
+      active) return 0 ;;
+      inactive|failed) return 1 ;;
+      *) die "unstable service state for $target: $state" ;;
+    esac
+  fi
+  states=$(compose "$target" ps --all --format '{{.State}}') ||
+    die "cannot inspect Compose project $target"
+  while IFS= read -r state; do
+    case "$state" in
+      running) running=true ;;
+      ''|created|exited) ;;
+      *) die "unsafe container state in $target: $state" ;;
+    esac
+  done <<< "$states"
+  [[ "$running" == true ]]
+}
+
+cleanup() {
+  local rc=$? index target
+  trap - EXIT INT TERM
+  # Recover partial stops too, and attempt every restart even after a failure.
+  for ((index=${#stopped_targets[@]}-1; index>=0; index--)); do
+    target=${stopped_targets[index]}
+    printf 'Starting %s\n' "$target"
+    if [[ "$mode" == systemd ]]; then
+      systemctl start "$target" || rc=1
+    else
+      compose "$target" start --wait --wait-timeout "$start_timeout" || rc=1
+    fi
+  done
+  if ((rc == 0)); then
+    touch "$success_file" || rc=1
+  fi
+  if ((rc == 0)); then
+    printf 'Backup and service recovery completed successfully.\n'
+  else
+    printf 'ERROR: backup or service recovery failed (exit %s).\n' "$rc" >&2
+  fi
+  exit "$rc"
+}
+
+[[ $# == 0 ]] || die "this script takes no arguments"
+for dependency in rsync flock realpath mountpoint; do
+  command -v "$dependency" >/dev/null || die "$dependency not found"
+done
+
+# Wait rather than skip another scheduled job on this host.
+exec 9>"$lock_file"
+flock 9
+
+[[ -d "$source" ]] || die "source directory does not exist: $source"
+source_path=$(realpath -e -- "$source")
+[[ "$source_path" != / ]] || die "source must not be /"
+if [[ -n "$source_mount" ]]; then
+  mountpoint -q -- "$source_mount" || die "source storage is not mounted"
+fi
+{% endraw %}
+{% if job.destination.startswith('/') %}
+[[ -d "$destination" && -w "$destination" ]] || die "destination must exist and be writable"
+destination_path=$(realpath -e -- "$destination")
+[[ "$destination_path" != / ]] || die "destination must not be /"
+case "$destination_path/" in
+  "$source_path/"*) die "destination must not be inside source" ;;
+esac
+case "$source_path/" in
+  "$destination_path/"*) die "source must not be inside destination" ;;
+esac
+if [[ -n "$destination_mount" ]]; then
+  mountpoint -q -- "$destination_mount" || die "destination storage is not mounted"
+fi
+{% else %}
+command -v ssh >/dev/null || die "ssh not found"
+[[ -r "$ssh_key" ]] || die "SSH key is missing or unreadable"
+# This is a complete remote command with inventory paths shell-quoted above.
+# shellcheck disable=SC2029
+ssh "${ssh_options[@]}" "$remote_host" "$remote_check" ||
+  die "remote destination preflight failed"
+{% endif %}
+{% raw %}
+if [[ "$mode" == compose ]]; then
+  command -v docker >/dev/null || die "docker not found"
+  docker compose version >/dev/null || die "Compose plugin not found"
+  start_help=$(docker compose start --help) || die "cannot inspect Compose start options"
+  [[ "$start_help" == *--wait-timeout* ]] || die "Compose start --wait-timeout is required"
+else
+  command -v systemctl >/dev/null || die "systemctl not found"
+fi
+
+# Resolve every target before changing any service state.
+for target in "${targets[@]}"; do
+  if [[ "$mode" == compose ]]; then
+    compose "$target" config --quiet || die "invalid Compose configuration: $target"
+  else
+    load_state=$(systemctl show --property=LoadState --value "$target") ||
+      die "cannot inspect service: $target"
+    [[ "$load_state" == loaded ]] || die "service is not loaded: $target"
+  fi
+  if target_running "$target"; then
+    active_targets+=("$target")
+  fi
+done
+
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+if ((${#active_targets[@]})); then
+  for target in "${active_targets[@]}"; do
+    # Record before stopping so failures during a stop also trigger recovery.
+    stopped_targets+=("$target")
+    printf 'Stopping %s\n' "$target"
+    if [[ "$mode" == systemd ]]; then
+      systemctl stop "$target"
+    else
+      compose "$target" stop --timeout "$stop_timeout"
+    fi
+  done
+fi
+
+# Detect immediate reactivation or a stop that left containers running.
+for target in "${targets[@]}"; do
+  if target_running "$target"; then
+    die "target is still running after stop: $target"
+  fi
+done
+
+printf 'Copying %s to %s\n' "$source" "$destination"
+"${rsync_command[@]}" -- "${source_path%/}/" "${destination%/}/"
+{% endraw %}

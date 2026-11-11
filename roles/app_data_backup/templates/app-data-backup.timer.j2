@@ -1,0 +1,10 @@
+# Managed by Ansible.
+[Unit]
+Description=Schedule app data backup {{ app_data_backup_job.name }}
+
+[Timer]
+OnCalendar={{ app_data_backup_job.schedule | default(app_data_backup_schedule) | replace('%', '%%') }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

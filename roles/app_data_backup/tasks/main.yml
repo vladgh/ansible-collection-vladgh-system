@@ -1,0 +1,106 @@
+---
+- name: Validate backup platform and shared settings
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['system'] == 'Linux'
+      - ansible_facts['service_mgr'] == 'systemd'
+      - ansible_facts['os_family'] in ['Debian', 'RedHat']
+      - app_data_backup_stop_timeout | int > 0
+      - app_data_backup_start_timeout | int > 0
+      - app_data_backup_ssh_timeout | int > 0
+      - app_data_backup_ssh_key_path is match('^/')
+      - >-
+        app_data_backup_jobs | map(attribute='name') | unique | length ==
+        app_data_backup_jobs | length
+    fail_msg: >-
+      Use Linux with systemd (Debian or RedHat family), positive timeouts,
+      an absolute SSH key path, and unique job names.
+
+- name: Validate backup jobs
+  ansible.builtin.include_tasks: validate.yml
+  loop: "{{ app_data_backup_jobs }}"
+  loop_control:
+    loop_var: app_data_backup_job
+    label: "{{ app_data_backup_job.name }}"
+
+- name: Install backup tools
+  ansible.builtin.package:
+    name:
+      - bash
+      - coreutils
+      - util-linux
+      - rsync
+    state: present
+  when: app_data_backup_jobs | length > 0
+
+- name: Install SSH client for remote jobs
+  ansible.builtin.package:
+    name: >-
+      {{ 'openssh-client' if ansible_facts['os_family'] == 'Debian'
+         else 'openssh-clients' }}
+    state: present
+  when: >-
+    app_data_backup_jobs | rejectattr('destination', 'match', '^/') |
+    list | length > 0
+
+- name: Install optional backup SSH key
+  when:
+    - app_data_backup_ssh_private_key | default('') | length > 0
+    - >-
+      app_data_backup_jobs | rejectattr('destination', 'match', '^/') |
+      list | length > 0
+  block:
+    - name: Inspect backup SSH key directory
+      ansible.builtin.stat:
+        path: "{{ app_data_backup_ssh_key_path | dirname }}"
+      register: app_data_backup_key_directory
+
+    - name: Create backup SSH key directory
+      ansible.builtin.file:
+        path: "{{ app_data_backup_ssh_key_path | dirname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+      when: not app_data_backup_key_directory.stat.exists
+
+    - name: Write backup SSH key
+      ansible.builtin.copy:
+        content: "{{ app_data_backup_ssh_private_key | trim }}\n"
+        dest: "{{ app_data_backup_ssh_key_path }}"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+      diff: false
+
+- name: Create backup state directory
+  ansible.builtin.file:
+    path: /var/lib/app-data-backup
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  when: app_data_backup_jobs | length > 0
+
+- name: Install backup jobs
+  ansible.builtin.include_tasks: job.yml
+  loop: "{{ app_data_backup_jobs }}"
+  loop_control:
+    loop_var: app_data_backup_job
+    label: "{{ app_data_backup_job.name }}"
+
+- name: Apply backup unit changes
+  ansible.builtin.meta: flush_handlers
+
+- name: Configure backup timers
+  ansible.builtin.systemd_service:
+    name: "app-data-backup-{{ item.name }}.timer"
+    enabled: "{{ item.enabled | default(true) | bool }}"
+    state: >-
+      {{ 'started' if item.enabled | default(true) | bool else 'stopped' }}
+  loop: "{{ app_data_backup_jobs }}"
+  loop_control:
+    label: "{{ item.name }}"
+  # A new unit does not exist yet during a first-run check.
+  when: not ansible_check_mode

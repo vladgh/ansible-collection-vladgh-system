@@ -1,0 +1,65 @@
+---
+argument_specs:
+  main:
+    short_description: Scheduled backups of service data
+    options:
+      app_data_backup_schedule:
+        type: str
+        default: '*-*-* 03:00:00'
+      app_data_backup_compose_root:
+        type: str
+        default: /opt/appstack
+      app_data_backup_stop_timeout:
+        type: int
+        default: 60
+      app_data_backup_start_timeout:
+        type: int
+        default: 120
+      app_data_backup_ssh_timeout:
+        type: int
+        default: 30
+      app_data_backup_ssh_key_path:
+        type: str
+        default: /root/.ssh/id_ed25519_app_data_backup
+      app_data_backup_ssh_private_key:
+        type: str
+      app_data_backup_rsync_opts:
+        type: list
+        elements: str
+        default: [-aHAX, --numeric-ids, --delete-delay, --protect-args]
+      app_data_backup_jobs:
+        type: list
+        elements: dict
+        default: []
+        options:
+          name:
+            type: str
+            required: true
+          source:
+            type: str
+            required: true
+          destination:
+            type: str
+            required: true
+          services:
+            type: list
+            elements: str
+            default: []
+          compose_projects:
+            type: list
+            elements: str
+            default: []
+          compose_root:
+            type: str
+          schedule:
+            type: str
+          enabled:
+            type: bool
+            default: true
+          rsync_opts:
+            type: list
+            elements: str
+          source_mount:
+            type: str
+          destination_mount:
+            type: str
