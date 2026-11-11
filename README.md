@@ -4,6 +4,8 @@
 
 Ansible collection that holds roles, that can be used to configure common system services.
 
+Requires ansible-core 2.21 or newer.
+
 ## Using this collection
 
 ### Installing the Collection from Ansible Galaxy

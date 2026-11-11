@@ -4,7 +4,7 @@ galaxy_info:
   author: vladgh
   description: Rsyslog
   license: Apache v2
-  min_ansible_version: '2.18'
+  min_ansible_version: '2.21'
   galaxy_tags: []
   platforms: []
 dependencies: []

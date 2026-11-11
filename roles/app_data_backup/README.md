@@ -6,7 +6,7 @@ an SSH destination, and restarts its targets even if stopping or copying fails.
 
 ## Requirements and behavior
 
-- Debian/Ubuntu or RedHat-family Linux with systemd, Ansible 2.18+, and root access.
+- Debian/Ubuntu or RedHat-family Linux with systemd, Ansible 2.21+, and root access.
   The role installs Bash, coreutils, util-linux, rsync, and an SSH client for remote
   jobs. Storage, applications, Docker, and destination permissions are provisioned
   separately. Compose jobs require a current Compose v2 plugin supporting

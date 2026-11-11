@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: common
+  author: vladgh
+  description: Configure common system settings
+  license: Apache v2
+  min_ansible_version: '2.21'
+  galaxy_tags: []
+  platforms: []
+dependencies: []
