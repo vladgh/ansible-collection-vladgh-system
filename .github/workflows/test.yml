@@ -36,8 +36,9 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu2604
-          - debian13
+          - ubuntu:26.04
+          - ubuntu:26.10
+          - debian:13
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
@@ -54,7 +55,4 @@ jobs:
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
-          MOLECULE_DISTRO: ${{ matrix.os }}
-      #   continue-on-error: true
-      # - name: Debugging with tmate
-      #   uses: mxschmitt/action-tmate@v3.18
+          MOLECULE_IMAGE: ${{ matrix.os }}

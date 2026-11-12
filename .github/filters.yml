@@ -1,75 +1,100 @@
 ---
 default:
+  - molecule/*
   - .github/workflows/test.yml
 playbook-tests:
+  - molecule/*
   - playbooks/**/!(**.md)
   - molecule/playbook-tests/**
 access:
+  - molecule/*
   - roles/access/**/!(**.md)
   - molecule/access/**
 common:
+  - molecule/*
   - roles/common/**/!(**.md)
   - molecule/common/**
 dns:
+  - molecule/*
   - roles/dns/**/!(**.md)
   - molecule/dns/**
 misc:
+  - molecule/*
   - roles/misc/**/!(**.md)
   - molecule/misc/**
 mounts:
+  - molecule/*
   - roles/mounts/**/!(**.md)
   - molecule/mounts/**
 msmtp:
+  - molecule/*
   - roles/msmtp/**/!(**.md)
   - molecule/msmtp/**
 nfs:
+  - molecule/*
   - roles/nfs/**/!(**.md)
   - molecule/nfs/**
 nut:
+  - molecule/*
   - roles/nut/**/!(**.md)
   - molecule/nut/**
 packages:
+  - molecule/*
   - roles/packages/**/!(**.md)
   - molecule/packages/**
 proxmox:
+  - molecule/*
   - roles/proxmox/**/!(**.md)
   - molecule/proxmox/**
 qemu_guest_agent:
+  - molecule/*
   - roles/qemu_guest_agent/**/!(**.md)
   - molecule/qemu_guest_agent/**
 sanoid:
+  - molecule/*
   - roles/sanoid/**/!(**.md)
   - molecule/sanoid/**
 wireguard:
+  - molecule/*
   - roles/wireguard/**/!(**.md)
   - molecule/wireguard/**
 caddy:
+  - molecule/*
   - roles/caddy/**/!(**.md)
   - molecule/caddy/**
 prerequisites:
+  - molecule/*
   - roles/prerequisites/**/!(**.md)
   - molecule/prerequisites/**
 rclone_sync:
+  - molecule/*
   - roles/rclone_sync/**/!(**.md)
   - molecule/rclone_sync/**
 rsyslog:
+  - molecule/*
   - roles/rsyslog/**/!(**.md)
   - molecule/rsyslog/**
 smartd:
+  - molecule/*
   - roles/smartd/**/!(**.md)
   - molecule/smartd/**
 semaphore:
+  - molecule/*
   - roles/semaphore/**/!(**.md)
   - molecule/semaphore/**
 wake_on_lan:
+  - molecule/*
   - roles/wake_on_lan/**/!(**.md)
   - molecule/wake_on_lan/**
 zfs_replication_monitor:
+  - molecule/*
   - roles/zfs_replication_monitor/**/!(**.md)
   - molecule/zfs_replication_monitor/**
 zfs_pool_monitor:
+  - molecule/*
   - roles/zfs_pool_monitor/**/!(**.md)
   - molecule/zfs_pool_monitor/**
 app_data_backup:
+  - molecule/*
   - roles/app_data_backup/**/!(**.md)
   - molecule/app_data_backup/**
