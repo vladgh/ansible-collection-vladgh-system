@@ -37,9 +37,7 @@ jobs:
       matrix:
         os:
           - ubuntu2604
-          - ubuntu2404
           - debian13
-          - debian12
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
