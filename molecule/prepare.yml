@@ -29,12 +29,7 @@
       failed_when: systemctl_status.rc > 1
       check_mode: false
 
-    - name: Install shared test prerequisites
+    - name: Update apt cache for role package installation
       ansible.builtin.apt:
-        name:
-          - ca-certificates
-          - iproute2
-        state: present
-        install_recommends: false
         update_cache: true
         cache_valid_time: 600
