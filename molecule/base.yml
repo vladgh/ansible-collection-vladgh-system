@@ -23,5 +23,9 @@ platforms:
       - /tmp
 
 provisioner:
+  env:
+    # The bundled Docker driver reads invocation.module_args.dest when building.
+    # Ansible 2.21 omits invocation from registered results by default.
+    ANSIBLE_INJECT_INVOCATION: 'true'
   playbooks:
     prepare: ../prepare.yml
