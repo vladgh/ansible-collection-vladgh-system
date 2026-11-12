@@ -34,7 +34,6 @@
         name:
           - ca-certificates
           - iproute2
-          - sudo
         state: present
         install_recommends: false
         update_cache: true
