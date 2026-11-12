@@ -120,14 +120,14 @@
         that:
           - "'MONITOR ups@localhost 1 monitor changeme slave' in __verify_conf['upsmon.conf']"
           - "'SHUTDOWNCMD \"/sbin/shutdown -h +0\"' in __verify_conf['upsmon.conf']"
-          - "'POWERDOWNFLAG /etc/killpower' in __verify_conf['upsmon.conf']"
+          - "'POWERDOWNFLAG \"/etc/killpower\"' in __verify_conf['upsmon.conf']"
           - "'POLLFREQ 5' in __verify_conf['upsmon.conf']"
           - "'DEADTIME' not in __verify_conf['upsmon.conf']"
 
     - name: Assert upsmon.conf enables notifications for every default event
       ansible.builtin.assert:
         that:
-          - "'NOTIFYCMD /etc/nut/notifycmd' in __verify_conf['upsmon.conf']"
+          - "'NOTIFYCMD \"/etc/nut/notifycmd\"' in __verify_conf['upsmon.conf']"
           - "('NOTIFYFLAG ' ~ item ~ ' SYSLOG+WALL+EXEC') in __verify_conf['upsmon.conf']"
         quiet: true
       loop: [ONBATT, ONLINE, LOWBATT, FSD, COMMBAD, COMMOK, SHUTDOWN, REPLBATT]

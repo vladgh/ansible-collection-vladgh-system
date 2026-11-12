@@ -7,9 +7,6 @@ umask 0077
 readonly source={{ job.source | quote }}
 readonly destination={{ job.destination | quote }}
 readonly source_mount={{ job.source_mount | default('') | quote }}
-{% if job.destination.startswith('/') %}
-readonly destination_mount={{ job.destination_mount | default('') | quote }}
-{% endif %}
 readonly compose_root={{ job.compose_root | default(app_data_backup_compose_root) | quote }}
 readonly stop_timeout={{ app_data_backup_stop_timeout | quote }}
 readonly start_timeout={{ app_data_backup_start_timeout | quote }}
@@ -40,9 +37,6 @@ rsync_command+=(-e "$rsync_shell")
   'destination=$(realpath -e -- ' ~ (remote_path | quote) ~ ') && ' ~
   'test "$destination" != / && test -d "$destination" && ' ~
   'test -w "$destination" && command -v rsync >/dev/null' %}
-{% if job.destination_mount | default('') %}
-{% set remote_check = remote_check ~ ' && mountpoint -q -- ' ~ (job.destination_mount | quote) %}
-{% endif %}
 # Keep shell expressions literal: they execute on the receiving host.
 # shellcheck disable=SC2016
 readonly remote_check={{ remote_check | quote }}
@@ -136,9 +130,6 @@ esac
 case "$source_path/" in
   "$destination_path/"*) die "source must not be inside destination" ;;
 esac
-if [[ -n "$destination_mount" ]]; then
-  mountpoint -q -- "$destination_mount" || die "destination storage is not mounted"
-fi
 {% else %}
 command -v ssh >/dev/null || die "ssh not found"
 [[ -r "$ssh_key" ]] || die "SSH key is missing or unreadable"

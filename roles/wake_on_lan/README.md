@@ -4,7 +4,7 @@ Install ethtool and configure systemd Wake-on-LAN units for selected interfaces.
 
 ## Requirements
 
-Ansible 2.18 or newer, root privileges, and a Debian-family Linux host with
+Ansible 2.21 or newer, root privileges, and a Debian-family Linux host with
 systemd. Platform-specific tools and service configuration must be available
 where indicated below.
 
