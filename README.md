@@ -91,6 +91,47 @@ timers, and future schedules. They check installation, file modes, generated
 configuration, and timer enablement. They do not authenticate real cloud remotes,
 exercise physical Wake-on-LAN, reboot hardware, or copy production data.
 
+### Trying locally built test images
+
+The default `molecule/base.yml` continues to use Geerling's prebuilt images.
+To try an official Ubuntu or Debian base image instead, select
+`molecule/base-local.yml`. Molecule builds the shared
+[`Dockerfile.j2`](molecule/Dockerfile.j2) locally with Python and systemd;
+no image publishing is needed. This is experimental and is not yet validated
+across all scenarios. Both configurations use privileged containers and the
+host cgroup namespace and mount; run them on an isolated test Docker host.
+
+Run the same scenario sequentially to compare the two configurations:
+
+```sh
+# Existing prebuilt image (Ubuntu 24.04).
+MOLECULE_DISTRO=ubuntu2404 \
+  molecule --base-config molecule/base.yml test --scenario-name packages
+
+# Local build (Ubuntu 24.04 by default).
+molecule --base-config molecule/base-local.yml test --scenario-name packages
+
+# Local build with another supported Debian/Ubuntu image.
+MOLECULE_IMAGE=debian:13 \
+  molecule --base-config molecule/base-local.yml test --scenario-name packages
+```
+
+`MOLECULE_IMAGE` accepts an official image reference such as `ubuntu:26.04`,
+`ubuntu:24.04`, `debian:12`, or `debian:13`; `MOLECULE_DISTRO` only applies to
+the original configuration. CI continues to use the original configuration.
+
+The configurations share scenario state and the `instance` container name.
+If an instance remains after a failed test or a `converge` run, destroy it using
+the configuration and image environment variables that created it before
+switching. For example, for the default local build:
+
+```sh
+molecule --base-config molecule/base-local.yml destroy --scenario-name packages
+```
+
+Cold runs download packages and build an image; subsequent builds can reuse
+Docker's layer cache. Fresh CI runners need explicit cache reuse to benefit.
+
 ## Changelog & Releases
 
 This repository keeps a change log using [GitHub's releases](releases)

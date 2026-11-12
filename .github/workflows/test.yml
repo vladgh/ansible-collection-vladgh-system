@@ -35,11 +35,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
+        os-gg:
           - ubuntu2604
           - ubuntu2404
           - debian13
           - debian12
+        os:
+          - ubuntu:26.10
+          - ubuntu:26.04
+          - debian:13
         scenario: ${{ fromJSON(needs.changes.outputs.scenario) }}
     steps:
       - name: Checkout
@@ -50,7 +54,7 @@ jobs:
         uses: gofrolist/molecule-action@2769106a384a32a5b8ec3b193287817930b0e993 # v2.9.20
         with:
           molecule_command: test
-          molecule_options: --debug --base-config molecule/base.yml
+          molecule_options: --debug --base-config molecule/base-local.yml
           molecule_args: --scenario-name ${{ matrix.scenario }}
           molecule_working_dir: ansible_collections/vladgh/system
         env:
