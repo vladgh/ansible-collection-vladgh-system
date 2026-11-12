@@ -61,5 +61,3 @@ argument_specs:
             elements: str
           source_mount:
             type: str
-          destination_mount:
-            type: str

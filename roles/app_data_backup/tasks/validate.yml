@@ -38,7 +38,6 @@
     - "{{ app_data_backup_job.source }}"
     - "{{ app_data_backup_job.destination }}"
     - "{{ app_data_backup_job.source_mount | default('') }}"
-    - "{{ app_data_backup_job.destination_mount | default('') }}"
     - >-
       {{ app_data_backup_job.compose_root |
          default(app_data_backup_compose_root) }}
@@ -54,7 +53,6 @@
     fail_msg: Expected mountpoints must be absolute paths.
   loop:
     - "{{ app_data_backup_job.source_mount | default('') }}"
-    - "{{ app_data_backup_job.destination_mount | default('') }}"
 
 - name: Validate systemd service names
   ansible.builtin.assert:

@@ -61,7 +61,6 @@ app_data_backup_jobs:
   - name: semaphore
     source: /srv/semaphore/
     destination: backup@nas.example.com:/srv/backups/server-a/semaphore/
-    destination_mount: /srv/backups
     services:
       - semaphore.service
     schedule: '*-*-* 02:00:00'
@@ -69,7 +68,6 @@ app_data_backup_jobs:
   - name: appdata
     source: /opt/appdata/
     destination: /srv/backups/server-a/appdata/
-    destination_mount: /srv/backups
     compose_projects:
       - application
       - database
@@ -102,10 +100,9 @@ Each job requires `name`, `source`, `destination`, and exactly one nonempty
 underscores, and hyphens. Service names end in `.service`.
 
 Optional job fields are `schedule`, `compose_root`, `rsync_opts` (replace the shared
-list), `enabled` (default `true`), and `source_mount`/`destination_mount` (unset).
-Mount guards name actual mountpoints, not subdirectories. `destination_mount` is
-checked on the receiving host for SSH copies. Without a guard, an existing
-fallback directory on an unmounted disk can still pass directory validation.
+list), `enabled` (default `true`), and `source_mount` (unset). The source mount
+guard names an actual mountpoint, not a subdirectory. Destination checks require
+an existing, writable directory; they do not verify the destination filesystem.
 
 ## Operations, retention, and removal
 
