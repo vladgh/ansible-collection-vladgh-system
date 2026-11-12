@@ -3,36 +3,59 @@
 set -euo pipefail
 umask 0077
 {% set job = app_data_backup_job %}
+{% set remote_destination = not job.destination.startswith('/') %}
 
+# Job configuration.
 readonly source={{ job.source | quote }}
 readonly destination={{ job.destination | quote }}
 readonly source_mount={{ job.source_mount | default('') | quote }}
-readonly compose_root={{ job.compose_root | default(app_data_backup_compose_root) | quote }}
+readonly compose_root={{
+  job.compose_root | default(app_data_backup_compose_root) | quote
+}}
 readonly stop_timeout={{ app_data_backup_stop_timeout | quote }}
 readonly start_timeout={{ app_data_backup_start_timeout | quote }}
 readonly success_file=/var/lib/app-data-backup/{{ job.name }}.success
 readonly lock_file=/run/app-data-backup.lock
+
 {% if job.services | default([]) | length > 0 %}
 readonly mode=systemd
-readonly targets=({{ job.services | map('quote') | join(' ') }})
+readonly targets=(
+  {{ job.services | map('quote') | join(' ') }}
+)
 {% else %}
 readonly mode=compose
-readonly targets=({{ job.compose_projects | map('quote') | join(' ') }})
+readonly targets=(
+  {{ job.compose_projects | map('quote') | join(' ') }}
+)
 {% endif %}
-rsync_command=(rsync {{ job.rsync_opts | default(app_data_backup_rsync_opts) | map('quote') | join(' ') }})
-{% if not job.destination.startswith('/') %}
+
+# Keep command arguments in arrays so paths and options retain their boundaries.
+rsync_command=(
+  rsync
+  {{ job.rsync_opts | default(app_data_backup_rsync_opts) | map('quote') | join(' ') }}
+)
+{% if remote_destination %}
 {% set remote_host, remote_path = job.destination.split(':', 1) %}
+
 readonly remote_host={{ remote_host | quote }}
 readonly ssh_key={{ app_data_backup_ssh_key_path | quote }}
 {% set ssh_options = [
   '-i', app_data_backup_ssh_key_path,
-  '-o', 'BatchMode=yes', '-o', 'IdentitiesOnly=yes',
+  '-o', 'BatchMode=yes',
+  '-o', 'IdentitiesOnly=yes',
   '-o', 'StrictHostKeyChecking=yes',
   '-o', 'ConnectTimeout=' ~ app_data_backup_ssh_timeout,
-  '-o', 'ServerAliveInterval=30', '-o', 'ServerAliveCountMax=3'] %}
-readonly ssh_options=({{ ssh_options | map('quote') | join(' ') }})
+  '-o', 'ServerAliveInterval=30',
+  '-o', 'ServerAliveCountMax=3'
+] %}
+readonly ssh_options=(
+{% for option in ssh_options | batch(2) %}
+  {{ option | map('quote') | join(' ') }}
+{% endfor %}
+)
 readonly rsync_shell={{ (['ssh'] + ssh_options) | map('quote') | join(' ') | quote }}
 rsync_command+=(-e "$rsync_shell")
+
 {% set remote_check =
   'destination=$(realpath -e -- ' ~ (remote_path | quote) ~ ') && ' ~
   'test "$destination" != / && test -d "$destination" && ' ~
@@ -42,6 +65,7 @@ rsync_command+=(-e "$rsync_shell")
 readonly remote_check={{ remote_check | quote }}
 {% endif %}
 {% raw %}
+# Only active targets are stopped; attempted stops are tracked for recovery.
 active_targets=()
 stopped_targets=()
 
@@ -58,52 +82,64 @@ compose() {
 
 # Return false only for fully stopped targets; unexpected states abort the job.
 target_running() {
-  local target=$1 state states running=false
+  local target=$1
+  local state container_states has_running_containers=false
+
   if [[ "$mode" == systemd ]]; then
     state=$(systemctl show --property=ActiveState --value "$target") ||
       die "cannot read state of $target"
     case "$state" in
       active) return 0 ;;
-      inactive|failed) return 1 ;;
+      inactive | failed) return 1 ;;
       *) die "unstable service state for $target: $state" ;;
     esac
   fi
-  states=$(compose "$target" ps --all --format '{{.State}}') ||
+
+  container_states=$(compose "$target" ps --all --format '{{.State}}') ||
     die "cannot inspect Compose project $target"
   while IFS= read -r state; do
     case "$state" in
-      running) running=true ;;
-      ''|created|exited) ;;
+      running) has_running_containers=true ;;
+      '' | created | exited) ;;
       *) die "unsafe container state in $target: $state" ;;
     esac
-  done <<< "$states"
-  [[ "$running" == true ]]
+  done <<< "$container_states"
+
+  [[ "$has_running_containers" == true ]]
 }
 
 cleanup() {
-  local rc=$? index target
+  local exit_status=$?
+  local index target
+
   trap - EXIT INT TERM
+
   # Recover partial stops too, and attempt every restart even after a failure.
-  for ((index=${#stopped_targets[@]}-1; index>=0; index--)); do
+  for ((index = ${#stopped_targets[@]} - 1; index >= 0; index--)); do
     target=${stopped_targets[index]}
     printf 'Starting %s\n' "$target"
     if [[ "$mode" == systemd ]]; then
-      systemctl start "$target" || rc=1
+      systemctl start "$target" || exit_status=1
     else
-      compose "$target" start --wait --wait-timeout "$start_timeout" || rc=1
+      compose "$target" start --wait --wait-timeout "$start_timeout" || exit_status=1
     fi
   done
-  if ((rc == 0)); then
-    touch "$success_file" || rc=1
+
+  # A successful copy is not enough: recovery must also have succeeded.
+  if ((exit_status == 0)); then
+    touch "$success_file" || exit_status=1
   fi
-  if ((rc == 0)); then
+
+  if ((exit_status == 0)); then
     printf 'Backup and service recovery completed successfully.\n'
   else
-    printf 'ERROR: backup or service recovery failed (exit %s).\n' "$rc" >&2
+    printf 'ERROR: backup or service recovery failed (exit %s).\n' "$exit_status" >&2
   fi
-  exit "$rc"
+
+  exit "$exit_status"
 }
 
+# Validate prerequisites before acquiring the host-wide backup lock.
 [[ $# == 0 ]] || die "this script takes no arguments"
 for dependency in rsync flock realpath mountpoint; do
   command -v "$dependency" >/dev/null || die "$dependency not found"
@@ -113,6 +149,7 @@ done
 exec 9>"$lock_file"
 flock 9
 
+# Check both paths before inspecting or stopping applications.
 [[ -d "$source" ]] || die "source directory does not exist: $source"
 source_path=$(realpath -e -- "$source")
 [[ "$source_path" != / ]] || die "source must not be /"
@@ -120,8 +157,9 @@ if [[ -n "$source_mount" ]]; then
   mountpoint -q -- "$source_mount" || die "source storage is not mounted"
 fi
 {% endraw %}
-{% if job.destination.startswith('/') %}
-[[ -d "$destination" && -w "$destination" ]] || die "destination must exist and be writable"
+{% if not remote_destination %}
+[[ -d "$destination" && -w "$destination" ]] ||
+  die "destination must exist and be writable"
 destination_path=$(realpath -e -- "$destination")
 [[ "$destination_path" != / ]] || die "destination must not be /"
 case "$destination_path/" in
@@ -139,11 +177,14 @@ ssh "${ssh_options[@]}" "$remote_host" "$remote_check" ||
   die "remote destination preflight failed"
 {% endif %}
 {% raw %}
+# Check the service manager and Compose features needed for recovery.
 if [[ "$mode" == compose ]]; then
   command -v docker >/dev/null || die "docker not found"
   docker compose version >/dev/null || die "Compose plugin not found"
-  start_help=$(docker compose start --help) || die "cannot inspect Compose start options"
-  [[ "$start_help" == *--wait-timeout* ]] || die "Compose start --wait-timeout is required"
+  start_help=$(docker compose start --help) ||
+    die "cannot inspect Compose start options"
+  [[ "$start_help" == *--wait-timeout* ]] ||
+    die "Compose start --wait-timeout is required"
 else
   command -v systemctl >/dev/null || die "systemctl not found"
 fi
@@ -162,6 +203,7 @@ for target in "${targets[@]}"; do
   fi
 done
 
+# Arm recovery immediately before the first operation that can stop a target.
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
